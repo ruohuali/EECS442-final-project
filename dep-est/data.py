@@ -6,12 +6,14 @@ import torchvision
 from torchvision import transforms
 from torchvision.io import read_image, ImageReadMode
 from torch.utils.data import Dataset, DataLoader
+
 import cv2
 import os
 import time
 from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
+from PIL import Image
 
 from PATH import *
 from utils import *
@@ -146,16 +148,19 @@ class DIODE(Dataset):
     def __getitem__(self, idx):
         img_path, label_path = self.data_pair_paths[idx]
            
-        img = read_image(img_path).to(torch.float32)
-        label = torch.tensor(np.load(label_path)).unsqueeze(0).to(torch.float32)
+        img = Image.open(img_path)
+        img = img.convert("RGB")       
+        # img = read_image(img_path).to(torch.float32)
 
-        img = img.to(self.device)  
-        label = label.to(self.device)
+        label = torch.tensor(np.load(label_path)).unsqueeze(0).to(torch.float32)
         
         if self.transform:
             img = self.transform(img)
         if self.target_transform:
             label = self.target_transform(label)
+
+        img = img.to(self.device)  
+        label = label.to(self.device)            
 
         if self.original:
             original_img = cv2.imread(img_path)     

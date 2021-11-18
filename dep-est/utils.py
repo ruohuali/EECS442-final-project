@@ -15,9 +15,16 @@ import os
 
 from PATH import *
 
+def depth2Cutoff(depth_map, cutoff):
+    '''@param depth_map ~ (H x W) needs to be numpy array'''
+    heatmap = np.ones((*depth_map.shape, 3))
+    heatmap[depth_map < cutoff] *= 150
+    heatmap[depth_map >= cutoff] *= 50
+    return heatmap.astype(np.int64)
 
-def depth2Heatmap(depth_map, min_display=0, max_display=100):
-    '''@param depth_map ~ (H x W)'''
+
+def depth2Heatmap(depth_map, min_display=0, max_display=255):
+    '''@param depth_map ~ (H x W) needs to be numpy array'''
     r = (np.max(depth_map) - np.min(depth_map)) / 10
     heatmap = np.zeros((*depth_map.shape, 3))
     for i in range(depth_map.shape[0]):
@@ -64,12 +71,52 @@ def readLabel2Tensor(label_path, device=torch.device("cuda" if torch.cuda.is_ava
     label_t = transform(label_t)  
     return label_t    
 
-def pred2Img(pred):
-    '''singleton unet output (1 x 1 x H x W) -> plottable grayscale image (H x W)'''
+def clsPred2Img(pred):
+    '''singleton unet output (1 x 1 x H x W) in [0, num class] -> plottable grayscale image (H x W)'''
     pred = pred.squeeze(0)
     pred = pred.squeeze(0)
     pred = pred.to("cpu").to(torch.uint8)
     return pred
+
+def regPred2Img(pred):
+    '''singleton unet output (1 x 1 x H x W) in [-1, 1] -> plottable grayscale image (H x W)'''
+    pred = pred.squeeze(0)
+    pred = pred.squeeze(0)
+    pred = (pred + 1) * 100
+    pred = pred.to("cpu").to(torch.uint8)
+    return pred    
+
+def displayInference(data, pred, save_dir, i):
+    image = data['rgb']
+    label = data['label']
+    original_image = data['original_rgb']
+    original_label = data['original_label']
+    print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
+    
+    image = image.permute(1, 2, 0).to("cpu").to(torch.uint8)
+    label = label.squeeze().to(torch.uint8).cpu().numpy()
+    
+    plt.figure()
+    plt.imshow(image)
+    plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
+
+    plt.figure()
+    plt.imshow(label, cmap=plt.cm.jet)
+    plt.savefig(os.path.join(save_dir, "label"+str(i)+".png"))
+
+    plt.figure()
+    plt.imshow(original_image)    
+    plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
+
+    plt.figure()
+    plt.imshow(original_label, cmap=plt.cm.jet)
+    plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
+
+    print("pred",pred.shape)
+    plt.figure()
+    plt.imshow(pred.numpy(), cmap=plt.cm.jet)
+    plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))
+
 
 if __name__ == "__main__":
     print(torch.cuda.is_available())

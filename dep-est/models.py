@@ -145,6 +145,44 @@ class RegUNet(nn.Module):
         x = self.out_nonlin(self.out_conv(x))
         return x
 
+
+class ConvProbe(nn.Module):
+    def __init__(self):
+        super().__init__()                
+        self.probe = nn.Sequential(
+          nn.Conv2d(21, 64, 3, 3),
+          nn.BatchNorm2d(64),
+          nn.LeakyReLU(),
+          nn.Conv2d(64, 64, 3, 3),
+          nn.BatchNorm2d(64),
+          nn.LeakyReLU(),
+          nn.ConvTranspose2d(64, 21, 3, 3),
+          nn.BatchNorm2d(21),
+          nn.LeakyReLU(),
+          nn.ConvTranspose2d(21, 1, 3, 3),
+          nn.Tanh()
+        )
+
+    def forward(self, x):
+        x = self.probe(x)
+        return x
+
+
+class RegDeepLab(nn.Module):
+    def __init__(self):
+        super().__init__()                
+        self.dl = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
+        for param in self.dl.parameters():
+            param.requires_grad = False
+        self.probe = ConvProbe()
+
+    def forward(self, x):
+        x_ret = torch.ones(x.shape[0], 1, x.shape[2], x.shape[3], device=x.device)
+        x = self.dl(x)['out']
+        x = self.probe(x)
+        x_ret[:,:,:x.shape[2],:x.shape[3]] = x
+        return x_ret
+
         
 if __name__ == "__main__":
     x = torch.randn(1, 3, 160, 640)

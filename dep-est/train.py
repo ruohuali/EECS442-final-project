@@ -6,14 +6,16 @@ import torchvision
 from torchvision import transforms
 from torchvision.io import read_image, ImageReadMode
 from torch.utils.data import Dataset, DataLoader
+
 import matplotlib.pyplot as plt
 import cv2
 import os
 import time
 from copy import deepcopy
 import gc
+from pdb import set_trace
 
-from UNet import *
+from models import *
 from utils import *
 from loss import *
 from PATH import *
@@ -41,15 +43,18 @@ def manualCheckpoint(epoch, loss_hist, best_model, model_name, save_dir):
     print(f"saved model to {model_path}")
     plot_path = os.path.join(save_dir, str(epoch)+".png")
     plt.figure()
-    plt.plot(hist)
+    plt.plot(loss_hist)
     plt.savefig(plot_path)
     print(f"plotted as {plot_path}")
     print("="*30)
     print()
 
 def train(model, dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)    
-    
+    model.train()
+
+    # optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0002)    
+
     l1_loss = nn.L1Loss()
     ssim = SSIM()
 
@@ -65,9 +70,9 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
             if not regression:
                 labels = labels.squeeze(1).to(torch.int64)
 
-            print("batch", batch_idx, "/", len(dataloader), end='\r')
+            print("batch", batch_idx, "/", len(dataloader), end='\r           ')
             pred = model(imgs)
-            loss = 0.3 * l1(pred, labels) + 1 * (-ssim(pred, label))
+            loss = 0.2 * l1_loss(pred, labels) + 0.85 * (-ssim(pred, labels))
 
             optimizer.zero_grad()
             loss.backward()
@@ -88,57 +93,33 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
                 best_record = running_loss
                 best_model = deepcopy(model)
             
-        if epoch % 5 == 1:
+        if epoch % 50 == 49:
             manualCheckpoint(epoch, hist, best_model, "trained_model"+str(epoch), "train-history")
             
     return best_model
         
-def testViz(model, transform, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), num_example=5):
-    test_img_names = sorted(os.listdir(TEST_RGB_PATH))
-    test_label_names = sorted(os.listdir(TEST_DEP_PATH))
+def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
+    model = model.to(device)
+    model.eval()
+
     for i in range(num_example):
-        idx = len(test_img_names) // (num_example+1) * i
+        idx = len(dataset) // (num_example+1) * i
 
-        img_path = os.path.join(TEST_RGB_PATH, test_img_names[idx])
-        img_t = read2Tensor(img_path, transform)
-        img = cv2.imread(img_path)
-
-        label_path = os.path.join(TEST_DEP_PATH, test_label_names[idx])
-        label = cv2.imread(label_path)
-        label = label[:,:,0]
-        label = cv2.resize(label, (320, 320))
+        data = dataset[idx]
+        img_t = data['rgb'].unsqueeze(0).to(device)
+        img = data['original_rgb']
+        label_t = data['label']
+        label = data['original_label']
 
         tic = time.time()
         pred = model(img_t)
-        pred = pred2Img(pred)
+        pred = regPred2Img(pred)
         toc = time.time()
         print("inference takes", toc-tic)
 
-        plt.figure(figsize=(20,10))
-        plt.imshow(img) 
-        plt.title("img"+str(i)) 
-        plt.figure(figsize=(20,10))
-        plt.imshow(label) 
-        plt.title("label"+str(i))         
-        plt.figure(figsize=(20,10))
-        plt.imshow(pred)
-        plt.title("pred"+str(i)) 
+        displayInference(data, pred, save_dir, i)
 
-        if i+1 >= num_example:
-            break
-
+        print(np.unique(pred.numpy()))
 
 if __name__ == "__main__":
-    model_device = torch.device("cuda")   
-    data_device = device = torch.device("cpu")       
-
-    transform = transforms.Compose([transforms.Resize( (320, 320) ),
-                                            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
-    target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
-
-    dataset = DIODE(TRAIN_PATHS, transform=transform, target_transform=target_transform)
-    dataloader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=0)
-
-    unet = RegUNet(3, 32).to(model_device)
-    model = train(unet, dataloader, True, device=model_device)
-    testViz(model, transform)
+    pass

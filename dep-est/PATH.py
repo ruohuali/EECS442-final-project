@@ -38,3 +38,4 @@ import os
 DATA_PATH = "/home/ruohuali/Desktop/depth-estimation/DIODE_selection"
 TRAIN_PATH = os.path.join(DATA_PATH, "scan_00199") 
 TRAIN_PATHS = [TRAIN_PATH]
+TEST_PATHS = [TRAIN_PATH]
