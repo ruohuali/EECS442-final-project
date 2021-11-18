@@ -131,11 +131,24 @@ class UNet(nn.Module):
         feat_maps = self.cp(x)
         y = self.ep(feat_maps)
         return y
-        
+
+
+class RegUNet(nn.Module):
+    def __init__(self, input_dim, last_dim):
+        super().__init__()                
+        self.unet = UNet(input_dim, last_dim)
+        self.out_conv = nn.Conv2d(last_dim, 1, kernel_size=1, stride=1)
+        self.out_nonlin = nn.Tanh()
+
+    def forward(self, x):
+        x = self.unet(x)
+        x = self.out_nonlin(self.out_conv(x))
+        return x
+
         
 if __name__ == "__main__":
     x = torch.randn(1, 3, 160, 640)
-    unet = UNet(3, 70)
+    unet = RegUNet(3, 70)
     y = unet(x)
     print(y.shape)
             

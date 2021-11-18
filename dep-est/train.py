@@ -15,6 +15,9 @@ import gc
 
 from UNet import *
 from utils import *
+from loss import *
+from PATH import *
+from data import *
 
 
 def depMapGradMask(label):
@@ -30,9 +33,26 @@ def checkMem():
     a /= 1024 * 1024
     return a
 
+def manualCheckpoint(epoch, loss_hist, best_model, model_name, save_dir):
+    print("="*30)
+    print(f"epoch {epoch} loss {min(loss_hist)}")
+    model_path = os.path.join(save_dir, model_name+".pth")
+    torch.save(best_model, model_path)
+    print(f"saved model to {model_path}")
+    plot_path = os.path.join(save_dir, str(epoch)+".png")
+    plt.figure()
+    plt.plot(hist)
+    plt.savefig(plot_path)
+    print(f"plotted as {plot_path}")
+    print("="*30)
+    print()
+
 def train(model, dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)    
-    loss_fn = nn.CrossEntropyLoss()
+    
+    l1_loss = nn.L1Loss()
+    ssim = SSIM()
+
     best_record = np.inf
     hist = []
     for epoch in range(num_epoch):
@@ -42,12 +62,12 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
             imgs = data['rgb'].to(device)
             labels = data['label'].to(device)
             
-            if regression:
+            if not regression:
                 labels = labels.squeeze(1).to(torch.int64)
 
             print("batch", batch_idx, "/", len(dataloader), end='\r')
             pred = model(imgs)
-            loss = loss_fn(pred, labels)
+            loss = 0.3 * l1(pred, labels) + 1 * (-ssim(pred, label))
 
             optimizer.zero_grad()
             loss.backward()
@@ -63,36 +83,30 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
             print("epoch", epoch, "takes", toc-tic)
             print("running loss", running_loss)
             print("-"*50)
-
-        if best_record > running_loss:
-            print("best record", best_record)
-            best_record = running_loss
-            best_model = deepcopy(model)
-        
-        if epoch % 50 == 47:
-            model_path = "trained_model_dep"+str(epoch)+".pth"
-            torch.save(best_model, model_path)
-            # files.download(model_path)
-          
-            plt.figure()
-            plt.plot(hist)
-            plt.savefig(str(epoch)+".jpg")
-            # testViz(best_model)
+            if best_record > running_loss:
+                print("best record", best_record)
+                best_record = running_loss
+                best_model = deepcopy(model)
+            
+        if epoch % 5 == 1:
+            manualCheckpoint(epoch, hist, best_model, "trained_model"+str(epoch), "train-history")
             
     return best_model
         
-def testViz(model, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), num_example=5):
+def testViz(model, transform, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), num_example=5):
     test_img_names = sorted(os.listdir(TEST_RGB_PATH))
     test_label_names = sorted(os.listdir(TEST_DEP_PATH))
     for i in range(num_example):
-        img_path = os.path.join(TEST_RGB_PATH, test_img_names[i*40])
-        img_t = read2Tensor(img_path)
+        idx = len(test_img_names) // (num_example+1) * i
+
+        img_path = os.path.join(TEST_RGB_PATH, test_img_names[idx])
+        img_t = read2Tensor(img_path, transform)
         img = cv2.imread(img_path)
 
-        label_path = os.path.join(TEST_DEP_PATH, test_label_names[i*40])
+        label_path = os.path.join(TEST_DEP_PATH, test_label_names[idx])
         label = cv2.imread(label_path)
         label = label[:,:,0]
-        label = cv2.resize(label, (480, 120))
+        label = cv2.resize(label, (320, 320))
 
         tic = time.time()
         pred = model(img_t)
@@ -118,8 +132,13 @@ if __name__ == "__main__":
     model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
-    dataset = KITTI_DEP(TRAIN_RGB_PATHS, TRAIN_DEP_PATHS, device=data_device)
+    transform = transforms.Compose([transforms.Resize( (320, 320) ),
+                                            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+    target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
+
+    dataset = DIODE(TRAIN_PATHS, transform=transform, target_transform=target_transform)
     dataloader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=0)
 
-    unet = UNet(3, 85).to(model_device)
+    unet = RegUNet(3, 32).to(model_device)
     model = train(unet, dataloader, True, device=model_device)
+    testViz(model, transform)
