@@ -21,8 +21,6 @@ def depth2Heatmap(depth_map, min_display=0, max_display=100):
         for j in range(depth_map.shape[1]):
             if not min_display < depth_map[i,j] < max_display:
                 continue
-#             if depth_map[i,j] < 5:
-#                 heatmap[i,j] = np.array([100,0,100])
             if depth_map[i,j] < r:
                 heatmap[i,j,2] = 255 - depth_map[i,j] / r * 255    
                 heatmap[i,j,0] = depth_map[i,j] / r * 255           
@@ -162,31 +160,40 @@ class KITTI_DEP(Dataset):
         plt.savefig(f"example original image {idx}.png")
 
 
-DATA_PATH = "../../data/data_depth_self_compiled"
-TRAIN_PATH = os.path.join(DATA_PATH, "training")
-TRAIN_RGB_PATH = os.path.join(TRAIN_PATH, "rgb")
-TRAIN_LABEL_PATH = os.path.join(TRAIN_PATH, "label")
-TRAIN_RGB_PATHS = [os.path.join(TRAIN_RGB_PATH, "0001"),
-                os.path.join(TRAIN_RGB_PATH, "0002"),
-                os.path.join(TRAIN_RGB_PATH, "0009"),
-                os.path.join(TRAIN_RGB_PATH, "0011"),
-                os.path.join(TRAIN_RGB_PATH, "0017"),
-                os.path.join(TRAIN_RGB_PATH, "0018"),
-                os.path.join(TRAIN_RGB_PATH, "0048"),
-                os.path.join(TRAIN_RGB_PATH, "0051")]
+# DATA_PATH = "../../data/data_depth_self_compiled"
+# TRAIN_PATH = os.path.join(DATA_PATH, "training")
+# TRAIN_RGB_PATH = os.path.join(TRAIN_PATH, "rgb")
+# TRAIN_LABEL_PATH = os.path.join(TRAIN_PATH, "label")
+# TRAIN_RGB_PATHS = [os.path.join(TRAIN_RGB_PATH, "0001"),
+#                 os.path.join(TRAIN_RGB_PATH, "0002"),
+#                 os.path.join(TRAIN_RGB_PATH, "0009"),
+#                 os.path.join(TRAIN_RGB_PATH, "0011"),
+#                 os.path.join(TRAIN_RGB_PATH, "0017"),
+#                 os.path.join(TRAIN_RGB_PATH, "0018"),
+#                 os.path.join(TRAIN_RGB_PATH, "0048"),
+#                 os.path.join(TRAIN_RGB_PATH, "0051")]
 
-TRAIN_DEP_PATHS = [os.path.join(TRAIN_LABEL_PATH, "0001"),
-                os.path.join(TRAIN_LABEL_PATH, "0002"),
-                os.path.join(TRAIN_LABEL_PATH, "0009"),
-                os.path.join(TRAIN_LABEL_PATH, "0011"),
-                os.path.join(TRAIN_LABEL_PATH, "0017"),
-                os.path.join(TRAIN_LABEL_PATH, "0018"),
-                os.path.join(TRAIN_LABEL_PATH, "0048"),
-                os.path.join(TRAIN_LABEL_PATH, "0051")]
+# TRAIN_DEP_PATHS = [os.path.join(TRAIN_LABEL_PATH, "0001"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0002"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0009"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0011"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0017"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0018"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0048"),
+#                 os.path.join(TRAIN_LABEL_PATH, "0051")]
 
-TEST_PATH = os.path.join(DATA_PATH, "testing")
-TEST_RGB_PATH = os.path.join(TEST_PATH, "rgb")
-TEST_DEP_PATH = os.path.join(TEST_PATH, "label")
+# TEST_PATH = os.path.join(DATA_PATH, "testing")
+# TEST_RGB_PATH = os.path.join(TEST_PATH, "rgb")
+# TEST_DEP_PATH = os.path.join(TEST_PATH, "label")
+
+
+DATA_PATH = "/home/ruohuali/Desktop/depth-estimation/data_depth_selection/depth_selection/"
+TRAIN_PATH = os.path.join(DATA_PATH, "test_depth_completion_anonymous")
+TRAIN_RGB_PATH = os.path.join(TRAIN_PATH, "image")
+TRAIN_DEP_PATH = os.path.join(TRAIN_PATH, "velodyne_raw")
+TRAIN_RGB_PATHS = [TRAIN_RGB_PATH]
+TRAIN_DEP_PATHS = [TRAIN_DEP_PATH]                
+
 
 if __name__ == "__main__":
     print(torch.cuda.is_available())
@@ -194,14 +201,14 @@ if __name__ == "__main__":
         print(torch.cuda.device_count())
         print(torch.cuda.get_device_name(torch.cuda.device_count()-1))
 
-    dataset = KITTI_DEP(TRAIN_RGB_PATHS, TRAIN_DEP_PATHS, device=torch.device("cuda:0"), qmark=True, original=True)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=0)
+    dataset = KITTI_DEP(TRAIN_RGB_PATHS, TRAIN_DEP_PATHS, device=torch.device("cuda:0"), qmark=True, original=False)
+    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0)
 
     # dataset.example(519)
     print('len', len(dataset))
     tic = time.time()
     for i, data in enumerate(dataloader):
         print("data rgb", data['rgb'].shape)
-        if i > 1:
+        if i > 3:
             break
     print("time", time.time() - tic)    

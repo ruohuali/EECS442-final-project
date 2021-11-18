@@ -39,33 +39,21 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
         running_loss = 0        
         tic = time.time()
         for batch_idx, data in enumerate(dataloader):
-            print("1", checkMem())
             imgs = data['rgb'].to(device)
             labels = data['label'].to(device)
-            print("2", checkMem())            
             
             if regression:
                 labels = labels.squeeze(1).to(torch.int64)
-            print("3", checkMem())                
 
             print("batch", batch_idx, "/", len(dataloader), end='\r')
             pred = model(imgs)
-            print("4", checkMem())            
-            # print("imgs", imgs.shape, "labels", labels.dtype, "pred", pred.dtype)
             loss = loss_fn(pred, labels)
-            print("5", checkMem())            
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()        
-            print("6", checkMem())            
             
-#             running_loss += loss.item() / len(dataloader)
-            print("7", checkMem())   
-            
-            del imgs; del labels; del pred; del loss
-            gc.collect()
-            torch.cuda.empty_cache()            
+            running_loss += loss.item() / len(dataloader)
             
         toc = time.time()
         hist.append(running_loss)
