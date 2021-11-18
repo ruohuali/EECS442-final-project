@@ -81,7 +81,7 @@ class KITTI_DEP(Dataset):
         data = {}
         data['rgb'] = img
         data['label'] = label
-        data['original_rbg'] = original_img
+        data['original_rgb'] = original_img
         data['original_label'] = original_label
             
         return data
@@ -90,7 +90,7 @@ class KITTI_DEP(Dataset):
         data = self.__getitem__(idx)
         image = data['rgb']
         label = data['label']
-        original_image = data['original_rbg']
+        original_image = data['original_rgb']
         original_label = data['original_label']
         print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
         
@@ -118,9 +118,9 @@ class DIODE(Dataset):
     @note assume that label image's name and corresponding rgb image's name are the same
     just in different folders. e.g. labels/1.jpg <---> rgbs/1.jpg
     '''
-    def __init__(self, data_paths, transform=transforms.Compose([transforms.Resize( (320, 320) ),
+    def __init__(self, data_paths, transform=transforms.Compose([transforms.Resize( (640, 640) ),
                                           transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]),
-                          target_transform=transforms.Compose([transforms.Resize( (320, 320) )]),
+                          target_transform=transforms.Compose([transforms.Resize( (640, 640) )]),
                           device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), original=False):
         self.data_paths = data_paths
         
@@ -167,8 +167,10 @@ class DIODE(Dataset):
         data = {}
         data['rgb'] = img
         data['label'] = label
-        data['original_rbg'] = original_img
+        data['original_rgb'] = original_img
         data['original_label'] = original_label
+        data['rgb_path'] = img_path
+        data['label_path'] = label_path
             
         return data
     
@@ -176,7 +178,7 @@ class DIODE(Dataset):
         data = self.__getitem__(idx)
         image = data['rgb']
         label = data['label']
-        original_image = data['original_rbg']
+        original_image = data['original_rgb']
         original_label = data['original_label']
         print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
         
