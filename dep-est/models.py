@@ -161,7 +161,7 @@ class ConvProbe(nn.Module):
           nn.BatchNorm2d(21),
           nn.LeakyReLU(),
           nn.ConvTranspose2d(21, 1, 3, 3),
-          nn.Tanh()
+        #   nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -169,17 +169,20 @@ class ConvProbe(nn.Module):
         return x
 
 
-class RegDeepLab(nn.Module):
-    def __init__(self):
-        super().__init__()                
-        self.dl = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
-        for param in self.dl.backbone.parameters():
+class RegSegModel(nn.Module):
+    def __init__(self, seg_type="deeplab"):
+        super().__init__()        
+        if seg_type == "deeplab":        
+            self.seg = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
+        elif seg_type == "fcn":
+            self.seg = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
+        for param in self.seg.backbone.parameters():
             param.requires_grad = False
         self.probe = ConvProbe()
 
     def forward(self, x):
         x_ret = torch.ones(x.shape[0], 1, x.shape[2], x.shape[3], device=x.device)
-        x = self.dl(x)['out']
+        x = self.seg(x)['out']
         x = self.probe(x)
         x_ret[:,:,:x.shape[2],:x.shape[3]] = x
         return x_ret
@@ -201,7 +204,7 @@ class RegDeepLab(nn.Module):
         #     input_batch = input_batch.to('cuda')
         #     model.to('cuda')
 
-        model = self.dl
+        model = self.seg
 
         with torch.no_grad():
             output = model(input_batch)['out'][0]

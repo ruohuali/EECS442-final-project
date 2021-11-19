@@ -99,9 +99,10 @@ def regPred2Img(pred):
     '''singleton unet output (1 x 1 x H x W) in [-1, 1] -> plottable grayscale image (H x W)'''
     pred = pred.squeeze(0)
     pred = pred.squeeze(0)
-    pred = (pred + 1) * 100
-    pred = pred.to("cpu").to(torch.uint8)
+    # pred = (pred + 1) * 100
+    pred = pred.to("cpu").to(torch.float32)
     return pred    
+
 
 def displayInference(data, pred, save_dir, i, backend="cmap"):
     image = data['rgb']

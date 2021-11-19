@@ -153,7 +153,8 @@ class DIODE(Dataset):
         img = img.convert("RGB")       
         # img = read_image(img_path).to(torch.float32)
 
-        label = torch.tensor(np.load(label_path)).unsqueeze(0).to(torch.float32)
+        label = torch.tensor(np.load(label_path)).squeeze().unsqueeze(0).to(torch.float32)
+        # label /= torch.max(label)
         
         if self.transform:
             img = self.transform(img)
@@ -167,7 +168,7 @@ class DIODE(Dataset):
 
         if self.original:
             original_img = cv2.imread(img_path)     
-            original_label = np.load(label_path) 
+            original_label = np.load(label_path).squeeze()
         else:
             original_img = torch.empty(1)
             original_label = torch.empty(1)                     

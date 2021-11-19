@@ -25,7 +25,7 @@ from train import *
 
 
 def initTrain():
-    model_device = torch.device("cpu")   
+    model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
     preprocess = transforms.Compose([
@@ -36,10 +36,11 @@ def initTrain():
     target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
 
     dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
 
-    m = RegDeepLab().to(model_device)
-    model = train(m, dataloader, True, num_epoch=100, device=model_device)
+    m = RegSegModel("deeplab").to(model_device)
+    m.train()
+    model = train(m, dataloader, True, num_epoch=500, device=model_device)
 
     test_dataset = dataset
     testViz(model, test_dataset, "train-history")
@@ -70,10 +71,10 @@ def testModel(model_path):
     model = torch.load(model_path)
 
     test_dataset = dataset
-    testViz(model, test_dataset, "train-history")
+    testViz(model, test_dataset, "train-history", num_example=10)
 
 
 if __name__ == '__main__':
-    initTrain()
+    # initTrain()
     # modelSummary()
-    # testModel(os.path.join("train-history", "trained_model19.pth"))
+    testModel(os.path.join("train-history", "trained_model179.pth"))

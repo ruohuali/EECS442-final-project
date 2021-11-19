@@ -52,11 +52,12 @@ def manualCheckpoint(epoch, loss_hist, best_model, model_name, save_dir):
 def train(model, dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
     model.train()
 
-    # optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)    
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)    
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)    
 
     l1_loss = nn.L1Loss()
-    ssim = SSIM()
+    l2_loss = nn.MSELoss()
+    # ssim = SSIM()
 
     best_record = np.inf
     hist = []
@@ -72,7 +73,8 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
 
             print("batch", batch_idx, "/", len(dataloader), end='       \r')
             pred = model(imgs)
-            loss = 0.2 * l1_loss(pred, labels) + 0.85 * (-ssim(pred, labels))
+            # loss = 0.2 * l1_loss(pred, labels) + 0.85 * (-ssim(pred, labels))
+            loss = l2_loss(pred, labels)
 
             optimizer.zero_grad()
             loss.backward()
@@ -112,13 +114,13 @@ def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5)
         label = data['original_label']
 
         tic = time.time()
-        pred = model(img_t)
-        pred = regPred2Img(pred)
+        with torch.no_grad():
+            pred = model(img_t)
+            pred = regPred2Img(pred)
         toc = time.time()
         print("inference takes", toc-tic)
-
-        displayInference(data, pred, save_dir, i, backend="cmap")
-        print(np.unique(pred.numpy()))
+        print("unique", np.unique(pred.numpy()))
+        displayInference(data, pred, save_dir, i, backend="DIODE")
 
 if __name__ == "__main__":
     pass
