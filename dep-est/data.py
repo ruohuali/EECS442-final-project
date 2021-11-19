@@ -133,8 +133,9 @@ class DIODE(Dataset):
                 if data_name.endswith('.png'):
                     prefix = data_name.rstrip('.png')
                     img_path = os.path.join(data_path, data_name)
-                    label_path = os.path.join(data_path, prefix+"_depth_mask.npy")   
-                    self.data_pair_paths.append((img_path, label_path))
+                    label_path = os.path.join(data_path, prefix+"_depth.npy")  
+                    mask_path = os.path.join(data_path, prefix+"_depth_mask.npy")   
+                    self.data_pair_paths.append((img_path, label_path, mask_path))
         
         self.transform = transform
         self.target_transform = target_transform
@@ -146,7 +147,7 @@ class DIODE(Dataset):
         return len(self.data_pair_paths)
 
     def __getitem__(self, idx):
-        img_path, label_path = self.data_pair_paths[idx]
+        img_path, label_path, mask_path = self.data_pair_paths[idx]
            
         img = Image.open(img_path)
         img = img.convert("RGB")       
@@ -160,7 +161,9 @@ class DIODE(Dataset):
             label = self.target_transform(label)
 
         img = img.to(self.device)  
-        label = label.to(self.device)            
+        label = label.to(self.device)      
+
+        mask = np.load(mask_path)
 
         if self.original:
             original_img = cv2.imread(img_path)     
@@ -176,6 +179,7 @@ class DIODE(Dataset):
         data['original_label'] = original_label
         data['rgb_path'] = img_path
         data['label_path'] = label_path
+        data['mask'] = mask
             
         return data
     

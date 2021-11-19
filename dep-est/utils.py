@@ -56,6 +56,23 @@ def drawHeatmap(depth_map, min_display=0, max_display=100):
     plt.figure()
     plt.imshow(hb)    
 
+
+def plot_depth_map(dm, validity_mask, save_path):
+    validity_mask = validity_mask > 0
+    MIN_DEPTH = 0.5
+    MAX_DEPTH = min(300, np.percentile(dm, 99))
+    dm = np.clip(dm, MIN_DEPTH, MAX_DEPTH)
+    dm = np.log(dm, where=validity_mask)
+
+    dm = np.ma.masked_where(~validity_mask, dm)
+    dm = dm.squeeze()
+
+    cmap = plt.cm.jet
+    cmap.set_bad(color='black')
+    plt.imshow(dm, cmap=cmap, vmax=np.log(MAX_DEPTH))
+    plt.savefig(save_path)
+
+
 def read2Tensor(img_path, device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), transform=None):
     '''image path -> unet input (1 x 3 x H x W)'''
 
@@ -86,36 +103,78 @@ def regPred2Img(pred):
     pred = pred.to("cpu").to(torch.uint8)
     return pred    
 
-def displayInference(data, pred, save_dir, i):
+def displayInference(data, pred, save_dir, i, backend="cmap"):
     image = data['rgb']
     label = data['label']
     original_image = data['original_rgb']
     original_label = data['original_label']
-    print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
+    print("inference data sizes", image.shape, label.shape, original_image.shape, original_label.shape)           
     
     image = image.permute(1, 2, 0).to("cpu").to(torch.uint8)
     label = label.squeeze().to(torch.uint8).cpu().numpy()
+    pred = pred.numpy()
     
-    plt.figure()
-    plt.imshow(image)
-    plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
+    if backend == "cmap":
+        cmap = plt.cm.jet
+        cmap.set_bad(color="black")
 
-    plt.figure()
-    plt.imshow(label, cmap=plt.cm.jet)
-    plt.savefig(os.path.join(save_dir, "label"+str(i)+".png"))
+        plt.figure()
+        plt.imshow(image)
+        plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
 
-    plt.figure()
-    plt.imshow(original_image)    
-    plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
+        plt.figure()
+        plt.imshow(label, cmap=cmap)
+        plt.savefig(os.path.join(save_dir, "label"+str(i)+".png"))
 
-    plt.figure()
-    plt.imshow(original_label, cmap=plt.cm.jet)
-    plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
+        plt.figure()
+        plt.imshow(original_image)    
+        plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
 
-    print("pred",pred.shape)
-    plt.figure()
-    plt.imshow(pred.numpy(), cmap=plt.cm.jet)
-    plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))
+        plt.figure()
+        plt.imshow(original_label, cmap=cmap)
+        plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(pred.numpy(), cmap=cmap)
+        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))
+    elif backend == "heatmap":
+        plt.figure()
+        plt.imshow(image)
+        plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
+
+        plt.figure()
+        h = depth2Heatmap(label)
+        plt.imshow(h)
+        plt.savefig(os.path.join(save_dir, "label"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(original_image)    
+        plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
+
+        plt.figure()
+        h = depth2Heatmap(original_label)
+        plt.imshow(h)
+        plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
+
+        plt.figure()
+        h = depth2Heatmap(pred.numpy())
+        plt.imshow(h)
+        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))    
+    elif backend == "DIODE":
+        plt.figure()
+        plt.imshow(image)
+        plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
+
+        plot_depth_map(label, np.ones_like(label), os.path.join(save_dir, "label"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(original_image)    
+        plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
+
+        plot_depth_map(original_label, np.ones_like(original_label), os.path.join(save_dir, "olabel"+str(i)+".png"))
+
+        plot_depth_map(pred, np.ones_like(pred), os.path.join(save_dir, "pred"+str(i)+".png"))
+                         
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
     model.train()
 
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)    
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0002)    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)    
 
     l1_loss = nn.L1Loss()
     ssim = SSIM()
@@ -70,7 +70,7 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
             if not regression:
                 labels = labels.squeeze(1).to(torch.int64)
 
-            print("batch", batch_idx, "/", len(dataloader), end='\r           ')
+            print("batch", batch_idx, "/", len(dataloader), end='       \r')
             pred = model(imgs)
             loss = 0.2 * l1_loss(pred, labels) + 0.85 * (-ssim(pred, labels))
 
@@ -93,7 +93,7 @@ def train(model, dataloader, regression, num_epoch=400, device=torch.device("cud
                 best_record = running_loss
                 best_model = deepcopy(model)
             
-        if epoch % 50 == 49:
+        if epoch % 20 == 19:
             manualCheckpoint(epoch, hist, best_model, "trained_model"+str(epoch), "train-history")
             
     return best_model
@@ -117,8 +117,7 @@ def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5)
         toc = time.time()
         print("inference takes", toc-tic)
 
-        displayInference(data, pred, save_dir, i)
-
+        displayInference(data, pred, save_dir, i, backend="cmap")
         print(np.unique(pred.numpy()))
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ from train import *
 
 
 def initTrain():
-    model_device = torch.device("cuda")   
+    model_device = torch.device("cpu")   
     data_device = device = torch.device("cpu")       
 
     preprocess = transforms.Compose([
@@ -36,10 +36,10 @@ def initTrain():
     target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
 
     dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0)
+    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
 
     m = RegDeepLab().to(model_device)
-    model = train(m, dataloader, True, num_epoch=1000, device=model_device)
+    model = train(m, dataloader, True, num_epoch=100, device=model_device)
 
     test_dataset = dataset
     testViz(model, test_dataset, "train-history")
@@ -47,8 +47,10 @@ def initTrain():
 
 def modelSummary():
     m = RegDeepLab().to(torch.device("cuda"))
+    m.eval()
     summary(m.dl, input_size=(8, 3, 320, 320), device="cuda")
     summary(m.probe, input_size=(8, 21, 320, 320), device="cuda") 
+    summary(m.dl.backbone, input_size=(8, 3, 320, 320), device="cuda") 
 
 
 def testModel(model_path):
@@ -72,6 +74,6 @@ def testModel(model_path):
 
 
 if __name__ == '__main__':
-    # initTrain()
+    initTrain()
     # modelSummary()
-    testModel(os.path.join("train-history", "trained_model549.pth"))
+    # testModel(os.path.join("train-history", "trained_model19.pth"))
