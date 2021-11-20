@@ -37,7 +37,13 @@ import os
 
 DATA_PATH = "/home/ruohuali/Desktop/depth-estimation/DIODE_selection"
 # TRAIN_PATH = os.path.join(DATA_PATH, "scan_00199") 
-TRAIN_PATHS = [os.path.join(DATA_PATH, "scan_00199"),
-               os.path.join(DATA_PATH, "scan_00183")]
+TRAIN_PATHS = [os.path.join(DATA_PATH, "scan_00193"),
+               os.path.join(DATA_PATH, "scan_00194"),
+               os.path.join(DATA_PATH, "scan_00195"),
+               os.path.join(DATA_PATH, "scan_00196"),
+               os.path.join(DATA_PATH, "scan_00197"),
+               os.path.join(DATA_PATH, "scan_00198"),
+               os.path.join(DATA_PATH, "scan_00200"),
+               os.path.join(DATA_PATH, "scan_00201")]
 TEST_PATHS = [os.path.join(DATA_PATH, "scan_00199"),
-              os.path.join(DATA_PATH, "scan_00183")]
+              os.path.join(DATA_PATH, "scan_00202")]

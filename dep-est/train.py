@@ -35,68 +35,89 @@ def checkMem():
     a /= 1024 * 1024
     return a
 
-def manualCheckpoint(epoch, loss_hist, best_model, model_name, save_dir):
+def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save_dir):
     print("="*30)
-    print(f"epoch {epoch} loss {min(loss_hist)}")
+    print(f"epoch {epoch} loss {min(loss_hist1)} {min(loss_hist2)}")
     model_path = os.path.join(save_dir, model_name+".pth")
     torch.save(best_model, model_path)
     print(f"saved model to {model_path}")
     plot_path = os.path.join(save_dir, str(epoch)+".png")
     plt.figure()
-    plt.plot(loss_hist)
+    plt.plot(loss_hist1, label="train")
+    plt.plot(loss_hist2, label="val")
     plt.savefig(plot_path)
+    plt.legend(loc="upper left")    
     print(f"plotted as {plot_path}")
     print("="*30)
     print()
 
-def train(model, dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
+def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
     model.train()
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
-    # optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)    
+    # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)    
 
     l1_loss = nn.L1Loss()
     l2_loss = nn.MSELoss()
-    # ssim = SSIM()
+    ssim = SSIM(window_size=7)
+    smooth_loss = SmoothnessLoss()
 
     best_record = np.inf
-    hist = []
+    train_hist = []
+    val_hist = []
     for epoch in range(num_epoch):
-        running_loss = 0        
+        running_train_loss = 0      
+        running_val_loss = 0      
+          
         tic = time.time()
-        for batch_idx, data in enumerate(dataloader):
+        for batch_idx, data in enumerate(train_dataloader):
             imgs = data['rgb'].to(device)
             labels = data['label'].to(device)
             
             if not regression:
                 labels = labels.squeeze(1).to(torch.int64)
 
-            print("batch", batch_idx, "/", len(dataloader), end='       \r')
+            print("train batch", batch_idx, "/", len(train_dataloader), end='       \r')
             pred = model(imgs)
-            # loss = 0.2 * l1_loss(pred, labels) + 0.85 * (-ssim(pred, labels))
-            loss = l2_loss(pred, labels)
+            loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()        
             
-            running_loss += loss.item() / len(dataloader)
+            running_train_loss += loss.item() / len(train_dataloader)
+        train_hist.append(running_train_loss)
+
+        for batch_idx, data in enumerate(val_dataloader):
+            with torch.no_grad():
+                imgs = data['rgb'].to(device)
+                labels = data['label'].to(device)
+                
+                if not regression:
+                    labels = labels.squeeze(1).to(torch.int64)
+
+                print("val batch", batch_idx, "/", len(val_dataloader), end='       \r')
+                pred = model(imgs)
+                loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
+                   
+            running_val_loss += loss.item() / len(val_dataloader)
+        val_hist.append(running_val_loss)        
             
         toc = time.time()
-        hist.append(running_loss)
             
         if epoch % 1 == 0:
             print("epoch", epoch)
             print("epoch", epoch, "takes", toc-tic)
-            print("running loss", running_loss)
+            print("running train loss", running_train_loss)
+            print("running val loss", running_val_loss)
             print("-"*50)
-            if best_record > running_loss:
+            if best_record > running_train_loss:
                 print("best record", best_record)
-                best_record = running_loss
+                best_record = running_train_loss
                 best_model = deepcopy(model)
             
-        if epoch % 20 == 19:
-            manualCheckpoint(epoch, hist, best_model, "trained_model"+str(epoch), "train-history")
+        if epoch % 50 == 49:
+            manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model"+str(epoch), "train-history")
             
     return best_model
         

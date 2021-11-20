@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
+import torch.nn as nn
 import numpy as np
 from math import exp
 
@@ -71,3 +72,39 @@ def ssim(img1, img2, window_size = 11, size_average = True):
     window = window.type_as(img1)
     
     return _ssim(img1, img2, window, window_size, channel, size_average)
+
+
+
+class SmoothnessLoss(nn.Module):
+    def __init__(self):
+        super(SmoothnessLoss, self).__init__()
+        
+    def gradient_x(self, img):
+        # Pad input to keep output size consistent
+        img = F.pad(img, (0, 1, 0, 0), mode="replicate")
+        gx = img[:, :, :, :-1] - img[:, :, :, 1:]  # NCHW
+        return gx
+
+    def gradient_y(self, img):
+        # Pad input to keep output size consistent
+        img = F.pad(img, (0, 0, 0, 1), mode="replicate")
+        gy = img[:, :, :-1, :] - img[:, :, 1:, :]  # NCHW
+        return gy           
+
+    def forward(self, d, img):
+        disp_gradients_x = self.gradient_x(d)
+        disp_gradients_y = self.gradient_y(d)
+
+        image_gradients_x = self.gradient_x(img)
+        image_gradients_y = self.gradient_y(img)
+
+        weights_x = torch.exp(-torch.mean(torch.abs(image_gradients_x), 1, keepdim=True))
+        weights_y = torch.exp(-torch.mean(torch.abs(image_gradients_y), 1, keepdim=True))
+
+        smoothness_x = disp_gradients_x * weights_x
+        smoothness_y = disp_gradients_y * weights_y
+
+        L = torch.abs(smoothness_x) + torch.abs(smoothness_y)  
+        loss = torch.mean(L)      
+
+        return loss

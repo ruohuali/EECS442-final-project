@@ -1,5 +1,9 @@
 **/data
-
+**/train-history
+*.pt
+*.pth
+*.png
+*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

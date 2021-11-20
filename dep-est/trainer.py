@@ -37,12 +37,14 @@ def initTrain():
 
     dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
     dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
+    test_dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
+    test_dataloader = DataLoader(dataset, batch_size=8, shuffle=False, num_workers=4)
 
     m = RegSegModel("deeplab").to(model_device)
     m.train()
-    model = train(m, dataloader, True, num_epoch=500, device=model_device)
+    model = train(m, dataloader, test_dataloader, True, num_epoch=200, device=model_device)
 
-    test_dataset = dataset
+    test_dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
     testViz(model, test_dataset, "train-history")
 
 
@@ -65,8 +67,7 @@ def testModel(model_path):
     ])
     target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
 
-    dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
-    dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=0)
+    dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
 
     model = torch.load(model_path)
 
@@ -74,7 +75,30 @@ def testModel(model_path):
     testViz(model, test_dataset, "train-history", num_example=10)
 
 
+def testModelSeg(model_path):
+    model_device = torch.device("cpu")   
+    data_device = device = torch.device("cpu")       
+
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (320, 320) ),     
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
+
+    dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
+
+    model = torch.load(model_path)
+    model.eval()
+    model = model.to(model_device)
+
+    model.inferSeg(dataset[10]['rgb_path'], plot=True)
+
+    
+
+
 if __name__ == '__main__':
-    # initTrain()
+    initTrain()
     # modelSummary()
-    testModel(os.path.join("train-history", "trained_model179.pth"))
+    # testModel(os.path.join("train-history", "trained_model199.pth"))
+    # testModelSeg(os.path.join("train-history", "trained_model199.pth"))

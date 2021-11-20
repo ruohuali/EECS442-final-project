@@ -223,9 +223,11 @@ class RegSegModel(nn.Module):
 
         if plot:
             plt.figure()
-            plt.imshow(plot_pred)    
+            plt.imshow(plot_pred)   
+            plt.savefig("seg.png")
             plt.figure()    
             plt.imshow(input_image_)
+            plt.savefig("img.png")
 
         return plot_pred
         
