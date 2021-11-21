@@ -78,8 +78,9 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
                 labels = labels.squeeze(1).to(torch.int64)
 
             print("train batch", batch_idx, "/", len(train_dataloader), end='       \r')
-            pred = model(imgs)
+            pred, _ = model(imgs)
             loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
+            # loss = 1 * (1 - ssim(pred, labels)) + 1 * l2_loss(pred, labels) 
 
             optimizer.zero_grad()
             loss.backward()
@@ -97,7 +98,7 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
                     labels = labels.squeeze(1).to(torch.int64)
 
                 print("val batch", batch_idx, "/", len(val_dataloader), end='       \r')
-                pred = model(imgs)
+                pred, _ = model(imgs)
                 loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
                    
             running_val_loss += loss.item() / len(val_dataloader)
@@ -120,7 +121,8 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
             manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model"+str(epoch), "train-history")
             
     return best_model
-        
+
+
 def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
     model = model.to(device)
     model.eval()
@@ -136,7 +138,7 @@ def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5)
 
         tic = time.time()
         with torch.no_grad():
-            pred = model(img_t)
+            pred, _ = model(img_t)
             pred = regPred2Img(pred)
         toc = time.time()
         print("inference takes", toc-tic)

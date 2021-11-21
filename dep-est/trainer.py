@@ -36,9 +36,9 @@ def initTrain():
     target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
 
     dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
-    dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4)
     test_dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
-    test_dataloader = DataLoader(dataset, batch_size=8, shuffle=False, num_workers=4)
+    test_dataloader = DataLoader(dataset, batch_size=4, shuffle=False, num_workers=4)
 
     m = RegSegModel("deeplab").to(model_device)
     m.train()
@@ -98,7 +98,7 @@ def testModelSeg(model_path):
 
 
 if __name__ == '__main__':
-    initTrain()
+    # initTrain()
     # modelSummary()
-    # testModel(os.path.join("train-history", "trained_model199.pth"))
+    testModel(os.path.join("train-history", "trained_model199.pth"))
     # testModelSeg(os.path.join("train-history", "trained_model199.pth"))
