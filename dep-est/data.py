@@ -24,26 +24,34 @@ class KITTI_DEP(Dataset):
     @note assume that label image's name and corresponding rgb image's name are the same
     just in different folders. e.g. labels/1.jpg <---> rgbs/1.jpg
     '''
-    def __init__(self, rgb_dir_paths, label_dir_paths, transform=transforms.Compose([transforms.Resize( (80, 320) ),
-                                          transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]),
-                          target_transform=transforms.Compose([transforms.Resize( (80, 320) )]),
-                          device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), qmark=True, original=False):
+    rgb_preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (200, 640) ),     
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    label_preprocess = transforms.Compose([#transforms.ToTensor(),
+                                           transforms.GaussianBlur(15, sigma=4.0),
+                                           transforms.Resize( (200, 640) )])
+
+    def __init__(self, rgb_dir_paths, label_dir_paths, transform=None, target_transform=None, 
+                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), original=False):
         self.rgb_dir_paths = rgb_dir_paths
         self.label_dir_paths = label_dir_paths
         
         self.data_pair_paths = []
         for rgb_dir_path, label_dir_path in zip(rgb_dir_paths, label_dir_paths):
-            data_names = sorted(os.listdir(label_dir_path))
-            for data_name in data_names:
-                img_path = os.path.join(rgb_dir_path, data_name)
-                label_path = os.path.join(label_dir_path, data_name)   
+            rgb_data_names = sorted(os.listdir(rgb_dir_path))
+            label_data_names = sorted(os.listdir(label_dir_path))
+            for rgb_data_name, label_data_name  in zip(rgb_data_names, label_data_names):
+                img_path = os.path.join(rgb_dir_path, rgb_data_name)
+                label_path = os.path.join(label_dir_path, label_data_name)  
                 self.data_pair_paths.append((img_path, label_path))
-        
-        self.transform = transform
-        self.target_transform = target_transform
+                
+        self.transform = transform if transform != None else self.rgb_preprocess
+        self.target_transform = target_transform if target_transform != None else self.label_preprocess
         
         self.device = device
-        self.qmark = qmark
+        self.qmark = False
         self.original = original
 
     def __len__(self):
@@ -51,27 +59,16 @@ class KITTI_DEP(Dataset):
 
     def __getitem__(self, idx):
         img_path, label_path = self.data_pair_paths[idx]
-           
-        if self.qmark:
-            img =  cv2.imread(img_path)
-            img = transforms.ToTensor()(img)
-
-            label = cv2.imread(label_path)
-            label = label[:,:,0]
-            label = label.reshape(1, *label.shape)
-            label = torch.tensor(label).to(torch.float32)
-        else:
-            img = read_image(img_path)
-            img = img.to(torch.float32)
-                      
-            label = read_image(label_path).to(torch.float32)
-        img = img.to(self.device)  
-        label = label.to(self.device)
+   
+        img = Image.open(img_path)
+        label = cv2.imread(label_path)
+        label = torch.tensor(label[:,:,0]).unsqueeze(0)     
         
-        if self.transform:
-            img = self.transform(img)
-        if self.target_transform:
-            label = self.target_transform(label)
+        img = self.transform(img)
+        label = self.target_transform(label)
+
+        img = img.to(self.device)  
+        label = label.to(self.device).to(torch.float32)        
 
         if self.original:
             original_img = cv2.imread(img_path)     
@@ -85,6 +82,8 @@ class KITTI_DEP(Dataset):
         data['label'] = label
         data['original_rgb'] = original_img
         data['original_label'] = original_label
+        data['rgb_path'] = img_path
+        data['label_path'] = label_path        
             
         return data
     
@@ -94,36 +93,37 @@ class KITTI_DEP(Dataset):
         label = data['label']
         original_image = data['original_rgb']
         original_label = data['original_label']
-        print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
         
         image = image.permute(1, 2, 0).to("cpu").to(torch.uint8)
-        label = label.permute(1, 2, 0).to("cpu").to(torch.uint8).squeeze(2)
+        label = label.permute(1, 2, 0).to("cpu").to(torch.uint8).squeeze(2).numpy()
         
         plt.figure(figsize=(20, 10))
         plt.imshow(image)
         plt.savefig(f"example image {idx}.png")
-
-        h = depth2Heatmap(original_label)
-
-        plt.figure(figsize=(20, 10))
-        plt.imshow(h)    
-        plt.savefig(f"example label {idx}.png")
+     
+        plot_depth_map(label, np.ones_like(label), ".")
 
         plt.figure(figsize=(20, 10))
         plt.imshow(original_image)    
-        plt.savefig(f"example original image {idx}.png")            
+        plt.savefig(f"example original image {idx}.png")             
 
+        h = depth2Heatmap(original_label)
+        plt.figure(figsize=(20, 10))
+        plt.imshow(h)    
+        plt.savefig(f"example original label {idx}.png")  
 
 
 class DIODE(Dataset):
-    '''
-    @note assume that label image's name and corresponding rgb image's name are the same
-    just in different folders. e.g. labels/1.jpg <---> rgbs/1.jpg
-    '''
-    def __init__(self, data_paths, transform=transforms.Compose([transforms.Resize( (640, 640) ),
-                                          transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]),
-                          target_transform=transforms.Compose([transforms.Resize( (640, 640) )]),
-                          device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"), original=False):
+    rgb_preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (320, 320) ),     
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    label_preprocess = transforms.Compose([transforms.ToTensor(),
+                                           transforms.Resize( (320, 320) )])
+
+    def __init__(self, data_paths, transform=None, target_transform=None, 
+                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), original=False):
         self.data_paths = data_paths
         
         self.data_pair_paths = []
@@ -137,8 +137,8 @@ class DIODE(Dataset):
                     mask_path = os.path.join(data_path, prefix+"_depth_mask.npy")   
                     self.data_pair_paths.append((img_path, label_path, mask_path))
         
-        self.transform = transform
-        self.target_transform = target_transform
+        self.transform = transform if transform != None else self.rgb_preprocess
+        self.target_transform = target_transform if target_transform != None else self.label_preprocess   
         
         self.device = device
         self.original = original
@@ -151,15 +151,10 @@ class DIODE(Dataset):
            
         img = Image.open(img_path)
         img = img.convert("RGB")       
-        # img = read_image(img_path).to(torch.float32)
-
-        label = torch.tensor(np.load(label_path)).squeeze().unsqueeze(0).to(torch.float32)
-        # label /= torch.max(label)
+        label = np.load(label_path).squeeze()
         
-        if self.transform:
-            img = self.transform(img)
-        if self.target_transform:
-            label = self.target_transform(label)
+        img = self.transform(img)
+        label = self.target_transform(label)
 
         img = img.to(self.device)  
         label = label.to(self.device)      
@@ -190,7 +185,6 @@ class DIODE(Dataset):
         label = data['label']
         original_image = data['original_rgb']
         original_label = data['original_label']
-        print("data", image.shape, label.shape, original_image.shape, original_label.shape)           
         
         image = image.permute(1, 2, 0).to("cpu").to(torch.uint8)
         label = label.squeeze().to(torch.uint8).cpu().numpy()
@@ -198,13 +192,9 @@ class DIODE(Dataset):
         plt.figure()
         plt.imshow(image)
 
-        h = depth2Heatmap(label)
-        plt.figure()
-        plt.imshow(h)  
+        plot_depth_map(label, np.ones_like(label), '.')
 
         plt.figure()
         plt.imshow(original_image)    
 
-        h = depth2Heatmap(original_label)
-        plt.figure()
-        plt.imshow(h)  
+        plot_depth_map(original_label, np.ones_like(original_label), '.')

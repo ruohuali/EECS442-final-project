@@ -147,26 +147,60 @@ class RegUNet(nn.Module):
         return x
 
 
+class DepthWiseSeparableConv2d(nn.Module):
+    def __init__(self, nin, kernels_per_layer, nout):
+        super(DepthWiseSeparableConv2d, self).__init__()
+        self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, kernel_size=3, padding=1, groups=nin)
+        self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, kernel_size=1)
+
+    def forward(self, x):
+        out = self.depthwise(x)
+        out = self.pointwise(out)
+        return out
+
+
 class ConvProbe(nn.Module):
     def __init__(self, out_dim):
         super().__init__()                
         self.probe = nn.Sequential(
-          nn.Conv2d(21, 21*3, 3, 3, groups=21),
+          nn.Conv2d(21, 21*3, 3, 3),
           nn.BatchNorm2d(21*3),
           nn.LeakyReLU(),
-          nn.Conv2d(21*3, 21*3, 3, 3, groups=21*3),
+          nn.Conv2d(21*3, 21*3, 3, 3),
           nn.BatchNorm2d(21*3),
           nn.LeakyReLU(),
-          nn.ConvTranspose2d(21*3, 21, 3, 3, groups=21),
+          nn.ConvTranspose2d(21*3, 21, 3, 3),
           nn.BatchNorm2d(21),
           nn.LeakyReLU(),
-          nn.ConvTranspose2d(21, out_dim, 3, 3, groups=out_dim),
+          nn.ConvTranspose2d(21, out_dim, 3, 3),
         #   nn.Sigmoid()
         )
 
     def forward(self, x):
         x = self.probe(x)
         return x      
+        
+
+class DepthWiseSeparableConvProbe(nn.Module):
+    def __init__(self, out_dim):
+        super().__init__()                
+        self.probe = nn.Sequential(
+          DepthWiseSeparableConv2d(21, 1, 63),
+          nn.BatchNorm2d(63),
+          nn.LeakyReLU(),
+          DepthWiseSeparableConv2d(63, 1, 63),
+          nn.BatchNorm2d(63),
+          nn.LeakyReLU(),
+          DepthWiseSeparableConv2d(63, 1, 63),
+          nn.BatchNorm2d(63),
+          nn.LeakyReLU(),
+          DepthWiseSeparableConv2d(63, 1, out_dim),
+        #   nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        x = self.probe(x)
+        return x          
 
 
 class RegSegModel(nn.Module):

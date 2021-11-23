@@ -78,8 +78,9 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
                 labels = labels.squeeze(1).to(torch.int64)
 
             print("train batch", batch_idx, "/", len(train_dataloader), end='       \r')
+            
             pred, _ = model(imgs)
-            loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
+            loss = 1 * (1 - ssim(pred, labels)) + 0.5 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
             # loss = 1 * (1 - ssim(pred, labels)) + 1 * l2_loss(pred, labels) 
 
             optimizer.zero_grad()
@@ -99,9 +100,9 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
 
                 print("val batch", batch_idx, "/", len(val_dataloader), end='       \r')
                 pred, _ = model(imgs)
-                loss = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
+                loss1 = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
                    
-            running_val_loss += loss.item() / len(val_dataloader)
+            running_val_loss += loss1.item() / len(val_dataloader)
         val_hist.append(running_val_loss)        
             
         toc = time.time()
