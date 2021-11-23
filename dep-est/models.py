@@ -179,7 +179,7 @@ class ConvProbe(nn.Module):
     def forward(self, x):
         x = self.probe(x)
         return x      
-        
+
 
 class DepthWiseSeparableConvProbe(nn.Module):
     def __init__(self, out_dim):
@@ -204,7 +204,7 @@ class DepthWiseSeparableConvProbe(nn.Module):
 
 
 class RegSegModel(nn.Module):
-    def __init__(self, base_type="deeplab", cls_num=21):
+    def __init__(self, base_type="deeplab", cls_num=30):
         super().__init__()        
         if base_type == "deeplab":        
             self.base = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)

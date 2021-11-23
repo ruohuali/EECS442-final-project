@@ -22,3 +22,11 @@ KITTI_TRAIN_LABEL_PATHS = [os.path.join(KITTI_DATA_PATH, "val_selection_cropped/
 
 KITTI_TEST_RGB_PATHS = [os.path.join(KITTI_DATA_PATH, "val_selection_cropped/test_image")]
 KITTI_TEST_LABEL_PATHS = [os.path.join(KITTI_DATA_PATH, "val_selection_cropped/test_velodyne_raw")]
+
+
+KITTI_SEM_DATA_PATH = "/home/ruohuali/Desktop/depth-estimation/data_semantics"
+KITTI_SEM_TRAIN_RGB_PATHS = [os.path.join(KITTI_SEM_DATA_PATH, "training/image_2")]
+KITTI_SEM_TRAIN_LABEL_PATHS = [os.path.join(KITTI_SEM_DATA_PATH, "training/semantic")]
+
+# KITTI_TEST_RGB_PATHS = [os.path.join(KITTI_DATA_PATH, "val_selection_cropped/test_image")]
+# KITTI_TEST_LABEL_PATHS = [os.path.join(KITTI_DATA_PATH, "val_selection_cropped/test_velodyne_raw")]

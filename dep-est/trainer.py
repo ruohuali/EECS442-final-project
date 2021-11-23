@@ -135,9 +135,9 @@ def testModelSeg(model_path):
 
 
 if __name__ == '__main__':
-    initTrainKITTI()
+    # initTrainKITTI()
     # initTrain()
     # modelSummary()
     # testModel(os.path.join("train-history", "trained_model199.pth"))
-    # testModelKITTI(os.path.join("train-history", "trained_model99.pth"))
+    testModelKITTI(os.path.join("train-history", "trained_model49.pth"))
     # testModelSeg(os.path.join("train-history", "trained_model199.pth"))
