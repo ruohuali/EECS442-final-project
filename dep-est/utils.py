@@ -89,10 +89,11 @@ def readLabel2Tensor(label_path, device=torch.device("cuda" if torch.cuda.is_ava
     return label_t    
 
 def clsPred2Img(pred):
-    '''singleton unet output (1 x 1 x H x W) in [0, num class] -> plottable grayscale image (H x W)'''
+    '''singleton unet output (1 x K x H x W) in [0, num class] -> plottable grayscale image (H x W)'''
     pred = pred.squeeze(0)
+    pred = pred.argmax(0)
     pred = pred.squeeze(0)
-    pred = pred.to("cpu").to(torch.uint8)
+    pred = pred.to("cpu").to(torch.long)
     return pred
 
 def regPred2Img(pred):
@@ -175,6 +176,27 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
         plot_depth_map(original_label, np.ones_like(original_label), os.path.join(save_dir, "olabel"+str(i)+".png"))
 
         plot_depth_map(pred, np.ones_like(pred), os.path.join(save_dir, "pred"+str(i)+".png"))
+    elif backend == "seg":
+        plt.figure()
+        plt.imshow(image)
+        plt.savefig(os.path.join(save_dir, "img"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(label)
+        plt.savefig(os.path.join(save_dir, "label"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(original_image)    
+        plt.savefig(os.path.join(save_dir, "oimg"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(original_label)
+        plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
+
+        plt.figure()
+        plt.imshow(pred)
+        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))        
+    
                          
 
 

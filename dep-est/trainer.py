@@ -21,7 +21,7 @@ from utils import *
 from loss import *
 from PATH import *
 from data import *
-from train import *
+from train_mult import *
 
 
 def initTrain():
@@ -43,14 +43,14 @@ def initTrain():
 
     m = RegSegModel("deeplab").to(model_device)
     m.train()
-    model = train(m, dataloader, test_dataloader, True, num_epoch=100, device=model_device)
+    model = train(m, dataloader, test_dataloader, num_epoch=100, device=model_device)
     
     m.eval()
     test_dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
     testViz(model, test_dataset, "train-history")
 
 
-def initTrainKITTI():
+def initTrainKITTIDep():
     model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
@@ -61,7 +61,25 @@ def initTrainKITTI():
 
     m = RegSegModel("deeplab").to(model_device)
     m.train()
-    model = train(m, dataloader, test_dataloader, True, num_epoch=100, device=model_device)
+    model = train(m, dataloader, test_dataloader, "reg", num_epoch=100, device=model_device)
+    m.eval()
+    testViz(model, test_dataset, "train-history")    
+
+
+def initTrainKITTISeg():
+    model_device = torch.device("cuda")   
+    data_device = device = torch.device("cpu")       
+
+    dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device)
+    dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4, drop_last=True)
+    test_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device)
+    test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=4, drop_last=True)
+
+    m = RegSegModel().to(model_device)
+    m.train()
+    model = train(m, dataloader, test_dataloader, "seg", num_epoch=100, device=model_device)
+
+    test_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device, original=True)
     m.eval()
     testViz(model, test_dataset, "train-history")    
 
@@ -112,32 +130,24 @@ def testModelKITTI(model_path):
     testViz(model, test_dataset, "train-history", num_example=10)    
 
 
-def testModelSeg(model_path):
-    model_device = torch.device("cpu")   
+def testModelKITTISeg(model_path):
+    model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
-    preprocess = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize( (320, 320) ),     
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    target_transform = transforms.Compose([transforms.Resize( (320, 320) )])
-
-    dataset = DIODE(TRAIN_PATHS, transform=preprocess, target_transform=target_transform, device=data_device, original=True)
+    test_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device, original=True)
 
     model = torch.load(model_path)
-    model.eval()
-    model = model.to(model_device)
 
-    model.inferSeg(dataset[10]['rgb_path'], plot=True)
+    testVizSeg(model, test_dataset, "train-history", num_example=10)    
 
     
 
 
 if __name__ == '__main__':
-    # initTrainKITTI()
+    # initTrainKITTISeg()
+    # initTrainKITTIDep()
     # initTrain()
     # modelSummary()
-    # testModel(os.path.join("train-history", "trained_model199.pth"))
-    testModelKITTI(os.path.join("train-history", "trained_model49.pth"))
+    testModelKITTISeg(os.path.join("train-history", "trained_model49.pth"))
+    # testModelKITTI(os.path.join("train-history", "trained_model49.pth"))
     # testModelSeg(os.path.join("train-history", "trained_model199.pth"))

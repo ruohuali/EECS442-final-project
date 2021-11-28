@@ -63,8 +63,7 @@ class KITTI_SEM(Dataset):
         img_path, label_path = self.data_pair_paths[idx]
    
         img = Image.open(img_path)
-        label = read_image(label_path, ImageReadMode.GRAY)
-        # label = torch.tensor(label) 
+        label = read_image(label_path, ImageReadMode.GRAY) 
         
         img = self.transform(img)
         label = self.target_transform(label)
@@ -98,7 +97,7 @@ class KITTI_SEM(Dataset):
         original_image = data['original_rgb']
         original_label = data['original_label']
         
-        image = image.permute(1, 2, 0).to("cpu").to(torch.uint8)
+        image = image.permute(1, 2, 0).to("cpu").to(torch.long)
         label = label.to("cpu").numpy()
         
         plt.figure(figsize=(20, 10))

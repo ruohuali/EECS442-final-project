@@ -51,7 +51,7 @@ def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save
     print("="*30)
     print()
 
-def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
+def train(model, train_dataloader, val_dataloader, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
     model.train()
 
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
@@ -73,9 +73,6 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
         for batch_idx, data in enumerate(train_dataloader):
             imgs = data['rgb'].to(device)
             labels = data['label'].to(device)
-            
-            if not regression:
-                labels = labels.squeeze(1).to(torch.int64)
 
             print("train batch", batch_idx, "/", len(train_dataloader), end='       \r')
             
@@ -94,9 +91,6 @@ def train(model, train_dataloader, val_dataloader, regression, num_epoch=400, de
             with torch.no_grad():
                 imgs = data['rgb'].to(device)
                 labels = data['label'].to(device)
-                
-                if not regression:
-                    labels = labels.squeeze(1).to(torch.int64)
 
                 print("val batch", batch_idx, "/", len(val_dataloader), end='       \r')
                 pred, _ = model(imgs)
@@ -145,82 +139,6 @@ def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5)
         print("inference takes", toc-tic)
         print("unique", np.unique(pred.numpy()))
         displayInference(data, pred, save_dir, i, backend="DIODE")      
-
-
-
-def trainMult(model, train_dep_dataloader, val_dep_dataloader, train_sem_dataloader, val_sem_dataloader, num_epoch=400, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    model.train()
-
-    # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)    
-
-    l1_loss = nn.L1Loss()
-    l2_loss = nn.MSELoss()
-    ssim = SSIM(window_size=7)
-    smooth_loss = SmoothnessLoss()
-    ce_loss = nn.CrossEntropyLoss()
-
-    best_record = np.inf
-    train_hist = []
-    val_hist = []
-    for epoch in range(num_epoch):
-        running_train_loss = 0      
-        running_val_loss = 0      
-          
-        tic = time.time()
-        for batch_idx, data in enumerate(train_dataloader):
-            imgs = data['rgb'].to(device)
-            labels = data['label'].to(device)
-            
-            if not regression:
-                labels = labels.squeeze(1).to(torch.int64)
-
-            print("train batch", batch_idx, "/", len(train_dataloader), end='       \r')
-            
-            pred, _ = model(imgs)
-            loss = 1 * (1 - ssim(pred, labels)) + 0.5 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
-            # loss = 1 * (1 - ssim(pred, labels)) + 1 * l2_loss(pred, labels) 
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()        
-            
-            running_train_loss += loss.item() / len(train_dataloader)
-        train_hist.append(running_train_loss)
-
-        for batch_idx, data in enumerate(val_dataloader):
-            with torch.no_grad():
-                imgs = data['rgb'].to(device)
-                labels = data['label'].to(device)
-                
-                if not regression:
-                    labels = labels.squeeze(1).to(torch.int64)
-
-                print("val batch", batch_idx, "/", len(val_dataloader), end='       \r')
-                pred, _ = model(imgs)
-                loss1 = 1 * (1 - ssim(pred, labels)) + 0.1 * smooth_loss(pred, imgs) + 1 * l2_loss(pred, labels) 
-                   
-            running_val_loss += loss1.item() / len(val_dataloader)
-        val_hist.append(running_val_loss)        
-            
-        toc = time.time()
-            
-        if epoch % 1 == 0:
-            print("epoch", epoch)
-            print("epoch", epoch, "takes", toc-tic)
-            print("running train loss", running_train_loss)
-            print("running val loss", running_val_loss)
-            print("-"*50)
-            if best_record > running_train_loss:
-                print("best record", best_record)
-                best_record = running_train_loss
-                best_model = deepcopy(model)
-            
-        if epoch % 50 == 49:
-            manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model"+str(epoch), "train-history")
-            
-    return best_model
-
 
 
 if __name__ == "__main__":
