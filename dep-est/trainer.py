@@ -96,20 +96,20 @@ def initTrainKITTIDual():
 
     reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device)
     train_reg_dataset = Subset(reg_dataset, np.arange(SPLIT, len(reg_dataset)))
-    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=2, shuffle=True, num_workers=0, drop_last=True)
+    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=16, shuffle=True, num_workers=8, drop_last=True)
     test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
-    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=2, shuffle=False, num_workers=0, drop_last=True)    
+    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=16, shuffle=False, num_workers=8, drop_last=True)    
 
     seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device)
     train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
-    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=2, shuffle=True, num_workers=0, drop_last=True)
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=16, shuffle=True, num_workers=8, drop_last=True)
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
-    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=2, shuffle=False, num_workers=0, drop_last=True)
+    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=16, shuffle=False, num_workers=8, drop_last=True)
 
     m = RegSegModel().to(model_device)
     m.train()
     print("train dataloader len", len(train_reg_dataloader), len(train_seg_dataloader))
-    model = trainDual(m, train_reg_dataloader, test_reg_dataloader, train_seg_dataloader, test_seg_dataloader, num_epoch=100, device=model_device)
+    model = trainDual(m, train_reg_dataloader, test_reg_dataloader, train_seg_dataloader, test_seg_dataloader, num_epoch=250, device=model_device)
 
     test_dataset = KITTI_DEP(KITTI_TEST_RGB_PATHS, KITTI_TEST_LABEL_PATHS, device=data_device, original=True)
     m.eval()
@@ -159,30 +159,31 @@ def testModelKITTIReg(model_path):
                                            transforms.Resize( (200, 640) )])
 
 
-    test_dataset = KITTI_DEP(KITTI_TEST_RGB_PATHS, KITTI_TEST_LABEL_PATHS, transform=rgb_preprocess, target_transform=label_preprocess, device=data_device, original=True)
+    reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device, original=True)
+    test_reg_dataset = Subset(reg_dataset, np.arange(0, 25))
 
     model = torch.load(model_path)
 
-    testViz(model, test_dataset, "train-history", num_example=10)    
+    testViz(model, test_reg_dataset, "train-history", num_example=10)    
 
 
 def testModelKITTISeg(model_path):
     model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
-    test_dataset = KITTI_SEM(KITTI_SEM_TEST_RGB_PATHS, KITTI_SEM_TEST_LABEL_PATHS, device=data_device, original=True)
+    seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device, original=True)
+    test_seg_dataset = Subset(seg_dataset, np.arange(0, 25))
 
     model = torch.load(model_path)
 
-    testVizSeg(model, test_dataset, "train-history", num_example=10)    
+    testVizSeg(model, test_seg_dataset, "train-history", num_example=10)    
     
 
 if __name__ == '__main__':
-    initTrainKITTIDual()
+    # initTrainKITTIDual()
     # initTrainKITTISeg()
     # initTrainKITTIReg()
     # initTrain()
     # modelSummary()
-    # testModelKITTISeg(os.path.join("train-history", "trained_model49.pth"))
-    # testModelKITTIReg(os.path.join("train-history", "trained_model49.pth"))
-    # testModelSeg(os.path.join("train-history", "trained_model199.pth"))
+    testModelKITTISeg(os.path.join("train-history", "trained_model249.pth"))
+    # testModelKITTIReg(os.path.join("train-history", "trained_model249.pth"))

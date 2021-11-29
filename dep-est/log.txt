@@ -1,0 +1,1434 @@
+train dataloader len 123 10
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 0
+epoch 0 takes 7.8473217487335205
+running train loss 6.944309997558594
+running val loss 6.465534210205078
+--------------------------------------------------
+best record inf
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 1
+epoch 1 takes 7.865972518920898
+running train loss 6.36592526435852
+running val loss 6.175021171569824
+--------------------------------------------------
+best record 6.944309997558594
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 2
+epoch 2 takes 7.7374327182769775
+running train loss 6.101614952087402
+running val loss 5.910683631896973
+--------------------------------------------------
+best record 6.36592526435852
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 3
+epoch 3 takes 7.59553599357605
+running train loss 5.813858079910279
+running val loss 5.623271465301514
+--------------------------------------------------
+best record 6.101614952087402
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 4
+epoch 4 takes 7.955644607543945
+running train loss 5.51941032409668
+running val loss 5.385196685791016
+--------------------------------------------------
+best record 5.813858079910279
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 5
+epoch 5 takes 7.792112350463867
+running train loss 5.311054468154907
+running val loss 5.191800117492676
+--------------------------------------------------
+best record 5.51941032409668
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 6
+epoch 6 takes 7.580970764160156
+running train loss 5.1865791320800785
+running val loss 5.003777027130127
+--------------------------------------------------
+best record 5.311054468154907
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 7
+epoch 7 takes 7.673058032989502
+running train loss 4.940367317199708
+running val loss 4.858920097351074
+--------------------------------------------------
+best record 5.1865791320800785
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 8
+epoch 8 takes 7.901612043380737
+running train loss 4.766457223892211
+running val loss 4.701947212219238
+--------------------------------------------------
+best record 4.940367317199708
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 9
+epoch 9 takes 7.721323728561401
+running train loss 4.532365369796753
+running val loss 4.56801176071167
+--------------------------------------------------
+best record 4.766457223892211
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 10
+epoch 10 takes 7.4948813915252686
+running train loss 4.414882040023803
+running val loss 4.440997123718262
+--------------------------------------------------
+best record 4.532365369796753
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 11
+epoch 11 takes 7.625905513763428
+running train loss 4.2885809421539305
+running val loss 4.23661470413208
+--------------------------------------------------
+best record 4.414882040023803
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 12
+epoch 12 takes 7.7084197998046875
+running train loss 4.081110954284668
+running val loss 4.08382511138916
+--------------------------------------------------
+best record 4.2885809421539305
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 13
+epoch 13 takes 7.704234600067139
+running train loss 3.9310727596282957
+running val loss 3.9829819202423096
+--------------------------------------------------
+best record 4.081110954284668
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 14
+epoch 14 takes 7.61154580116272
+running train loss 3.7742483615875244
+running val loss 3.873676300048828
+--------------------------------------------------
+best record 3.9310727596282957
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 15
+epoch 15 takes 7.661311149597168
+running train loss 3.666321229934692
+running val loss 3.769232988357544
+--------------------------------------------------
+best record 3.7742483615875244
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 16
+epoch 16 takes 7.601878881454468
+running train loss 3.5247088193893434
+running val loss 3.6473195552825928
+--------------------------------------------------
+best record 3.666321229934692
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 17
+epoch 17 takes 7.650206089019775
+running train loss 3.4165802240371703
+running val loss 3.5482993125915527
+--------------------------------------------------
+best record 3.5247088193893434
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 18
+epoch 18 takes 7.662382364273071
+running train loss 3.306223392486572
+running val loss 3.3929858207702637
+--------------------------------------------------
+best record 3.4165802240371703
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 19
+epoch 19 takes 7.72941255569458
+running train loss 3.203943061828613
+running val loss 3.3126015663146973
+--------------------------------------------------
+best record 3.306223392486572
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 20
+epoch 20 takes 7.774397850036621
+running train loss 3.1021307468414303
+running val loss 3.1971383094787598
+--------------------------------------------------
+best record 3.203943061828613
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 21
+epoch 21 takes 7.567050218582153
+running train loss 3.0073633670806883
+running val loss 3.164724349975586
+--------------------------------------------------
+best record 3.1021307468414303
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 22
+epoch 22 takes 7.591268301010132
+running train loss 2.9097835302352903
+running val loss 3.0935215950012207
+--------------------------------------------------
+best record 3.0073633670806883
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 23
+epoch 23 takes 7.620319843292236
+running train loss 2.85239109992981
+running val loss 3.0266366004943848
+--------------------------------------------------
+best record 2.9097835302352903
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 24
+epoch 24 takes 7.516084671020508
+running train loss 2.7743189096450807
+running val loss 2.9883131980895996
+--------------------------------------------------
+best record 2.85239109992981
+==============================
+epoch 24 loss 2.7743189096450807 2.9883131980895996
+saved model to train-history/trained_model24.pth
+plotted as train-history/24.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 25
+epoch 25 takes 7.576215505599976
+running train loss 2.7206252813339233
+running val loss 2.903933525085449
+--------------------------------------------------
+best record 2.7743189096450807
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 26
+epoch 26 takes 7.631275653839111
+running train loss 2.6527734518051145
+running val loss 2.8823461532592773
+--------------------------------------------------
+best record 2.7206252813339233
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 27
+epoch 27 takes 7.830966234207153
+running train loss 2.6252367734909057
+running val loss 2.8199477195739746
+--------------------------------------------------
+best record 2.6527734518051145
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 28
+epoch 28 takes 7.5786292552948
+running train loss 2.544023895263672
+running val loss 2.814321756362915
+--------------------------------------------------
+best record 2.6252367734909057
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 29
+epoch 29 takes 7.5931127071380615
+running train loss 2.5062917947769168
+running val loss 2.755239248275757
+--------------------------------------------------
+best record 2.544023895263672
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 30
+epoch 30 takes 7.579418897628784
+running train loss 2.4557666301727292
+running val loss 2.7128286361694336
+--------------------------------------------------
+best record 2.5062917947769168
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 31
+epoch 31 takes 7.754284381866455
+running train loss 2.4164610624313356
+running val loss 2.7199325561523438
+--------------------------------------------------
+best record 2.4557666301727292
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 32
+epoch 32 takes 7.710017919540405
+running train loss 2.3788362741470332
+running val loss 2.672123670578003
+--------------------------------------------------
+best record 2.4164610624313356
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 33
+epoch 33 takes 7.735379934310913
+running train loss 2.33222177028656
+running val loss 2.6363883018493652
+--------------------------------------------------
+best record 2.3788362741470332
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 34
+epoch 34 takes 7.406363010406494
+running train loss 2.2913302898406984
+running val loss 2.588970184326172
+--------------------------------------------------
+best record 2.33222177028656
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 35
+epoch 35 takes 7.661285400390625
+running train loss 2.2464568138122556
+running val loss 2.573306083679199
+--------------------------------------------------
+best record 2.2913302898406984
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 36
+epoch 36 takes 7.732620477676392
+running train loss 2.2401858091354367
+running val loss 2.5447468757629395
+--------------------------------------------------
+best record 2.2464568138122556
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 37
+epoch 37 takes 7.681873321533203
+running train loss 2.193606734275818
+running val loss 2.5556015968322754
+--------------------------------------------------
+best record 2.2401858091354367
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 38
+epoch 38 takes 7.671190023422241
+running train loss 2.1641166687011717
+running val loss 2.545907497406006
+--------------------------------------------------
+best record 2.193606734275818
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 39
+epoch 39 takes 7.816330671310425
+running train loss 2.157397174835205
+running val loss 2.521027088165283
+--------------------------------------------------
+best record 2.1641166687011717
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 40
+epoch 40 takes 7.7130677700042725
+running train loss 2.0979530334472654
+running val loss 2.5099549293518066
+--------------------------------------------------
+best record 2.157397174835205
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 41
+epoch 41 takes 7.722172737121582
+running train loss 2.0767742872238157
+running val loss 2.4810218811035156
+--------------------------------------------------
+best record 2.0979530334472654
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 42
+epoch 42 takes 7.640477657318115
+running train loss 2.0923927307128904
+running val loss 2.467506170272827
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 43
+epoch 43 takes 7.780994176864624
+running train loss 2.0543620109558103
+running val loss 2.4501092433929443
+--------------------------------------------------
+best record 2.0767742872238157
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 44
+epoch 44 takes 7.7501490116119385
+running train loss 2.006484770774841
+running val loss 2.424442768096924
+--------------------------------------------------
+best record 2.0543620109558103
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 45
+epoch 45 takes 7.715155363082886
+running train loss 1.9815928936004639
+running val loss 2.370741367340088
+--------------------------------------------------
+best record 2.006484770774841
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 46
+epoch 46 takes 7.873148441314697
+running train loss 1.8566612124443052
+running val loss 2.051330089569092
+--------------------------------------------------
+best record 1.9815928936004639
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 47
+epoch 47 takes 7.85379958152771
+running train loss 1.6045072317123412
+running val loss 2.022116184234619
+--------------------------------------------------
+best record 1.8566612124443052
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 48
+epoch 48 takes 7.754870653152466
+running train loss 1.5321515798568728
+running val loss 1.979468822479248
+--------------------------------------------------
+best record 1.6045072317123412
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 49
+epoch 49 takes 7.628373146057129
+running train loss 1.531480836868286
+running val loss 1.956223964691162
+--------------------------------------------------
+best record 1.5321515798568728
+==============================
+epoch 49 loss 1.531480836868286 1.956223964691162
+saved model to train-history/trained_model49.pth
+plotted as train-history/49.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 50
+epoch 50 takes 7.652514934539795
+running train loss 1.5188528776168824
+running val loss 1.943573236465454
+--------------------------------------------------
+best record 1.531480836868286
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 51
+epoch 51 takes 7.745614528656006
+running train loss 1.505338227748871
+running val loss 1.9726169109344482
+--------------------------------------------------
+best record 1.5188528776168824
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 52
+epoch 52 takes 7.785455703735352
+running train loss 1.4806200742721558
+running val loss 1.984554409980774
+--------------------------------------------------
+best record 1.505338227748871
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 53
+epoch 53 takes 7.772044897079468
+running train loss 1.4961877703666688
+running val loss 1.9143614768981934
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 54
+epoch 54 takes 7.652309417724609
+running train loss 1.451507031917572
+running val loss 1.9131906032562256
+--------------------------------------------------
+best record 1.4806200742721558
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 55
+epoch 55 takes 7.739593267440796
+running train loss 1.4446940183639527
+running val loss 1.9210394620895386
+--------------------------------------------------
+best record 1.451507031917572
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 56
+epoch 56 takes 7.69714879989624
+running train loss 1.4445720911025999
+running val loss 1.9376153945922852
+--------------------------------------------------
+best record 1.4446940183639527
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 57
+epoch 57 takes 7.783101558685303
+running train loss 1.4257159352302553
+running val loss 1.9790586233139038
+--------------------------------------------------
+best record 1.4445720911025999
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 58
+epoch 58 takes 7.630063056945801
+running train loss 1.4193711280822754
+running val loss 1.9371061325073242
+--------------------------------------------------
+best record 1.4257159352302553
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 59
+epoch 59 takes 7.792211294174194
+running train loss 1.4036943435668945
+running val loss 1.9150828123092651
+--------------------------------------------------
+best record 1.4193711280822754
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 60
+epoch 60 takes 7.481120347976685
+running train loss 1.399120318889618
+running val loss 1.8447624444961548
+--------------------------------------------------
+best record 1.4036943435668945
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 61
+epoch 61 takes 7.871154546737671
+running train loss 1.377690291404724
+running val loss 1.8625383377075195
+--------------------------------------------------
+best record 1.399120318889618
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 62
+epoch 62 takes 7.770604133605957
+running train loss 1.3816745281219485
+running val loss 1.86680269241333
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 63
+epoch 63 takes 7.702186822891235
+running train loss 1.3695950031280517
+running val loss 1.8832061290740967
+--------------------------------------------------
+best record 1.377690291404724
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 64
+epoch 64 takes 7.658794641494751
+running train loss 1.3546553254127502
+running val loss 1.8698036670684814
+--------------------------------------------------
+best record 1.3695950031280517
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 65
+epoch 65 takes 7.64050030708313
+running train loss 1.3298712134361268
+running val loss 1.8684272766113281
+--------------------------------------------------
+best record 1.3546553254127502
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 66
+epoch 66 takes 7.598676919937134
+running train loss 1.332366716861725
+running val loss 1.8591673374176025
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 67
+epoch 67 takes 7.647429943084717
+running train loss 1.3304644107818604
+running val loss 1.8882325887680054
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 68
+epoch 68 takes 7.749869346618652
+running train loss 1.3341565012931822
+running val loss 1.9054720401763916
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 69
+epoch 69 takes 7.6972432136535645
+running train loss 1.3446887016296387
+running val loss 1.825684905052185
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 70
+epoch 70 takes 7.8131585121154785
+running train loss 1.341847836971283
+running val loss 1.8501098155975342
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 71
+epoch 71 takes 7.540911674499512
+running train loss 1.3099331855773926
+running val loss 1.8389073610305786
+--------------------------------------------------
+best record 1.3298712134361268
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 72
+epoch 72 takes 7.590542554855347
+running train loss 1.3194541692733766
+running val loss 1.905261516571045
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 73
+epoch 73 takes 7.678866624832153
+running train loss 1.3074273347854615
+running val loss 1.8800016641616821
+--------------------------------------------------
+best record 1.3099331855773926
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 74
+epoch 74 takes 7.70903754234314
+running train loss 1.3001580834388733
+running val loss 1.9062329530715942
+--------------------------------------------------
+best record 1.3074273347854615
+==============================
+epoch 74 loss 1.3001580834388733 1.825684905052185
+saved model to train-history/trained_model74.pth
+plotted as train-history/74.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 75
+epoch 75 takes 7.82146692276001
+running train loss 1.3018124222755434
+running val loss 1.8471043109893799
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 76
+epoch 76 takes 7.652527570724487
+running train loss 1.2807066798210145
+running val loss 1.8556878566741943
+--------------------------------------------------
+best record 1.3001580834388733
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 77
+epoch 77 takes 7.749189376831055
+running train loss 1.2821289896965027
+running val loss 1.8212424516677856
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 78
+epoch 78 takes 7.809049606323242
+running train loss 1.2796696543693544
+running val loss 1.8705018758773804
+--------------------------------------------------
+best record 1.2807066798210145
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 79
+epoch 79 takes 7.6730406284332275
+running train loss 1.2564469695091247
+running val loss 1.8987945318222046
+--------------------------------------------------
+best record 1.2796696543693544
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 80
+epoch 80 takes 7.696785926818848
+running train loss 1.2747761845588685
+running val loss 1.8267863988876343
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 81
+epoch 81 takes 7.616936445236206
+running train loss 1.2755744457244873
+running val loss 1.9056193828582764
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 82
+epoch 82 takes 7.616557359695435
+running train loss 1.2486603498458864
+running val loss 1.9088845252990723
+--------------------------------------------------
+best record 1.2564469695091247
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 83
+epoch 83 takes 7.56609582901001
+running train loss 1.2480127811431885
+running val loss 1.8561068773269653
+--------------------------------------------------
+best record 1.2486603498458864
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 84
+epoch 84 takes 7.693984746932983
+running train loss 1.2392174243927003
+running val loss 1.8259625434875488
+--------------------------------------------------
+best record 1.2480127811431885
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 85
+epoch 85 takes 7.544699430465698
+running train loss 1.2516250967979432
+running val loss 1.8606549501419067
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 86
+epoch 86 takes 7.815704584121704
+running train loss 1.2355824589729312
+running val loss 1.8424403667449951
+--------------------------------------------------
+best record 1.2392174243927003
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 87
+epoch 87 takes 7.786790370941162
+running train loss 1.24582542181015
+running val loss 1.8177694082260132
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 88
+epoch 88 takes 7.708635568618774
+running train loss 1.2239525318145754
+running val loss 1.8296864032745361
+--------------------------------------------------
+best record 1.2355824589729312
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 89
+epoch 89 takes 7.688935279846191
+running train loss 1.2282742261886597
+running val loss 1.8204271793365479
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 90
+epoch 90 takes 7.539227724075317
+running train loss 1.2279500365257263
+running val loss 1.800850749015808
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 91
+epoch 91 takes 7.559692621231079
+running train loss 1.207270860671997
+running val loss 1.8307273387908936
+--------------------------------------------------
+best record 1.2239525318145754
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 92
+epoch 92 takes 7.550268888473511
+running train loss 1.2086015939712524
+running val loss 1.8582370281219482
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 93
+epoch 93 takes 7.723804712295532
+running train loss 1.2426507115364074
+running val loss 1.788185715675354
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 94
+epoch 94 takes 7.831316232681274
+running train loss 1.2173999905586244
+running val loss 1.837325096130371
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 95
+epoch 95 takes 7.710875749588013
+running train loss 1.2212562918663021
+running val loss 1.8204081058502197
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 96
+epoch 96 takes 7.675114393234253
+running train loss 1.2037774205207825
+running val loss 1.828525424003601
+--------------------------------------------------
+best record 1.207270860671997
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 97
+epoch 97 takes 7.715263605117798
+running train loss 1.2178272485733033
+running val loss 1.8477487564086914
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 98
+epoch 98 takes 7.753242254257202
+running train loss 1.1972917914390562
+running val loss 1.8688141107559204
+--------------------------------------------------
+best record 1.2037774205207825
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 99
+epoch 99 takes 7.737712621688843
+running train loss 1.190867793560028
+running val loss 1.8576362133026123
+--------------------------------------------------
+best record 1.1972917914390562
+==============================
+epoch 99 loss 1.190867793560028 1.788185715675354
+saved model to train-history/trained_model99.pth
+plotted as train-history/99.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 100
+epoch 100 takes 7.844433546066284
+running train loss 1.1846764087677002
+running val loss 1.818288803100586
+--------------------------------------------------
+best record 1.190867793560028
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 101
+epoch 101 takes 7.843209981918335
+running train loss 1.1772669672966003
+running val loss 1.8374664783477783
+--------------------------------------------------
+best record 1.1846764087677002
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 102
+epoch 102 takes 7.917615652084351
+running train loss 1.1845419764518739
+running val loss 1.83560049533844
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 103
+epoch 103 takes 7.629192590713501
+running train loss 1.1888179898262026
+running val loss 1.8066134452819824
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 104
+epoch 104 takes 7.827894687652588
+running train loss 1.172664523124695
+running val loss 1.831017255783081
+--------------------------------------------------
+best record 1.1772669672966003
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 105
+epoch 105 takes 7.616757869720459
+running train loss 1.1557406306266784
+running val loss 1.8105573654174805
+--------------------------------------------------
+best record 1.172664523124695
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 106
+epoch 106 takes 7.79623556137085
+running train loss 1.1672866582870483
+running val loss 1.8400688171386719
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 107
+epoch 107 takes 7.718074560165405
+running train loss 1.1616735219955445
+running val loss 1.8246896266937256
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 108
+epoch 108 takes 7.8935534954071045
+running train loss 1.1604972243309022
+running val loss 1.8662320375442505
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 109
+epoch 109 takes 7.793208122253418
+running train loss 1.1523883938789368
+running val loss 1.8674721717834473
+--------------------------------------------------
+best record 1.1557406306266784
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 110
+epoch 110 takes 7.7409069538116455
+running train loss 1.1562544703483582
+running val loss 1.8932902812957764
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 111
+epoch 111 takes 7.781719923019409
+running train loss 1.1602815389633179
+running val loss 1.8404390811920166
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 112
+epoch 112 takes 7.64066219329834
+running train loss 1.14710054397583
+running val loss 1.8459728956222534
+--------------------------------------------------
+best record 1.1523883938789368
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 113
+epoch 113 takes 7.921595811843872
+running train loss 1.143900966644287
+running val loss 1.8397400379180908
+--------------------------------------------------
+best record 1.14710054397583
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 114
+epoch 114 takes 7.489251375198364
+running train loss 1.1381747007369993
+running val loss 1.8544409275054932
+--------------------------------------------------
+best record 1.143900966644287
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 115
+epoch 115 takes 7.694048166275024
+running train loss 1.1189223885536193
+running val loss 1.836637020111084
+--------------------------------------------------
+best record 1.1381747007369993
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 116
+epoch 116 takes 7.778797388076782
+running train loss 1.1082650899887085
+running val loss 1.8454184532165527
+--------------------------------------------------
+best record 1.1189223885536193
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 117
+epoch 117 takes 7.5196311473846436
+running train loss 1.1178966522216798
+running val loss 1.8471896648406982
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 118
+epoch 118 takes 7.728083848953247
+running train loss 1.1351599812507631
+running val loss 1.9004706144332886
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 119
+epoch 119 takes 7.631414175033569
+running train loss 1.113276219367981
+running val loss 1.8879255056381226
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 120
+epoch 120 takes 7.697458028793335
+running train loss 1.107412540912628
+running val loss 1.8571901321411133
+--------------------------------------------------
+best record 1.1082650899887085
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 121
+epoch 121 takes 7.770735502243042
+running train loss 1.1108689427375793
+running val loss 1.859952688217163
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 122
+epoch 122 takes 7.763713598251343
+running train loss 1.0921542465686798
+running val loss 1.8266098499298096
+--------------------------------------------------
+best record 1.107412540912628
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 123
+epoch 123 takes 7.575690269470215
+running train loss 1.072619903087616
+running val loss 1.8707687854766846
+--------------------------------------------------
+best record 1.0921542465686798
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 124
+epoch 124 takes 7.679718017578125
+running train loss 1.0714813053607941
+running val loss 1.8947272300720215
+--------------------------------------------------
+best record 1.072619903087616
+==============================
+epoch 124 loss 1.0714813053607941 1.788185715675354
+saved model to train-history/trained_model124.pth
+plotted as train-history/124.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 125
+epoch 125 takes 7.724013090133667
+running train loss 1.0648424744606018
+running val loss 1.865281105041504
+--------------------------------------------------
+best record 1.0714813053607941
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 126
+epoch 126 takes 7.696045637130737
+running train loss 1.0957198739051819
+running val loss 1.9151537418365479
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 127
+epoch 127 takes 7.930100679397583
+running train loss 1.0831019818782808
+running val loss 1.8728349208831787
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 128
+epoch 128 takes 7.760159730911255
+running train loss 1.084190034866333
+running val loss 1.8780015707015991
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 129
+epoch 129 takes 7.820316553115845
+running train loss 1.0817648410797118
+running val loss 1.8986499309539795
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 130
+epoch 130 takes 7.742663145065308
+running train loss 1.0837433576583861
+running val loss 1.8174383640289307
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 131
+epoch 131 takes 7.728291273117065
+running train loss 1.0696138739585876
+running val loss 1.8856751918792725
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 132
+epoch 132 takes 7.767009735107422
+running train loss 1.0601781606674194
+running val loss 1.8549680709838867
+--------------------------------------------------
+best record 1.0648424744606018
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 133
+epoch 133 takes 7.7136969566345215
+running train loss 1.0696178197860717
+running val loss 1.848924160003662
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 134
+epoch 134 takes 7.546343564987183
+running train loss 1.0451969146728517
+running val loss 1.8865538835525513
+--------------------------------------------------
+best record 1.0601781606674194
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 135
+epoch 135 takes 7.751585960388184
+running train loss 1.0427191138267518
+running val loss 1.8714772462844849
+--------------------------------------------------
+best record 1.0451969146728517
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 136
+epoch 136 takes 7.83213210105896
+running train loss 1.0515502452850343
+running val loss 1.8909920454025269
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 137
+epoch 137 takes 7.716161727905273
+running train loss 1.0547689437866212
+running val loss 1.8799985647201538
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 138
+epoch 138 takes 7.608301877975464
+running train loss 1.0372863054275512
+running val loss 1.8914762735366821
+--------------------------------------------------
+best record 1.0427191138267518
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 139
+epoch 139 takes 7.665560245513916
+running train loss 1.0436208724975584
+running val loss 1.8920557498931885
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 140
+epoch 140 takes 7.594653129577637
+running train loss 1.0329545974731444
+running val loss 1.843757152557373
+--------------------------------------------------
+best record 1.0372863054275512
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 141
+epoch 141 takes 7.707944393157959
+running train loss 1.0250936388969423
+running val loss 1.871448040008545
+--------------------------------------------------
+best record 1.0329545974731444
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 142
+epoch 142 takes 7.67291259765625
+running train loss 1.0310328423976896
+running val loss 1.8397386074066162
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 143
+epoch 143 takes 7.688096046447754
+running train loss 1.0272612512111663
+running val loss 1.8873945474624634
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 144
+epoch 144 takes 7.828959941864014
+running train loss 1.0209558308124544
+running val loss 1.8582987785339355
+--------------------------------------------------
+best record 1.0250936388969423
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 145
+epoch 145 takes 7.6667094230651855
+running train loss 1.0241784453392029
+running val loss 1.9367306232452393
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 146
+epoch 146 takes 7.709917068481445
+running train loss 1.0106013953685762
+running val loss 1.9166555404663086
+--------------------------------------------------
+best record 1.0209558308124544
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 147
+epoch 147 takes 7.663201093673706
+running train loss 1.0302926957607268
+running val loss 1.8844280242919922
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 148
+epoch 148 takes 7.6831276416778564
+running train loss 0.9947987973690032
+running val loss 1.910188913345337
+--------------------------------------------------
+best record 1.0106013953685762
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 149
+epoch 149 takes 7.495181083679199
+running train loss 1.0115863263607026
+running val loss 1.8611263036727905
+--------------------------------------------------
+==============================
+epoch 149 loss 0.9947987973690032 1.788185715675354
+saved model to train-history/trained_model149.pth
+plotted as train-history/149.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 150
+epoch 150 takes 7.607583522796631
+running train loss 1.0001685559749602
+running val loss 1.849068522453308
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 151
+epoch 151 takes 7.8088037967681885
+running train loss 1.0079324960708618
+running val loss 1.8832213878631592
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 152
+epoch 152 takes 7.684104681015015
+running train loss 1.0037054121494293
+running val loss 1.8837687969207764
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 153
+epoch 153 takes 7.691202640533447
+running train loss 1.0014401137828828
+running val loss 1.8671464920043945
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 154
+epoch 154 takes 7.640265703201294
+running train loss 0.9981836736202239
+running val loss 1.8766894340515137
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 155
+epoch 155 takes 7.818586826324463
+running train loss 0.9930089354515076
+running val loss 1.8800245523452759
+--------------------------------------------------
+best record 0.9947987973690032
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 156
+epoch 156 takes 7.790431976318359
+running train loss 0.9909996390342712
+running val loss 1.8843340873718262
+--------------------------------------------------
+best record 0.9930089354515076
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 157
+epoch 157 takes 7.780866384506226
+running train loss 0.9915668189525606
+running val loss 1.9067436456680298
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 158
+epoch 158 takes 7.671858787536621
+running train loss 0.9817289531230925
+running val loss 1.8959145545959473
+--------------------------------------------------
+best record 0.9909996390342712
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 159
+epoch 159 takes 7.81665825843811
+running train loss 0.9807856202125551
+running val loss 1.8983256816864014
+--------------------------------------------------
+best record 0.9817289531230925
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 160
+epoch 160 takes 7.8150599002838135
+running train loss 0.9815003931522369
+running val loss 1.8553876876831055
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 161
+epoch 161 takes 7.674163818359375
+running train loss 0.9762721121311186
+running val loss 1.8774255514144897
+--------------------------------------------------
+best record 0.9807856202125551
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 162
+epoch 162 takes 7.672059535980225
+running train loss 0.9803145110607147
+running val loss 1.889148235321045
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 163
+epoch 163 takes 7.749288082122803
+running train loss 0.9817366302013397
+running val loss 1.894370436668396
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 164
+epoch 164 takes 7.940564155578613
+running train loss 0.9833809435367584
+running val loss 1.9093023538589478
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 165
+epoch 165 takes 7.7330474853515625
+running train loss 0.9784788668155671
+running val loss 1.8756494522094727
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 166
+epoch 166 takes 7.744871616363525
+running train loss 0.965485519170761
+running val loss 1.8707139492034912
+--------------------------------------------------
+best record 0.9762721121311186
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 167
+epoch 167 takes 7.867588043212891
+running train loss 0.9703099310398102
+running val loss 1.9289988279342651
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 168
+epoch 168 takes 7.740271806716919
+running train loss 0.9569911777973176
+running val loss 1.9536795616149902
+--------------------------------------------------
+best record 0.965485519170761
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 169
+epoch 169 takes 7.616984128952026
+running train loss 0.9650770545005799
+running val loss 1.9125150442123413
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 170
+epoch 170 takes 7.669053554534912
+running train loss 0.9695895850658416
+running val loss 1.9442741870880127
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 171
+epoch 171 takes 7.638317346572876
+running train loss 0.9532115995883942
+running val loss 1.9363014698028564
+--------------------------------------------------
+best record 0.9569911777973176
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 172
+epoch 172 takes 7.842036485671997
+running train loss 0.9646192014217377
+running val loss 1.9417163133621216
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 173
+epoch 173 takes 7.627439975738525
+running train loss 0.9584680378437043
+running val loss 1.9423513412475586
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 174
+epoch 174 takes 7.844414234161377
+running train loss 0.9491678774356843
+running val loss 1.9729315042495728
+--------------------------------------------------
+best record 0.9532115995883942
+==============================
+epoch 174 loss 0.9491678774356843 1.788185715675354
+saved model to train-history/trained_model174.pth
+plotted as train-history/174.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 175
+epoch 175 takes 7.582472085952759
+running train loss 0.9565232694149016
+running val loss 1.9763495922088623
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 176
+epoch 176 takes 7.761474847793579
+running train loss 0.9625378787517548
+running val loss 1.9402797222137451
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 177
+epoch 177 takes 7.719749450683594
+running train loss 0.9493768453598022
+running val loss 1.9478577375411987
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 178
+epoch 178 takes 7.727955102920532
+running train loss 0.9426486074924469
+running val loss 1.8856961727142334
+--------------------------------------------------
+best record 0.9491678774356843
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 179
+epoch 179 takes 7.723593473434448
+running train loss 0.9601420760154724
+running val loss 1.906326413154602
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 180
+epoch 180 takes 7.616332530975342
+running train loss 0.9452677547931672
+running val loss 1.9124997854232788
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 181
+epoch 181 takes 7.57098650932312
+running train loss 0.9436761558055877
+running val loss 1.9439568519592285
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 182
+epoch 182 takes 7.823381423950195
+running train loss 0.949577796459198
+running val loss 1.898931622505188
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 183
+epoch 183 takes 7.597613096237183
+running train loss 0.9551505863666535
+running val loss 1.974677324295044
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 184
+epoch 184 takes 7.687836408615112
+running train loss 0.9263567745685578
+running val loss 1.9591225385665894
+--------------------------------------------------
+best record 0.9426486074924469
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 185
+epoch 185 takes 7.672779321670532
+running train loss 0.9366175830364228
+running val loss 1.9540413618087769
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 186
+epoch 186 takes 7.738401889801025
+running train loss 0.9352315306663512
+running val loss 1.9549174308776855
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 187
+epoch 187 takes 7.748867988586426
+running train loss 0.9465534627437592
+running val loss 1.883198857307434
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 188
+epoch 188 takes 7.515277147293091
+running train loss 0.9301976025104522
+running val loss 1.9023258686065674
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 189
+epoch 189 takes 7.734452962875366
+running train loss 0.934433674812317
+running val loss 1.8835387229919434
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 190
+epoch 190 takes 7.664106607437134
+running train loss 0.9312913477420807
+running val loss 1.9171531200408936
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 191
+epoch 191 takes 7.73545241355896
+running train loss 0.9336706221103668
+running val loss 1.908735990524292
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 192
+epoch 192 takes 7.848672389984131
+running train loss 0.9383142411708834
+running val loss 1.936976432800293
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 193
+epoch 193 takes 7.828768253326416
+running train loss 0.9175834715366362
+running val loss 1.9031208753585815
+--------------------------------------------------
+best record 0.9263567745685578
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 194
+epoch 194 takes 7.702027797698975
+running train loss 0.9276326239109038
+running val loss 1.9633160829544067
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 195
+epoch 195 takes 7.63579797744751
+running train loss 0.934581196308136
+running val loss 1.9579758644104004
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 196
+epoch 196 takes 7.771935939788818
+running train loss 0.9354026675224304
+running val loss 1.9412705898284912
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 197
+epoch 197 takes 7.6317360401153564
+running train loss 0.9434998035430909
+running val loss 1.943481683731079
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 198
+epoch 198 takes 7.636135578155518
+running train loss 0.9346588790416717
+running val loss 1.9252079725265503
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 199
+epoch 199 takes 7.592737197875977
+running train loss 0.9191320359706879
+running val loss 1.9757347106933594
+--------------------------------------------------
+==============================
+epoch 199 loss 0.9175834715366362 1.788185715675354
+saved model to train-history/trained_model199.pth
+plotted as train-history/199.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 200
+epoch 200 takes 7.601567506790161
+running train loss 0.9379363775253295
+running val loss 1.9086666107177734
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 201
+epoch 201 takes 7.797255516052246
+running train loss 0.9071032881736755
+running val loss 1.9133923053741455
+--------------------------------------------------
+best record 0.9175834715366362
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 202
+epoch 202 takes 7.759145975112915
+running train loss 0.9178260743618012
+running val loss 1.9549224376678467
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 203
+epoch 203 takes 7.720302581787109
+running train loss 0.9151639342308044
+running val loss 1.9699110984802246
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 204
+epoch 204 takes 7.547098636627197
+running train loss 0.9177934408187867
+running val loss 1.921571969985962
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 205
+epoch 205 takes 8.010991096496582
+running train loss 0.9236960649490356
+running val loss 1.903863549232483
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 206
+epoch 206 takes 7.7637693881988525
+running train loss 0.9113807559013368
+running val loss 1.9256031513214111
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 207
+epoch 207 takes 7.762638330459595
+running train loss 0.907400518655777
+running val loss 1.9152039289474487
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 208
+epoch 208 takes 7.671658277511597
+running train loss 0.900725609064102
+running val loss 1.9302771091461182
+--------------------------------------------------
+best record 0.9071032881736755
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 209
+epoch 209 takes 7.649522066116333
+running train loss 0.9179893732070923
+running val loss 1.9954031705856323
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 210
+epoch 210 takes 7.953218221664429
+running train loss 0.9158607780933381
+running val loss 1.9457998275756836
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 211
+epoch 211 takes 7.866030216217041
+running train loss 0.9255355417728424
+running val loss 1.9500226974487305
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 212
+epoch 212 takes 7.6663031578063965
+running train loss 0.9109841287136079
+running val loss 1.9209873676300049
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 213
+epoch 213 takes 7.832895517349243
+running train loss 0.8952776789665221
+running val loss 1.9532462358474731
+--------------------------------------------------
+best record 0.900725609064102
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 214
+epoch 214 takes 7.680142402648926
+running train loss 0.9097989201545716
+running val loss 1.9474408626556396
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 215
+epoch 215 takes 7.5389838218688965
+running train loss 0.8983700156211852
+running val loss 1.9234126806259155
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 216
+epoch 216 takes 7.706870079040527
+running train loss 0.8912360846996308
+running val loss 1.8842625617980957
+--------------------------------------------------
+best record 0.8952776789665221
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 217
+epoch 217 takes 7.832420349121094
+running train loss 0.9042135119438173
+running val loss 1.919602394104004
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 218
+epoch 218 takes 7.615450859069824
+running train loss 0.894560569524765
+running val loss 1.905791997909546
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 219
+epoch 219 takes 7.812413454055786
+running train loss 0.8802179038524628
+running val loss 1.9475047588348389
+--------------------------------------------------
+best record 0.8912360846996308
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 220
+epoch 220 takes 8.031827211380005
+running train loss 0.8930508792400359
+running val loss 1.946521282196045
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 221
+epoch 221 takes 8.298576354980469
+running train loss 0.89054816365242
+running val loss 1.9337983131408691
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 222
+epoch 222 takes 8.536409616470337
+running train loss 0.8986473023891448
+running val loss 1.9400734901428223
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 223
+epoch 223 takes 7.710453510284424
+running train loss 0.8910185515880585
+running val loss 1.9711151123046875
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 224
+epoch 224 takes 7.8597633838653564
+running train loss 0.905608171224594
+running val loss 1.9873905181884766
+--------------------------------------------------
+==============================
+epoch 224 loss 0.8802179038524628 1.788185715675354
+saved model to train-history/trained_model224.pth
+plotted as train-history/224.png
+==============================
+
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 225
+epoch 225 takes 7.620757341384888
+running train loss 0.9017010629177094
+running val loss 1.9801079034805298
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 226
+epoch 226 takes 7.841154098510742
+running train loss 0.8982239067554474
+running val loss 1.944821834564209
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 227
+epoch 227 takes 7.625908374786377
+running train loss 0.8981389760971069
+running val loss 1.9795913696289062
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 228
+epoch 228 takes 7.920011281967163
+running train loss 0.8972179591655731
+running val loss 2.0190701484680176
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 229
+epoch 229 takes 8.417771816253662
+running train loss 0.9033207356929779
+running val loss 2.002627372741699
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 230
+epoch 230 takes 8.503020524978638
+running train loss 0.8858741879463197
+running val loss 1.9699939489364624
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 231
+epoch 231 takes 8.18275761604309
+running train loss 0.8825845718383787
+running val loss 2.006106376647949
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 232
+epoch 232 takes 7.664861679077148
+running train loss 0.8792721390724182
+running val loss 1.967550277709961
+--------------------------------------------------
+best record 0.8802179038524628
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 233
+epoch 233 takes 7.864770174026489
+running train loss 0.8900378942489623
+running val loss 1.985579252243042
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 234
+epoch 234 takes 7.5855934619903564
+running train loss 0.8733559072017669
+running val loss 1.9739344120025635
+--------------------------------------------------
+best record 0.8792721390724182
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 235
+epoch 235 takes 7.623601198196411
+running train loss 0.8775859773159027
+running val loss 2.006118059158325
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 236
+epoch 236 takes 7.750881195068359
+running train loss 0.8839631199836733
+running val loss 1.9682434797286987
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 237
+epoch 237 takes 8.062988758087158
+running train loss 0.8664727091789246
+running val loss 1.978864312171936
+--------------------------------------------------
+best record 0.8733559072017669
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 238
+epoch 238 takes 7.78525447845459
+running train loss 0.870560109615326
+running val loss 1.9537551403045654
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 239
+epoch 239 takes 7.717656135559082
+running train loss 0.8800817847251893
+running val loss 1.9939793348312378
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 240
+epoch 240 takes 7.628960132598877
+running train loss 0.8884329736232758
+running val loss 1.9838335514068604
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 241
+epoch 241 takes 7.927492380142212
+running train loss 0.8867913365364074
+running val loss 1.9952760934829712
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 242
+epoch 242 takes 7.658036947250366
+running train loss 0.8757470607757568
+running val loss 1.969565510749817
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 243
+epoch 243 takes 7.716555833816528
+running train loss 0.8856512367725372
+running val loss 2.0301594734191895
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 244
+epoch 244 takes 7.779233932495117
+running train loss 0.8775001883506774
+running val loss 2.004746437072754
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 245
+epoch 245 takes 8.203511714935303
+running train loss 0.8892811715602874
+running val loss 1.9875643253326416
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 246
+epoch 246 takes 7.632693290710449
+running train loss 0.8725152492523194
+running val loss 1.9592214822769165
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 247
+epoch 247 takes 7.750167608261108
+running train loss 0.8606216967105865
+running val loss 1.9893109798431396
+--------------------------------------------------
+best record 0.8664727091789246
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 248
+epoch 248 takes 7.649102449417114
+running train loss 0.8683684468269348
+running val loss 2.0312023162841797
+--------------------------------------------------
+train batch 0 / 10       train batch 1 / 10       train batch 2 / 10       train batch 3 / 10       train batch 4 / 10       train batch 5 / 10       train batch 6 / 10       train batch 7 / 10       train batch 8 / 10       train batch 9 / 10       val batch 0 / 1       epoch 249
+epoch 249 takes 7.796800851821899
+running train loss 0.8736361622810364
+running val loss 2.000274658203125
+--------------------------------------------------
+==============================
+epoch 249 loss 0.8606216967105865 1.788185715675354
+saved model to train-history/trained_model249.pth
+plotted as train-history/249.png
+==============================
+
