@@ -275,7 +275,8 @@ def testVizReg(model, dataset, save_dir, device=torch.device("cpu"), num_example
         toc = time.time()
         print("inference takes", toc-tic)
         print("unique", np.unique(pred.numpy()))
-        displayInference(data, pred, save_dir, i, backend="DIODE")      
+        # displayInference(data, pred, save_dir, i, backend="DIODE")      
+        displayInference(data, pred, save_dir, i, backend="cmap")      
 
 
 def testVizSeg(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
@@ -299,6 +300,30 @@ def testVizSeg(model, dataset, save_dir, device=torch.device("cpu"), num_example
         print("inference takes", toc-tic)
         print("unique", np.unique(pred))
         displayInference(data, pred, save_dir, i, backend="seg")  
+
+
+def testVizRegSeg(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
+    model = model.to(device)
+    model.eval()
+
+    for i in range(num_example):
+        idx = len(dataset) // (num_example+1) * i
+
+        data = dataset[idx]
+        img_t = data['rgb'].unsqueeze(0).to(device)
+        img = data['original_rgb']
+        label_t = data['label']
+        label = data['original_label']
+
+        tic = time.time()
+        with torch.no_grad():
+            _, pred = model(img_t)
+            pred = clsPred2Img(pred)
+        toc = time.time()
+        print("inference takes", toc-tic)
+        print("unique", np.unique(pred))
+        displayInference(data, pred, save_dir, i, backend="seg")  
+
 
 
 if __name__ == "__main__":

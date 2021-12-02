@@ -23,7 +23,7 @@ def depth2Cutoff(depth_map, cutoff):
     return heatmap.astype(np.int64)
 
 
-def depth2Heatmap(depth_map, min_display=0, max_display=255):
+def depth2Heatmap(depth_map, min_display=1e-4, max_display=255):
     '''@param depth_map ~ (H x W) needs to be numpy array'''
     r = (np.max(depth_map) - np.min(depth_map)) / 10
     heatmap = np.zeros((*depth_map.shape, 3))
@@ -40,7 +40,7 @@ def depth2Heatmap(depth_map, min_display=0, max_display=255):
             else:
                 heatmap[i,j,1] = 255 - (depth_map[i,j]-4*r) / (6*r) * 255                                        
                 heatmap[i,j,2] = (depth_map[i,j]-4*r) / (6*r) * 255  
-    heatmap[:,:,0] *= 15
+    # heatmap[:,:,0] *= 15
     return heatmap.astype(np.int64)
 
 
@@ -137,7 +137,7 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
         plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
 
         plt.figure()
-        plt.imshow(pred.numpy(), cmap=cmap)
+        plt.imshow(pred, cmap=cmap)
         plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))
     elif backend == "heatmap":
         plt.figure()
@@ -159,7 +159,7 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
         plt.savefig(os.path.join(save_dir, "olabel"+str(i)+".png"))
 
         plt.figure()
-        h = depth2Heatmap(pred.numpy())
+        h = depth2Heatmap(pred)
         plt.imshow(h)
         plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))    
     elif backend == "DIODE":
@@ -195,10 +195,8 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
 
         plt.figure()
         plt.imshow(pred)
-        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))        
+        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))            
     
-                         
-
 
 if __name__ == "__main__":
     print(torch.cuda.is_available())

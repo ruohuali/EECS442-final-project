@@ -92,19 +92,29 @@ def initTrainKITTIDual():
     model_device = torch.device("cuda")   
     data_device = device = torch.device("cpu")       
 
-    SPLIT = 25
+    rgb_preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (200, 640) ),     
+        # transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
+        # transforms.RandomHorizontalFlip(p=0.5),        
+        # transforms.RandomAdjustSharpness(sharpness_factor=2),
+        # transforms.RandomSolarize(threshold=180, p=0.5),                
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
 
-    reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device)
+    reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device, transform=rgb_preprocess)
+    SPLIT = len(reg_dataset) // 10
     train_reg_dataset = Subset(reg_dataset, np.arange(SPLIT, len(reg_dataset)))
-    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=16, shuffle=True, num_workers=8, drop_last=True)
+    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=4, shuffle=True, num_workers=2, drop_last=True)
     test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
-    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=16, shuffle=False, num_workers=8, drop_last=True)    
+    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=4, shuffle=False, num_workers=2, drop_last=True)    
 
-    seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device)
+    seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device, transform=rgb_preprocess)
+    SPLIT = len(seg_dataset) // 10
     train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
-    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=16, shuffle=True, num_workers=8, drop_last=True)
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=4, shuffle=True, num_workers=2, drop_last=True)
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
-    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=16, shuffle=False, num_workers=8, drop_last=True)
+    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=4, shuffle=False, num_workers=2, drop_last=True)
 
     m = RegSegModel().to(model_device)
     m.train()
@@ -158,13 +168,13 @@ def testModelKITTIReg(model_path):
                                            transforms.GaussianBlur(15, sigma=3.0),
                                            transforms.Resize( (200, 640) )])
 
-
-    reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device, original=True)
-    test_reg_dataset = Subset(reg_dataset, np.arange(0, 25))
+    reg_dataset = KITTI_DEP(KITTI_TRAIN_RGB_PATHS, KITTI_TRAIN_LABEL_PATHS, device=data_device, transform=rgb_preprocess, original=True)
+    SPLIT = len(reg_dataset) // 10
+    test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
 
     model = torch.load(model_path)
 
-    testViz(model, test_reg_dataset, "train-history", num_example=10)    
+    testVizReg(model, test_reg_dataset, "train-history", num_example=10)    
 
 
 def testModelKITTISeg(model_path):
@@ -177,6 +187,18 @@ def testModelKITTISeg(model_path):
     model = torch.load(model_path)
 
     testVizSeg(model, test_seg_dataset, "train-history", num_example=10)    
+
+
+def showModelInference(model_path, img_path):
+    model = torch.load(model_path)
+    model.eval()
+    model = model.cpu()
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (200, 640) ),     
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])    
+    model.showInference(img_path, "train-history", preprocess, 1)
     
 
 if __name__ == '__main__':
@@ -185,5 +207,6 @@ if __name__ == '__main__':
     # initTrainKITTIReg()
     # initTrain()
     # modelSummary()
-    testModelKITTISeg(os.path.join("train-history", "trained_model249.pth"))
-    # testModelKITTIReg(os.path.join("train-history", "trained_model249.pth"))
+    # testModelKITTISeg(os.path.join("train-history", "trained_model99.pth"))
+    # testModelKITTIReg(os.path.join("train-history", "trained_model99.pth"))
+    showModelInference(os.path.join("train-history", "trained_model99.pth"), "example1.png")

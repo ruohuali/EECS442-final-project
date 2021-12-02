@@ -14,6 +14,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
 
+from utils import *
 
 class HorizontalBlock(nn.Module):
     def __init__(self, input_dim, output_dim):
@@ -147,18 +148,6 @@ class RegUNet(nn.Module):
         return x
 
 
-class DepthWiseSeparableConv2d(nn.Module):
-    def __init__(self, nin, kernels_per_layer, nout):
-        super(DepthWiseSeparableConv2d, self).__init__()
-        self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, kernel_size=3, padding=1, groups=nin)
-        self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, kernel_size=1)
-
-    def forward(self, x):
-        out = self.depthwise(x)
-        out = self.pointwise(out)
-        return out
-
-
 class ConvProbe(nn.Module):
     def __init__(self, out_dim):
         super().__init__()                
@@ -182,6 +171,17 @@ class ConvProbe(nn.Module):
 
 
 class DepthWiseSeparableConvProbe(nn.Module):
+    class DepthWiseSeparableConv2d(nn.Module):
+        def __init__(self, nin, kernels_per_layer, nout):
+            super(DepthWiseSeparableConv2d, self).__init__()
+            self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, kernel_size=3, padding=1, groups=nin)
+            self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, kernel_size=1)
+
+        def forward(self, x):
+            out = self.depthwise(x)
+            out = self.pointwise(out)
+            return out
+
     def __init__(self, out_dim):
         super().__init__()                
         self.probe = nn.Sequential(
@@ -226,6 +226,50 @@ class RegSegModel(nn.Module):
         y_reg_ret[:,:,:y_reg.shape[2],:y_reg.shape[3]] = y_reg
         y_seg_ret[:,:,:y_seg.shape[2],:y_seg.shape[3]] = y_seg
         return y_reg_ret, y_seg_ret
+
+    def showInference(self, img_path, save_dir, preprocess, i):
+        img = Image.open(img_path)
+        img_t = preprocess(img)
+        img_t = img_t.unsqueeze(0)
+        with torch.no_grad():
+            reg_pred, seg_pred = self.forward(img_t)
+        reg_pred, seg_pred = regPred2Img(reg_pred), clsPred2Img(seg_pred)
+
+        reg_pred_o, seg_pred_o = reg_pred.clone(), seg_pred.clone()
+
+        reg_pred = reg_pred.max() - reg_pred           
+        reg_pred7 = reg_pred.clone()
+        reg_pred7[seg_pred != 7] = 0
+        reg_pred26 = reg_pred.clone()
+        reg_pred26[seg_pred != 26] = 0
+        reg_pred = reg_pred7 + reg_pred26    
+        reg_pred[reg_pred == 0] = float('nan')
+
+        cmap = plt.cm.jet
+        cmap.set_bad(color="black")        
+
+        plt.figure()
+        plt.imshow(img)
+        plt.savefig(os.path.join(save_dir, "infer_img"+str(i)+".png"))
+
+        plt.figure()
+        # h = depth2Heatmap(reg_pred.numpy())
+        # plt.imshow(h, alpha=0.9)
+        plt.imshow(reg_pred.numpy(), cmap=cmap)
+        plt.imshow(seg_pred.numpy(), alpha=0.3)    
+        plt.savefig(os.path.join(save_dir, "infer_pred"+str(i)+".png"))
+
+        plt.figure()
+        # h = depth2Heatmap(reg_pred.numpy())
+        # plt.imshow(h)
+        plt.imshow(reg_pred.numpy(), cmap=cmap)
+        plt.savefig(os.path.join(save_dir, "infer_pred_reg"+str(i)+".png"))      
+
+        plt.figure()
+        plt.imshow(seg_pred.numpy(), alpha=0.9)    
+        plt.savefig(os.path.join(save_dir, "infer_pred_seg"+str(i)+".png"))  
+
+        return reg_pred_o, seg_pred_o     
 
         
 if __name__ == "__main__":
