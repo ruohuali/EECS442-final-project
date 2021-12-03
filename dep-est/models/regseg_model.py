@@ -13,6 +13,7 @@ import time
 from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
+import platform
 
 from utils import *
 
@@ -97,7 +98,12 @@ class RegSegModel(nn.Module):
         y_seg_ret[:, :, :y_seg.shape[2], :y_seg.shape[3]] = y_seg
         return y_reg_ret, y_seg_ret
 
-    def showInference(self, img_path, save_dir, preprocess, i):
+    def showInference(self, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
+                                                                     transforms.Resize( (200, 640) ),
+                                                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])):
+        '''
+        @func img_path -> 3 np arrays of results
+        '''
         img = Image.open(img_path)
         img_t = preprocess(img)
         img_t = img_t.unsqueeze(0)
@@ -106,6 +112,8 @@ class RegSegModel(nn.Module):
         reg_pred, seg_pred = regPred2Img(reg_pred), clsPred2Img(seg_pred)
 
         reg_pred_o, seg_pred_o = reg_pred.clone(), seg_pred.clone()
+        img_o = np.array(img)
+        img_o = cv2.resize(img_o, (reg_pred_o.shape[1], reg_pred_o.shape[0]))
 
         reg_pred = reg_pred.max() - reg_pred
         reg_pred7 = reg_pred.clone()
@@ -119,27 +127,19 @@ class RegSegModel(nn.Module):
         cmap.set_bad(color="black")
 
         plt.figure()
-        plt.imshow(img)
-        plt.savefig(os.path.join(save_dir, "infer_img" + str(i) + ".png"))
+        plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.97)
+        # plt.imshow(seg_pred.numpy(), alpha=0.3)
+        plt.imshow(img_o, alpha=0.6)
+        # plt.savefig(os.path.join(save_dir, "infer_pred" + str(i) + ".png"), bbox_inches='tight', pad_inches=0)
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
 
-        plt.figure()
-        # h = depth2Heatmap(reg_pred.numpy())
-        # plt.imshow(h, alpha=0.9)
-        plt.imshow(reg_pred.numpy(), cmap=cmap)
-        plt.imshow(seg_pred.numpy(), alpha=0.3)
-        plt.savefig(os.path.join(save_dir, "infer_pred" + str(i) + ".png"))
+        img_arr = cv2.imread("temp.png")
+        if platform.system() != "Windows":        
+            os.system("rm temp.png")
+        else:
+            raise NotImplementedError("write win cmd for remove temp file")
 
-        plt.figure()
-        # h = depth2Heatmap(reg_pred.numpy())
-        # plt.imshow(h)
-        plt.imshow(reg_pred.numpy(), cmap=cmap)
-        plt.savefig(os.path.join(save_dir, "infer_pred_reg" + str(i) + ".png"))
-
-        plt.figure()
-        plt.imshow(seg_pred.numpy(), alpha=0.9)
-        plt.savefig(os.path.join(save_dir, "infer_pred_seg" + str(i) + ".png"))
-
-        return reg_pred_o, seg_pred_o
+        return np.array(reg_pred_o), np.array(seg_pred_o), img_arr
 
 
 if __name__ == "__main__":

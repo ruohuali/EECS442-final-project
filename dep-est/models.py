@@ -255,8 +255,9 @@ class RegSegModel(nn.Module):
         plt.figure()
         # h = depth2Heatmap(reg_pred.numpy())
         # plt.imshow(h, alpha=0.9)
-        plt.imshow(reg_pred.numpy(), cmap=cmap)
-        plt.imshow(seg_pred.numpy(), alpha=0.3)    
+        plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.5)
+        plt.imshow(seg_pred.numpy(), alpha=0.2)    
+        # plt.imshow()        
         plt.savefig(os.path.join(save_dir, "infer_pred"+str(i)+".png"))
 
         plt.figure()

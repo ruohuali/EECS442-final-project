@@ -21,6 +21,18 @@ from loss import SSIM, SmoothnessLoss
 from PATH import *
 
 
+def showModelInference(model, img_path):
+    model.eval()
+    model = model.cpu()
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize( (200, 640) ),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    ret = model.showInference(img_path, "train-history", preprocess, 1)
+    return ret
+
+
 def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save_dir):
     print("=" * 30)
     print(f"epoch {epoch} loss {min(loss_hist1)} {min(loss_hist2)}")
@@ -34,6 +46,7 @@ def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save
     plt.savefig(plot_path)
     plt.legend(loc="upper left")
     print(f"plotted as {plot_path}")
+    print("plotting")    
     print("=" * 30)
     print()
 
@@ -113,6 +126,7 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
     running_reg_loss = 0
     running_seg_loss = 0
     for batch_idx, data in enumerate(tqdm(zip(reg_dataloader, seg_dataloader), total=min(len(reg_dataloader), len(seg_dataloader)), desc="progress")):
+    # for batch_idx, data in enumerate(zip(reg_dataloader, seg_dataloader)):
         reg_data, seg_data = data
 
         reg_imgs = reg_data['rgb'].to(device)
@@ -212,7 +226,11 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
     train_hist = []
     val_hist = []
     for epoch in range(num_epoch):
+        print("\n" * 5)
+        print("-" * 50)
+        print("epoch  ", epoch)
         tic = time.time()
+
         running_train_losses = doEpochDual(train_reg_dataloader, train_seg_dataloader, model, optimizer=optimizer,
                                          device=device)
         running_train_loss = running_train_losses['total']
@@ -227,26 +245,32 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         val_hist.append(running_val_loss)
 
         toc = time.time()
-        writer.add_scalar("Loss/train_total", running_train_loss, epoch)
-        writer.add_scalar("Loss/train_reg", running_train_reg_loss, epoch)
-        writer.add_scalar("Loss/train_seg", running_train_seg_loss, epoch)
-        writer.add_scalar("Loss/val_total", running_val_loss, epoch)
-        writer.add_scalar("Loss/val_reg", running_val_reg_loss, epoch)
-        writer.add_scalar("Loss/val_seg", running_val_seg_loss, epoch)
+        # writer.add_scalar("Loss/train_total", running_train_loss, epoch)
+        # writer.add_scalar("Loss/train_reg", running_train_reg_loss, epoch)
+        # writer.add_scalar("Loss/train_seg", running_train_seg_loss, epoch)
+        # writer.add_scalar("Loss/val_total", running_val_loss, epoch)
+        # writer.add_scalar("Loss/val_reg", running_val_reg_loss, epoch)
+        # writer.add_scalar("Loss/val_seg", running_val_seg_loss, epoch)        
+        writer.add_scalars("Loss/total", {"train": running_train_loss, "val": running_val_loss}, epoch)
+        writer.add_scalars("Loss/reg", {"train": running_train_reg_loss, "val": running_val_reg_loss}, epoch)
+        writer.add_scalars("Loss/seg", {"train": running_train_seg_loss, "val": running_val_seg_loss}, epoch)
 
         if epoch % 1 == 0:
-            print("epoch", epoch)
             print("epoch", epoch, "takes", toc - tic)
             print("running train loss", running_train_loss)
             print("running val loss", running_val_loss)
-            print("-" * 50)
             if best_record > running_train_loss:
                 print("best record", best_record)
                 best_record = running_train_loss
                 best_model = deepcopy(model)
+            print("-" * 50)
 
         if epoch % 25 == 24:
             manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model" + str(epoch), "train-history")
+        if epoch % 2 == 1:
+            _, _, img_arr = showModelInference(best_model, "example1.png")
+            print("written image")
+            writer.add_image("example", img_arr, epoch, dataformats='HWC')
 
     return best_model
 

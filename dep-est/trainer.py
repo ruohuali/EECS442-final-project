@@ -110,19 +110,22 @@ def initTrainKITTIDual():
 
     reg_dataset = KITTI_DEP(KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, device=data_device, transform=rgb_preprocess)
     SPLIT = len(reg_dataset) // 10
+    # SPLIT = 10
     train_reg_dataset = Subset(reg_dataset, np.arange(SPLIT, len(reg_dataset)))
-    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=4, shuffle=True, num_workers=2, drop_last=True)
+    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
     test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
-    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=4, shuffle=False, num_workers=2, drop_last=True)
+    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
 
     seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device, transform=rgb_preprocess)
     SPLIT = len(seg_dataset) // 10
+    # SPLIT = 10
     train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
-    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=4, shuffle=True, num_workers=2, drop_last=True)
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
-    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=4, shuffle=False, num_workers=2, drop_last=True)
+    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
 
     m = RegSegModel().to(model_device)
+    # set_trace()
     m.train()
     print("train dataloader len", len(train_reg_dataloader), len(train_seg_dataloader))
     model = trainDual(m, train_reg_dataloader, test_reg_dataloader, train_seg_dataloader, test_seg_dataloader, num_epoch=250, device=model_device)
@@ -180,20 +183,22 @@ def showModelInference(model_path, img_path):
     model = torch.load(model_path)
     model.eval()
     model = model.cpu()
-    preprocess = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize( (200, 640) ),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    model.showInference(img_path, "train-history", preprocess, 1)
+    reg_pred, seg_pred, comb_pred = model.showInference(img_path)
+    plt.figure()
+    plt.imshow(reg_pred)
+    plt.figure()
+    plt.imshow(seg_pred)
+    plt.figure()
+    plt.imshow(comb_pred)
+    plt.show()
 
 
 if __name__ == '__main__':
-    initTrainKITTIDual()
+    # initTrainKITTIDual()
     # initTrainKITTISeg()
     # initTrainKITTIReg()
     # initTrain()
     # modelSummary()
     # testModelKITTISeg(os.path.join("train-history", "trained_model99.pth"))
-    # testModelKITTIReg(os.path.join("train-history", "trained_model99.pth"))
-    # showModelInference(os.path.join("train-history", "trained_model99.pth"), "example1.png")
+    # testModelKITTIReg(os.path.join("train-history", "trained_model49.pth"))
+    showModelInference(os.path.join("train-history", "trained_model49.pth"), "example1.png")
