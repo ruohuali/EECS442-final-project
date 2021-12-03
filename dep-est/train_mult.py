@@ -227,12 +227,12 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         val_hist.append(running_val_loss)
 
         toc = time.time()
-        # writer.add_scalar("Loss/train_total", running_train_loss, epoch)
-        # writer.add_scalar("Loss/train_reg", running_train_reg_loss, epoch)
-        # writer.add_scalar("Loss/train_seg", running_train_seg_loss, epoch)
-        # writer.add_scalar("Loss/val_total", running_val_loss, epoch)
-        # writer.add_scalar("Loss/val_reg", running_val_reg_loss, epoch)
-        # writer.add_scalar("Loss/val_seg", running_val_seg_loss, epoch)
+        writer.add_scalar("Loss/train_total", running_train_loss, epoch)
+        writer.add_scalar("Loss/train_reg", running_train_reg_loss, epoch)
+        writer.add_scalar("Loss/train_seg", running_train_seg_loss, epoch)
+        writer.add_scalar("Loss/val_total", running_val_loss, epoch)
+        writer.add_scalar("Loss/val_reg", running_val_reg_loss, epoch)
+        writer.add_scalar("Loss/val_seg", running_val_seg_loss, epoch)
 
         if epoch % 1 == 0:
             print("epoch", epoch)
