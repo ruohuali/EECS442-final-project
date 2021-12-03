@@ -24,9 +24,9 @@ import argparse
 from models.regseg_model import RegSegModel, ConvProbe
 from models.unet import UNet
 from utils import *
-from data.kitti import KITTI_DEP, KITTI_SEM
-from data.diode import DIODE
-from data.data_path import KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, \
+from dataset.kitti import KITTI_DEP, KITTI_SEM
+from dataset.diode import DIODE
+from dataset.data_path import KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, \
                            KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS
 from train_mult import *
 
