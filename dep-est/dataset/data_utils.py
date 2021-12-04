@@ -13,7 +13,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
 
-from PATH__ import *
+from .PATH__ import *
 
 def depth2Cutoff(depth_map, cutoff):
     '''@param depth_map ~ (H x W) needs to be numpy array'''

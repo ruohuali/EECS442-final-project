@@ -1,21 +1,21 @@
+import cv2
+import matplotlib.pyplot as plt
 import numpy as np
+import os
+import os
+import platform
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 from PIL import Image
+from copy import deepcopy
+from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from torchvision.io import read_image, ImageReadMode
-from torch.utils.data import Dataset, DataLoader
-import cv2
-import os
-import time
-from copy import deepcopy
-import matplotlib.pyplot as plt
-import os
-import platform
 
-from utils import *
+from .model_utils import regPred2Img, clsPred2Img
 
 
 class ConvProbe(nn.Module):
@@ -99,11 +99,19 @@ class RegSegModel(nn.Module):
         return y_reg_ret, y_seg_ret
 
     def showInference(self, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
-                                                                     transforms.Resize( (200, 640) ),
-                                                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])):
+                                                                     transforms.Resize((200, 640)),
+                                                                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                                                                          std=[0.229, 0.224, 0.225])])):
         '''
         @func img_path -> 3 np arrays of results
         '''
+
+        def clearTemp():
+            if platform.system() != "Windows":
+                os.system("rm temp.png")
+            else:
+                raise NotImplementedError("write win cmd for removing temp file")
+
         img = Image.open(img_path)
         img_t = preprocess(img)
         img_t = img_t.unsqueeze(0)
@@ -123,23 +131,35 @@ class RegSegModel(nn.Module):
         reg_pred = reg_pred7 + reg_pred26
         reg_pred[reg_pred == 0] = float('nan')
 
+        ##
         cmap = plt.cm.jet
         cmap.set_bad(color="black")
 
         plt.figure()
         plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.97)
-        # plt.imshow(seg_pred.numpy(), alpha=0.3)
         plt.imshow(img_o, alpha=0.6)
-        # plt.savefig(os.path.join(save_dir, "infer_pred" + str(i) + ".png"), bbox_inches='tight', pad_inches=0)
         plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
 
         img_arr = cv2.imread("temp.png")
-        if platform.system() != "Windows":        
-            os.system("rm temp.png")
-        else:
-            raise NotImplementedError("write win cmd for removing temp file")
+        clearTemp()
 
-        return np.array(reg_pred_o), np.array(seg_pred_o), img_arr
+        ##
+        plt.figure()
+        plt.imshow(reg_pred.numpy(), cmap=cmap)
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+        reg_pred_arr = cv2.imread("temp.png")
+        clearTemp()
+
+        ##
+        plt.figure()
+        plt.imshow(seg_pred.numpy())
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+        seg_pred_arr = cv2.imread("temp.png")
+        clearTemp()
+
+        return reg_pred_arr, seg_pred_arr, img_arr
 
 
 if __name__ == "__main__":

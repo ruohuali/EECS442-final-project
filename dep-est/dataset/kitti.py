@@ -14,7 +14,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
 from PIL import Image
-from utils import *
+from .data_utils import *
 
 '''
 @todo customized kitti transform

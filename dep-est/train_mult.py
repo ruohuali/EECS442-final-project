@@ -1,24 +1,21 @@
+import cv2
+import matplotlib.pyplot as plt
 import numpy as np
+import os
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
-from torch.utils.data import Dataset, DataLoader
-from torch.utils.tensorboard import SummaryWriter
-
-import matplotlib.pyplot as plt
-import cv2
-import os
-import time
 from copy import deepcopy
 from pdb import set_trace
+from torch.utils.data import Dataset, DataLoader
+from torch.utils.tensorboard import SummaryWriter
+from torchvision import transforms
+from torchvision.io import read_image, ImageReadMode
 from tqdm import tqdm
 
-from utils import *
 from loss import SSIM, SmoothnessLoss
-from PATH import *
 
 
 def getModelInference(model, img_path):
@@ -66,8 +63,10 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
     running_loss = 0
     running_reg_loss = 0
     running_seg_loss = 0
-    for batch_idx, data in enumerate(tqdm(zip(reg_dataloader, seg_dataloader), total=min(len(reg_dataloader), len(seg_dataloader)), desc="progress")):
-    # for batch_idx, data in enumerate(zip(reg_dataloader, seg_dataloader)):
+    for batch_idx, data in enumerate(
+            tqdm(zip(reg_dataloader, seg_dataloader), total=min(len(reg_dataloader), len(seg_dataloader)),
+                 desc="progress")):
+        # for batch_idx, data in enumerate(zip(reg_dataloader, seg_dataloader)):
         reg_data, seg_data = data
 
         reg_imgs = reg_data['rgb'].to(device)
@@ -111,7 +110,8 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
 
 
 def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloader, val_seg_dataloader, num_epoch=400,
-              device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), save_dir="train-history", example_img_path=''):
+              device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), save_dir="train-history",
+              example_img_path=''):
     model.train()
 
     writer = SummaryWriter()
@@ -128,7 +128,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         tic = time.time()
 
         running_train_losses = doEpochDual(train_reg_dataloader, train_seg_dataloader, model, optimizer=optimizer,
-                                         device=device)
+                                           device=device)
         running_train_loss = running_train_losses['total']
         running_train_reg_loss = running_train_losses['reg']
         running_train_seg_loss = running_train_losses['seg']
@@ -140,7 +140,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         running_val_seg_loss = running_val_losses['seg']
         val_hist.append(running_val_loss)
 
-        toc = time.time()       
+        toc = time.time()
         writer.add_scalars("Loss/total", {"train": running_train_loss, "val": running_val_loss}, epoch)
         writer.add_scalars("Loss/reg", {"train": running_train_reg_loss, "val": running_val_reg_loss}, epoch)
         writer.add_scalars("Loss/seg", {"train": running_train_seg_loss, "val": running_val_seg_loss}, epoch)
@@ -160,10 +160,9 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         if epoch % 10 == 9:
             if example_img_path != '':
                 reg_pred, seg_pred, img_arr = getModelInference(best_model, example_img_path)
-                img_arr[:,:,0], img_arr[:,:,2] = img_arr[:,:,2], img_arr[:,:,0]
                 writer.add_image("example/combine", img_arr, epoch, dataformats='HWC')
-                writer.add_image("example/reg", reg_pred, epoch, dataformats='HW')
-                writer.add_image("example/seg", seg_pred, epoch, dataformats='HW')
+                writer.add_image("example/reg", reg_pred, epoch, dataformats='HWC')
+                writer.add_image("example/seg", seg_pred, epoch, dataformats='HWC')
                 print("written image")
 
     writer.close()
