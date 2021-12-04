@@ -21,15 +21,10 @@ from loss import SSIM, SmoothnessLoss
 from PATH import *
 
 
-def showModelInference(model, img_path):
+def getModelInference(model, img_path):
     model.eval()
     model = model.cpu()
-    preprocess = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize( (200, 640) ),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    ret = model.showInference(img_path, "train-history", preprocess, 1)
+    ret = model.showInference(img_path)
     return ret
 
 
@@ -39,14 +34,13 @@ def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save
     model_path = os.path.join(save_dir, model_name + ".pth")
     torch.save(best_model, model_path)
     print(f"saved model to {model_path}")
-    plot_path = os.path.join(save_dir, str(epoch) + ".png")
-    plt.figure()
-    plt.plot(loss_hist1, label="train")
-    plt.plot(loss_hist2, label="val")
-    plt.savefig(plot_path)
-    plt.legend(loc="upper left")
-    print(f"plotted as {plot_path}")
-    print("plotting")    
+    # plot_path = os.path.join(save_dir, str(epoch) + ".png")
+    # plt.figure()
+    # plt.plot(loss_hist1, label="train")
+    # plt.plot(loss_hist2, label="val")
+    # plt.savefig(plot_path)
+    # plt.legend(loc="upper left")
+    # print(f"plotted as {plot_path}")
     print("=" * 30)
     print()
 
@@ -65,59 +59,6 @@ def getLossSeg(pred, labels, imgs):
 
     loss = ce(pred, labels)
     return loss
-
-
-def doEpochReg(dataloader, model, optimizer=None, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    running_loss = 0
-    for batch_idx, data in enumerate(dataloader):
-        imgs = data['rgb'].to(device)
-        labels = data['label'].to(device)
-
-        if optimizer != None:
-            pred, _ = model(imgs)
-            # loss = 1 * (1 - ssim(pred, labels)) + 1 * l2_loss(pred, labels) 
-            loss = getLossReg(pred, labels, imgs)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            print("train batch", batch_idx, "/", len(dataloader), end='       \r')
-
-        else:
-            with torch.no_grad():
-                pred, _ = model(imgs)
-                loss = getLossReg(pred, labels, imgs)
-                print("val batch", batch_idx, "/", len(dataloader), end='       \r')
-
-        running_loss += loss.item() / len(dataloader)
-
-    return running_loss
-
-
-def doEpochSeg(dataloader, model, optimizer=None, device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    running_loss = 0
-    for batch_idx, data in enumerate(dataloader):
-        imgs = data['rgb'].to(device)
-        labels = data['label'].to(device)
-
-        if optimizer != None:
-            _, pred = model(imgs)
-            loss = getLossSeg(pred, labels, imgs)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            print("train batch", batch_idx, "/", len(dataloader), end='       \r')
-
-        else:
-            with torch.no_grad():
-                _, pred = model(imgs)
-                loss = getLossSeg(pred, labels, imgs)
-                print("val batch", batch_idx, "/", len(dataloader), end='       \r')
-
-        running_loss += loss.item() / len(dataloader)
-
-    return running_loss
 
 
 def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
@@ -169,53 +110,8 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
     return running_losses
 
 
-def trainSingle(model, train_dataloader, val_dataloader, task, num_epoch=400,
-                device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    model.train()
-
-    # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
-
-    best_record = np.inf
-    train_hist = []
-    val_hist = []
-    for epoch in range(num_epoch):
-        tic = time.time()
-        if task == "seg":
-            running_train_loss = doEpochSeg(train_dataloader, model, optimizer=optimizer, device=device)
-        elif task == "reg":
-            running_train_loss = doEpochReg(train_dataloader, model, optimizer=optimizer, device=device)
-        elif task == "dual":
-            running_train_loss = doEpochDual(train_dataloader, model, optimizer=optimizer, device=device)
-        train_hist.append(running_train_loss)
-
-        if task == "seg":
-            running_val_loss = doEpochSeg(val_dataloader, model, optimizer=None, device=device)
-        elif task == "reg":
-            running_val_loss = doEpochReg(val_dataloader, model, optimizer=None, device=device)
-        elif task == "dual":
-            running_val_loss = doEpochDual(val_dataloader, model, optimizer=None, device=device)
-        val_hist.append(running_val_loss)
-        toc = time.time()
-
-        if epoch % 1 == 0:
-            print("epoch", epoch, "takes", toc - tic)
-            print("running train loss", running_train_loss)
-            print("running val loss", running_val_loss)
-            print("-" * 50)
-            if best_record > running_train_loss:
-                print("best record", best_record)
-                best_record = running_train_loss
-                best_model = deepcopy(model)
-
-        if epoch % 50 == 49:
-            manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model" + str(epoch), "train-history")
-
-    return best_model
-
-
 def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloader, val_seg_dataloader, num_epoch=400,
-              device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
+              device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), save_dir="train-history", example_img_path=''):
     model.train()
 
     writer = SummaryWriter()
@@ -244,13 +140,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         running_val_seg_loss = running_val_losses['seg']
         val_hist.append(running_val_loss)
 
-        toc = time.time()
-        # writer.add_scalar("Loss/train_total", running_train_loss, epoch)
-        # writer.add_scalar("Loss/train_reg", running_train_reg_loss, epoch)
-        # writer.add_scalar("Loss/train_seg", running_train_seg_loss, epoch)
-        # writer.add_scalar("Loss/val_total", running_val_loss, epoch)
-        # writer.add_scalar("Loss/val_reg", running_val_reg_loss, epoch)
-        # writer.add_scalar("Loss/val_seg", running_val_seg_loss, epoch)        
+        toc = time.time()       
         writer.add_scalars("Loss/total", {"train": running_train_loss, "val": running_val_loss}, epoch)
         writer.add_scalars("Loss/reg", {"train": running_train_reg_loss, "val": running_val_reg_loss}, epoch)
         writer.add_scalars("Loss/seg", {"train": running_train_seg_loss, "val": running_val_seg_loss}, epoch)
@@ -265,13 +155,18 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
                 best_model = deepcopy(model)
             print("-" * 50)
 
-        if epoch % 25 == 24:
-            manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model" + str(epoch), "train-history")
-        if epoch % 2 == 1:
-            _, _, img_arr = showModelInference(best_model, "example1.png")
-            print("written image")
-            writer.add_image("example", img_arr, epoch, dataformats='HWC')
+        if epoch % 25 == 24 or num_epoch - epoch == 1:
+            manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model" + str(epoch), save_dir)
+        if epoch % 10 == 9:
+            if example_img_path != '':
+                reg_pred, seg_pred, img_arr = getModelInference(best_model, example_img_path)
+                img_arr[:,:,0], img_arr[:,:,2] = img_arr[:,:,2], img_arr[:,:,0]
+                writer.add_image("example/combine", img_arr, epoch, dataformats='HWC')
+                writer.add_image("example/reg", reg_pred, epoch, dataformats='HW')
+                writer.add_image("example/seg", seg_pred, epoch, dataformats='HW')
+                print("written image")
 
+    writer.close()
     return best_model
 
 

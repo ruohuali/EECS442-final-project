@@ -137,7 +137,7 @@ class RegSegModel(nn.Module):
         if platform.system() != "Windows":        
             os.system("rm temp.png")
         else:
-            raise NotImplementedError("write win cmd for remove temp file")
+            raise NotImplementedError("write win cmd for removing temp file")
 
         return np.array(reg_pred_o), np.array(seg_pred_o), img_arr
 
