@@ -78,12 +78,12 @@ def showModelInference(model_path, img_path):
     model.eval()
     model = model.cpu()
     reg_pred, seg_pred, comb_pred = model.showInference(img_path)
-    plt.figure()
-    plt.imshow(reg_pred)
-    plt.figure()
-    plt.imshow(seg_pred)
-    plt.figure()
-    plt.imshow(comb_pred)
+    # plt.figure()
+    # plt.imshow(reg_pred)
+    # plt.figure()
+    # plt.imshow(seg_pred)
+    # plt.figure()
+    # plt.imshow(comb_pred)
     plt.show()
 
 
