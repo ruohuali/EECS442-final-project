@@ -43,14 +43,25 @@ class ConvProbe(nn.Module):
 class DepthWiseSeparableConv2d(nn.Module):
     def __init__(self, nin, kernels_per_layer, nout):
         super(DepthWiseSeparableConv2d, self).__init__()
-        self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, 3, 1, groups=nin)
-        self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, 1)
+        self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, 3, 3, groups=nin)
+        self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, 1, 1)
 
     def forward(self, x):
-        out = self.depthwise(x)
-        out = self.pointwise(out)
-        return out
+        x = self.depthwise(x)
+        x = self.pointwise(x)
+        return x
 
+
+class PointwiseInterpolate(nn.Module):
+    def __init__(self, nin, nout):
+        super(PointwiseInterpolate, self).__init__()
+        self.pointwise = nn.Conv2d(nin, nout, 1, 1)
+
+    def forward(self, x):
+        x = F.interpolate(x, (3 * x.shape[2], 3 * x.shape[3]), mode='bilinear', align_corners=True)
+        x = self.pointwise(x)
+        return x
+ 
 
 class DepthWiseSeparableConvProbe(nn.Module):
     def __init__(self, out_dim):
@@ -62,10 +73,10 @@ class DepthWiseSeparableConvProbe(nn.Module):
             DepthWiseSeparableConv2d(63, 1, 63),
             nn.BatchNorm2d(63),
             nn.LeakyReLU(),
-            DepthWiseSeparableConv2d(63, 1, 63),
+            PointwiseInterpolate(63, 63),
             nn.BatchNorm2d(63),
             nn.LeakyReLU(),
-            DepthWiseSeparableConv2d(63, 1, out_dim),
+            PointwiseInterpolate(63, out_dim),
             #   nn.Sigmoid()
         )
 
@@ -75,7 +86,7 @@ class DepthWiseSeparableConvProbe(nn.Module):
 
 
 class RegSegModel(nn.Module):
-    def __init__(self, base_type="deeplab", cls_num=35):
+    def __init__(self, base_type="deeplab", cls_num=35, depthwise=False):
         super().__init__()
         if base_type == "deeplab":
             self.base = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
@@ -86,6 +97,9 @@ class RegSegModel(nn.Module):
         self.cls_num = cls_num
         self.seg_head = ConvProbe(self.cls_num)
         self.reg_head = ConvProbe(1)
+        if depthwise:
+            self.seg_head = DepthWiseSeparableConvProbe(self.cls_num)
+            self.reg_head = DepthWiseSeparableConvProbe(1)
 
     def forward(self, x):
         y_reg_ret = torch.ones(x.shape[0], 1, x.shape[2], x.shape[3], device=x.device)
