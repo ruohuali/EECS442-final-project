@@ -24,6 +24,7 @@ from models.regseg_model import ProbedDualTaskSeg, ConvProbe, \
                                 DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
                                 DualTaskSeg
 from models.unet import DualTaskUNet
+from models.model_utils import showModelInference
 from train_mult import trainDual
 
 
@@ -65,7 +66,7 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     m.train()
     print("train dataloader lengths", len(train_reg_dataloader), len(train_seg_dataloader))
     model = trainDual(m, train_reg_dataloader, test_reg_dataloader, train_seg_dataloader, test_seg_dataloader,
-                      num_epoch=50, device=model_device, save_dir=save_dir, example_img_path=train_example_image_path)
+                      num_epoch=100, device=model_device, save_dir=save_dir, example_img_path=train_example_image_path)
 
     return model
 
@@ -79,11 +80,11 @@ def modelSummary():
     print(2222)           
 
 
-def showModelInference(model_path, img_path):
+def showInference(model_path, img_path):
     model = torch.load(model_path)
     model.eval()
     model = model.cpu()
-    reg_pred, seg_pred, comb_pred = model.showInference(img_path)
+    reg_pred, seg_pred, comb_pred = showModelInference(model, img_path)
     # plt.figure()
     # plt.imshow(reg_pred)
     # plt.figure()
@@ -108,7 +109,7 @@ def main():
     if args.job == "train":
         initTrainKITTIDual(args.train_save_dir, args.train_example_image_path)
     elif args.job == "infer":
-        showModelInference(args.infer_model_path, args.infer_image_path)
+        showInference(args.infer_model_path, args.infer_image_path)
     elif args.job == "model_summary":
         modelSummary()
 

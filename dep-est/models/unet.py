@@ -1,18 +1,9 @@
-
-import cv2
-import numpy as np
-import os
-import platform
-from PIL import Image
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import transforms
+import torchvision
 import torchvision.transforms.functional as TF
-import matplotlib.pyplot as plt
-
-from .model_utils import regPred2Img, clsPred2Img
+from torchvision.models.feature_extraction import create_feature_extractor
 
 
 class HorizontalBlock(nn.Module):
@@ -39,7 +30,8 @@ class DownBlock(nn.Module):
         self.avg_pool = nn.AvgPool2d(2)
 
     def forward(self, x):
-        return self.avg_pool(x)
+        x = self.avg_pool(x)
+        return x
 
 
 class UpBlock(nn.Module):
@@ -114,83 +106,45 @@ class UNet(nn.Module):
 class DualTaskUNet(nn.Module):
     def __init__(self, input_dim=3, cls_num=35):
         super().__init__()
+        cls_net = torchvision.models.mobilenet_v3_small(pretrained=True, progress=True)
+        self.backbone = cls_net.features
+        backbone_out_dim = self.backbone[-1].out_channels
         self.cls_num = cls_num
-        self.unet = UNet(input_dim, cls_num + 1)
+        self.convert_conv = nn.Conv2d(backbone_out_dim, 24, 1)
+        self.unet = UNet(24, cls_num + 1)
+        for param in self.backbone.parameters():
+            param.requires_grad = False
 
     def forward(self, x):
+        _, _, input_h, input_w = x.shape
+        x = self.backbone(x)
+        x = self.convert_conv(x)
+        x = F.interpolate(x, (input_h, input_w))
         y = self.unet(x)
+        y = TF.resize(y, x.shape[2:])
         y_reg_ret = y[:, 0, :, :].unsqueeze(1)
-        y_reg_ret = TF.resize(y_reg_ret, x.shape[2:])
         y_seg_ret = y[:, 1:, :, :]
-        y_seg_ret = TF.resize(y_seg_ret, x.shape[2:])
         return y_reg_ret, y_seg_ret
-
-    def showInference(self, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
-                                                                     transforms.Resize((200, 640)),
-                                                                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                                                          std=[0.229, 0.224, 0.225])])):
-        """
-        @func img_path -> 3 np arrays of results
-        """
-
-        def clearTemp():
-            if platform.system() != "Windows":
-                os.system("rm temp.png")
-            else:
-                raise NotImplementedError("write win cmd for removing temp file")
-
-        img = Image.open(img_path)
-        img_t = preprocess(img)
-        img_t = img_t.unsqueeze(0)
-        with torch.no_grad():
-            reg_pred, seg_pred = self.forward(img_t)
-        reg_pred, seg_pred = regPred2Img(reg_pred), clsPred2Img(seg_pred)
-
-        reg_pred_o, seg_pred_o = reg_pred.clone(), seg_pred.clone()
-        img_o = np.array(img)
-        img_o = cv2.resize(img_o, (reg_pred_o.shape[1], reg_pred_o.shape[0]))
-
-        reg_pred = reg_pred.max() - reg_pred
-        reg_pred7 = reg_pred.clone()
-        reg_pred7[seg_pred != 7] = 0
-        reg_pred26 = reg_pred.clone()
-        reg_pred26[seg_pred != 26] = 0
-        reg_pred = reg_pred7 + reg_pred26
-        reg_pred[reg_pred == 0] = float('nan')
-
-        ##
-        cmap = plt.cm.jet
-        cmap.set_bad(color="black")
-
-        plt.figure()
-        plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.97)
-        plt.imshow(img_o, alpha=0.6)
-        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
-
-        img_arr = cv2.imread("temp.png")
-        clearTemp()
-
-        ##
-        plt.figure()
-        plt.imshow(reg_pred.numpy(), cmap=cmap)
-        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
-
-        reg_pred_arr = cv2.imread("temp.png")
-        clearTemp()
-
-        ##
-        plt.figure()
-        plt.imshow(seg_pred.numpy())
-        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
-
-        seg_pred_arr = cv2.imread("temp.png")
-        clearTemp()
-
-        return reg_pred_arr, seg_pred_arr, img_arr
 
 
 if __name__ == "__main__":
-    x = torch.ones(8, 3, 640, 120)
-    unet = DualTaskUNet(3, 10)
-    y = unet(x)
-    print(y[0].shape, y[1].shape)
+    b = torchvision.models.mobilenet_v3_small(pretrained=True, progress=True, dilated=True)
+    bf = b.features
+    print(bf)
+    x = torch.ones(8, 3, 320, 320)
+    y = b(x)
+    print(y.shape)
+    y = bf(x)
+    print(y.shape)
+
+
+    stage_indices = [0] + [i for i, b in enumerate(bf) if getattr(b, "_is_cn", False)] + [len(bf) - 1]
+    out_pos = stage_indices[-1]  # use C5 which has output_stride = 16
+    out_inplanes = bf[out_pos].out_channels
+    print("stage ids")
+    print(stage_indices)
+    print("out pos")
+    print(out_pos)
+    print("out inplane")
+    print(out_inplanes)
+    print("type", type(bf), bf[-1].out_channels)

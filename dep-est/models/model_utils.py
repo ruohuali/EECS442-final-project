@@ -1,20 +1,13 @@
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
 from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
-from torch.utils.data import Dataset, DataLoader
+from torchvision.io import read_image
 import cv2
-import os
-import time
-from copy import deepcopy
 import matplotlib.pyplot as plt
 import os
+import platform
+from PIL import Image
 
-
-# from PATH import *
 
 def depth2Cutoff(depth_map, cutoff):
     '''@param depth_map ~ (H x W) needs to be numpy array'''
@@ -201,25 +194,69 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
         plt.imshow(pred)
         plt.savefig(os.path.join(save_dir, "pred" + str(i) + ".png"))
 
+def showModelInference(model, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
+                                                                 transforms.Resize((200, 640)),
+                                                                 transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                                                                      std=[0.229, 0.224, 0.225])])):
+    """
+    @func img_path -> 3 np arrays of results
+    """
+
+    def clearTemp():
+        if platform.system() != "Windows":
+            os.system("rm temp.png")
+        else:
+            raise NotImplementedError("write win cmd for removing temp file")
+
+    img = Image.open(img_path)
+    img_t = preprocess(img)
+    img_t = img_t.unsqueeze(0)
+    with torch.no_grad():
+        reg_pred, seg_pred = model.forward(img_t)
+    reg_pred, seg_pred = regPred2Img(reg_pred), clsPred2Img(seg_pred)
+
+    reg_pred_o, seg_pred_o = reg_pred.clone(), seg_pred.clone()
+    img_o = np.array(img)
+    img_o = cv2.resize(img_o, (reg_pred_o.shape[1], reg_pred_o.shape[0]))
+
+    reg_pred = reg_pred.max() - reg_pred
+    reg_pred7 = reg_pred.clone()
+    reg_pred7[seg_pred != 7] = 0
+    reg_pred26 = reg_pred.clone()
+    reg_pred26[seg_pred != 26] = 0
+    reg_pred = reg_pred7 + reg_pred26
+    reg_pred[reg_pred == 0] = float('nan')
+
+    ##
+    cmap = plt.cm.jet
+    cmap.set_bad(color="black")
+
+    plt.figure()
+    plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.97)
+    plt.imshow(img_o, alpha=0.6)
+    plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+    img_arr = cv2.imread("temp.png")
+    clearTemp()
+
+    ##
+    plt.figure()
+    plt.imshow(reg_pred.numpy(), cmap=cmap)
+    plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+    reg_pred_arr = cv2.imread("temp.png")
+    clearTemp()
+
+    ##
+    plt.figure()
+    plt.imshow(seg_pred.numpy())
+    plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+    seg_pred_arr = cv2.imread("temp.png")
+    clearTemp()
+
+    return reg_pred_arr, seg_pred_arr, img_arr
+
 
 if __name__ == "__main__":
-    print(torch.cuda.is_available())
-    if torch.cuda.is_available():
-        print(torch.cuda.device_count())
-        print(torch.cuda.get_device_name(torch.cuda.device_count() - 1))
-
-    gpu_device = torch.device("cuda")
-    cpu_device = torch.device("cpu")
-    dataset = KITTI_DEP(TRAIN_RGB_PATHS, TRAIN_DEP_PATHS, device=cpu_device, qmark=True, original=False)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
-
-    # dataset.example(519)
-    print('len', len(dataset))
-    tic = time.time()
-    for i, data in enumerate(dataloader):
-        print("data rgb", data['rgb'].shape)
-        rgb = data['rgb'].to(gpu_device)
-        label = data['label'].to(gpu_device)
-        if i > 10:
-            break
-    print("time", time.time() - tic)
+    pass

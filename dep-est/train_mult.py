@@ -5,23 +5,17 @@ import os
 import time
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
 from copy import deepcopy
-from pdb import set_trace
-from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
 from tqdm import tqdm
 
 from loss import SSIM, SmoothnessLoss
-
+from models.model_utils import showModelInference
 
 def getModelInference(model, img_path):
     model.eval()
     model = model.cpu()
-    ret = model.showInference(img_path)
+    ret = showModelInference(model, img_path)
     return ret
 
 
