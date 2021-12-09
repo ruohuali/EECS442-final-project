@@ -2,18 +2,13 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import os
 import platform
-import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 from PIL import Image
-from copy import deepcopy
-from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
 
 from .model_utils import regPred2Img, clsPred2Img
 
@@ -52,9 +47,9 @@ class DepthWiseSeparableConv2d(nn.Module):
         return x
 
 
-class PointwiseInterpolate(nn.Module):
+class Interpolate(nn.Module):
     def __init__(self, nin, nout):
-        super(PointwiseInterpolate, self).__init__()
+        super(Interpolate, self).__init__()
         self.pointwise = nn.Conv2d(nin, nout, 1, 1)
 
     def forward(self, x):
@@ -73,10 +68,10 @@ class DepthWiseSeparableConvProbe(nn.Module):
             DepthWiseSeparableConv2d(63, 1, 63),
             nn.BatchNorm2d(63),
             nn.LeakyReLU(),
-            PointwiseInterpolate(63, 63),
+            Interpolate(63, 63),
             nn.BatchNorm2d(63),
             nn.LeakyReLU(),
-            PointwiseInterpolate(63, out_dim),
+            Interpolate(63, out_dim),
             #   nn.Sigmoid()
         )
 
@@ -85,7 +80,7 @@ class DepthWiseSeparableConvProbe(nn.Module):
         return x
 
 
-class RegSegModel(nn.Module):
+class ProbedDualTaskSeg(nn.Module):
     def __init__(self, base_type="deeplab", cls_num=35, depthwise=False):
         super().__init__()
         if base_type == "deeplab":
@@ -174,6 +169,93 @@ class RegSegModel(nn.Module):
         clearTemp()
 
         return reg_pred_arr, seg_pred_arr, img_arr
+
+
+class DualTaskSeg(nn.Module):
+    def __init__(self, base_type="deeplab", cls_num=35, depthwise=False):
+        super().__init__()
+        if base_type == "deeplab":
+            self.base = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
+        elif base_type == "fcn":
+            self.base = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
+        for param in self.base.backbone.parameters():
+            param.requires_grad = False
+        self.cls_num = cls_num
+        self.head = nn.Conv2d(21, self.cls_num + 1, 3, 1)
+
+    def forward(self, x):
+        y_ret = torch.ones(x.shape[0], self.cls_num + 1, x.shape[2], x.shape[3], device=x.device)
+        x = self.base(x)['out']
+        y = self.head(x)
+        y_ret[:, :, :y.shape[2], :y.shape[3]] = y
+
+        y_reg_ret = y_ret[:,0,:,:].unsqueeze(1)
+        y_seg_ret = y_ret[:,1:,:,:]
+
+        return y_reg_ret, y_seg_ret
+
+    def showInference(self, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
+                                                                     transforms.Resize((200, 640)),
+                                                                     transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                                                                          std=[0.229, 0.224, 0.225])])):
+        """
+        @func img_path -> 3 np arrays of results
+        """
+
+        def clearTemp():
+            if platform.system() != "Windows":
+                os.system("rm temp.png")
+            else:
+                raise NotImplementedError("write win cmd for removing temp file")
+
+        img = Image.open(img_path)
+        img_t = preprocess(img)
+        img_t = img_t.unsqueeze(0)
+        with torch.no_grad():
+            reg_pred, seg_pred = self.forward(img_t)
+        reg_pred, seg_pred = regPred2Img(reg_pred), clsPred2Img(seg_pred)
+
+        reg_pred_o, seg_pred_o = reg_pred.clone(), seg_pred.clone()
+        img_o = np.array(img)
+        img_o = cv2.resize(img_o, (reg_pred_o.shape[1], reg_pred_o.shape[0]))
+
+        reg_pred = reg_pred.max() - reg_pred
+        reg_pred7 = reg_pred.clone()
+        reg_pred7[seg_pred != 7] = 0
+        reg_pred26 = reg_pred.clone()
+        reg_pred26[seg_pred != 26] = 0
+        reg_pred = reg_pred7 + reg_pred26
+        reg_pred[reg_pred == 0] = float('nan')
+
+        ##
+        cmap = plt.cm.jet
+        cmap.set_bad(color="black")
+
+        plt.figure()
+        plt.imshow(reg_pred.numpy(), cmap=cmap, alpha=0.97)
+        plt.imshow(img_o, alpha=0.6)
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+        img_arr = cv2.imread("temp.png")
+        clearTemp()
+
+        ##
+        plt.figure()
+        plt.imshow(reg_pred.numpy(), cmap=cmap)
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+        reg_pred_arr = cv2.imread("temp.png")
+        clearTemp()
+
+        ##
+        plt.figure()
+        plt.imshow(seg_pred.numpy())
+        plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+
+        seg_pred_arr = cv2.imread("temp.png")
+        clearTemp()
+
+        return reg_pred_arr, seg_pred_arr, img_arr        
 
 
 if __name__ == "__main__":

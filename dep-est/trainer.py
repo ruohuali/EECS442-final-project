@@ -20,8 +20,10 @@ from dataset.data_path import KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_P
     KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS
 from dataset.diode import DIODE
 from dataset.kitti import KITTI_DEP, KITTI_SEM
-from models.regseg_model import RegSegModel, ConvProbe, DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe
-from models.unet import UNet
+from models.regseg_model import ProbedDualTaskSeg, ConvProbe, \
+                                DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
+                                DualTaskSeg
+from models.unet import DualTaskUNet
 from train_mult import trainDual
 
 
@@ -57,7 +59,8 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
     test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
 
-    m = RegSegModel(depthwise=True).to(model_device)
+    # m = RegSegModel(depthwise=True).to(model_device)
+    m = DualTaskUNet().to(model_device)
     # set_trace()
     m.train()
     print("train dataloader lengths", len(train_reg_dataloader), len(train_seg_dataloader))
@@ -68,12 +71,11 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
 
 
 def modelSummary():
-    dc = DepthWiseSeparableConv2d(21, 1, 63)
-    dpro = DepthWiseSeparableConvProbe(30)
-    cpro = ConvProbe(30)
-    summary(cpro, input_size=(8, 21, 320, 320), device="cpu")
+    m1 = DualTaskSeg()
+    m2 = DualTaskUNet()
+    summary(m1, input_size=(8, 3, 320, 320), device="cpu")
     print(1111)        
-    summary(dpro, input_size=(8, 21, 320, 320), device="cpu")
+    summary(m2, input_size=(8, 3, 320, 320), device="cpu")
     print(2222)           
 
 
@@ -92,9 +94,10 @@ def showModelInference(model_path, img_path):
 
 
 def main():
-    '''python3 trainer.py --job train --train_save_dir train-history --train_example_image_path example1.png
-       python3 trainer.py --job infer --infer_image_path example1.png --infer_model_path train-history/trained_model49.pth
-    '''
+    """
+        python3 trainer.py --job train --train_save_dir train-history --train_example_image_path example1.png
+        python3 trainer.py --job infer --infer_image_path example1.png --infer_model_path train-history/trained_model49.pth
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('--job', type=str, default='train')
     parser.add_argument('--train_save_dir', type=str, default='train-history')

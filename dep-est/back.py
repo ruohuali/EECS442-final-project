@@ -21,7 +21,7 @@ import argparse
 # from PATH import *
 # from data import *
 
-from models.regseg_model import RegSegModel, ConvProbe
+from models.regseg_model import ProbedDualTaskSeg, ConvProbe
 from models.unet import UNet
 from utils import *
 from dataset.kitti import KITTI_DEP, KITTI_SEM
@@ -48,7 +48,7 @@ def initTrainDIODE():
     test_dataset = DIODE(TEST_PATHS, transform=preprocess, target_transform=target_transform, device=data_device)
     test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=4)
 
-    m = RegSegModel("deeplab").to(model_device)
+    m = ProbedDualTaskSeg("deeplab").to(model_device)
     m.train()
     model = trainSingle(m, dataloader, test_dataloader, "reg", num_epoch=100, device=model_device)
 
@@ -66,7 +66,7 @@ def initTrainKITTIReg():
     test_dataset = KITTI_DEP(KITTI_TEST_RGB_PATHS, KITTI_TEST_LABEL_PATHS, device=data_device)
     test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=4, drop_last=True)
 
-    m = RegSegModel().to(model_device)
+    m = ProbedDualTaskSeg().to(model_device)
     m.train()
 
     model = trainSingle(m, dataloader, test_dataloader, "reg", num_epoch=100, device=model_device)
@@ -85,7 +85,7 @@ def initTrainKITTISeg():
     test_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device)
     test_dataloader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=4, drop_last=True)
 
-    m = RegSegModel().to(model_device)
+    m = ProbedDualTaskSeg().to(model_device)
     m.train()
     model = trainSingle(m, dataloader, test_dataloader, "seg", num_epoch=100, device=model_device)
 
@@ -124,7 +124,7 @@ def initTrainKITTIDual():
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
     test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
 
-    m = RegSegModel().to(model_device)
+    m = ProbedDualTaskSeg().to(model_device)
     # set_trace()
     m.train()
     print("train dataloader len", len(train_reg_dataloader), len(train_seg_dataloader))
