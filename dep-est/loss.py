@@ -42,6 +42,9 @@ def _ssim(img1, img2, window, window_size, channel, size_average=True):
 
 
 class SSIM(torch.nn.Module):
+    """
+    code borrowed from https://github.com/Po-Hsun-Su/pytorch-ssim
+    """
     def __init__(self, window_size=11, size_average=True):
         super(SSIM, self).__init__()
         self.window_size = window_size
@@ -79,6 +82,9 @@ def ssim(img1, img2, window_size=11, size_average=True):
 
 
 class SmoothnessLoss(nn.Module):
+    """
+    code borrowed from https://kornia.readthedocs.io/en/v0.1.2/_modules/torchgeometry/losses/depth_smooth.html
+    """
     def __init__(self):
         super(SmoothnessLoss, self).__init__()
 

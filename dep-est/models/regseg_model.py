@@ -81,13 +81,13 @@ class DepthWiseSeparableConvProbe(nn.Module):
 
 
 class ProbedDualTaskSeg(nn.Module):
-    def __init__(self, base_type="deeplab", cls_num=35, depthwise=False):
+    def __init__(self, backbone="deeplab", cls_num=35, depthwise=False):
         super().__init__()
-        if base_type == "deeplab":
-            self.base = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
-        elif base_type == "fcn":
-            self.base = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
-        for param in self.base.backbone.parameters():
+        if backbone == "deeplab":
+            self.backbone = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
+        elif backbone == "fcn":
+            self.backbone = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
+        for param in self.backbone.backbone.parameters():
             param.requires_grad = False
         self.cls_num = cls_num
         self.seg_head = ConvProbe(self.cls_num)
@@ -99,7 +99,7 @@ class ProbedDualTaskSeg(nn.Module):
     def forward(self, x):
         y_reg_ret = torch.ones(x.shape[0], 1, x.shape[2], x.shape[3], device=x.device)
         y_seg_ret = torch.ones(x.shape[0], self.cls_num, x.shape[2], x.shape[3], device=x.device)
-        x = self.base(x)['out']
+        x = self.backbone(x)['out']
         y_reg = self.reg_head(x)
         y_seg = self.seg_head(x)
 
@@ -109,20 +109,20 @@ class ProbedDualTaskSeg(nn.Module):
 
 
 class DualTaskSeg(nn.Module):
-    def __init__(self, base_type="deeplab", cls_num=35, depthwise=False):
+    def __init__(self, backbone_type="deeplab", cls_num=35):
         super().__init__()
-        if base_type == "deeplab":
-            self.base = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
-        elif base_type == "fcn":
-            self.base = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
-        for param in self.base.backbone.parameters():
+        if backbone_type == "deeplab":
+            self.backbone = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(pretrained=True)
+        elif backbone_type == "fcn":
+            self.backbone = torch.hub.load('pytorch/vision:v0.10.0', 'fcn_resnet50', pretrained=True)
+        for param in self.backbone.backbone.parameters():
             param.requires_grad = False
         self.cls_num = cls_num
         self.head = nn.Conv2d(21, self.cls_num + 1, 3, 1)
 
     def forward(self, x):
         y_ret = torch.ones(x.shape[0], self.cls_num + 1, x.shape[2], x.shape[3], device=x.device)
-        x = self.base(x)['out']
+        x = self.backbone(x)['out']
         y = self.head(x)
         y_ret[:, :, :y.shape[2], :y.shape[3]] = y
 

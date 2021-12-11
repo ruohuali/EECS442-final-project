@@ -1,20 +1,10 @@
 import argparse
-import cv2
-import gc
 import matplotlib.pyplot as plt
 import numpy as np
-import os
-import time
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
-from copy import deepcopy
-from pdb import set_trace
 from torch.utils.data import Dataset, DataLoader, Subset
 from torchinfo import summary
 from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
 
 from dataset.data_path import KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, \
     KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS
@@ -35,10 +25,10 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     rgb_preprocess = transforms.Compose([
         transforms.ToTensor(),
         transforms.Resize((200, 640)),
-        # transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
-        # transforms.RandomHorizontalFlip(p=0.5),        
-        # transforms.RandomAdjustSharpness(sharpness_factor=2),
-        # transforms.RandomSolarize(threshold=180, p=0.5),                
+        transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomAdjustSharpness(sharpness_factor=2),
+        transforms.RandomSolarize(threshold=180, p=0.5),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
@@ -49,7 +39,7 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     train_reg_dataset = Subset(reg_dataset, np.arange(SPLIT, len(reg_dataset)))
     train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
     test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
-    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
+    test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 
     seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device,
                             transform=rgb_preprocess)
@@ -58,15 +48,15 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
     train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
-    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=2, shuffle=False, num_workers=2, drop_last=True)
+    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 
-    # m = RegSegModel(depthwise=True).to(model_device)
+    # m = DualTaskSeg(depthwise=True).to(model_device)
     m = DualTaskUNet().to(model_device)
     # set_trace()
     m.train()
     print("train dataloader lengths", len(train_reg_dataloader), len(train_seg_dataloader))
     model = trainDual(m, train_reg_dataloader, test_reg_dataloader, train_seg_dataloader, test_seg_dataloader,
-                      num_epoch=100, device=model_device, save_dir=save_dir, example_img_path=train_example_image_path)
+                      num_epoch=200, device=model_device, save_dir=save_dir, example_img_path=train_example_image_path)
 
     return model
 
@@ -85,12 +75,6 @@ def showInference(model_path, img_path):
     model.eval()
     model = model.cpu()
     reg_pred, seg_pred, comb_pred = showModelInference(model, img_path)
-    # plt.figure()
-    # plt.imshow(reg_pred)
-    # plt.figure()
-    # plt.imshow(seg_pred)
-    # plt.figure()
-    # plt.imshow(comb_pred)
     plt.show()
 
 

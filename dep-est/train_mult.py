@@ -12,6 +12,7 @@ from tqdm import tqdm
 from loss import SSIM, SmoothnessLoss
 from models.model_utils import showModelInference
 
+
 def getModelInference(model, img_path):
     model.eval()
     model = model.cpu()
@@ -25,18 +26,10 @@ def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save
     model_path = os.path.join(save_dir, model_name + ".pth")
     torch.save(best_model, model_path)
     print(f"saved model to {model_path}")
-    # plot_path = os.path.join(save_dir, str(epoch) + ".png")
-    # plt.figure()
-    # plt.plot(loss_hist1, label="train")
-    # plt.plot(loss_hist2, label="val")
-    # plt.savefig(plot_path)
-    # plt.legend(loc="upper left")
-    # print(f"plotted as {plot_path}")
     print("=" * 30)
-    print()
 
 
-def getLossReg(pred, labels, imgs):
+def getRegLoss(pred, labels, imgs):
     l2_loss = nn.MSELoss()
     ssim = SSIM(window_size=7)
     smooth_loss = SmoothnessLoss()
@@ -45,8 +38,19 @@ def getLossReg(pred, labels, imgs):
     return loss
 
 
-def getLossSeg(pred, labels, imgs):
-    ce = nn.CrossEntropyLoss()
+def getSegLoss(pred, labels, imgs):
+    # weights = []
+    # for i in range(35):
+    #     if i != 7 or not 24 <= i <= 33:
+    #         w = 0.3
+    #     elif 21 <= i <= 23:
+    #         w = 0.1
+    #     else:
+    #         w = 1
+    #     weights.append(w)
+    # weights = torch.tensor(weights, device=pred.device)
+    weights = torch.tensor([1. for _ in range(35)], device=pred.device)
+    ce = nn.CrossEntropyLoss(weight=weights)
 
     loss = ce(pred, labels)
     return loss
@@ -69,12 +73,12 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
         seg_imgs = seg_data['rgb'].to(device)
         seg_labels = seg_data['label'].to(device)
 
-        if optimizer != None:
+        if optimizer is not None:
             reg_pred, _ = model(reg_imgs)
-            reg_loss = getLossReg(reg_pred, reg_labels, reg_imgs)
+            reg_loss = getRegLoss(reg_pred, reg_labels, reg_imgs)
 
             _, seg_pred = model(seg_imgs)
-            seg_loss = getLossSeg(seg_pred, seg_labels, seg_imgs)
+            seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
 
             loss = 1 * reg_loss + 1 * seg_loss
 
@@ -86,10 +90,10 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
         else:
             with torch.no_grad():
                 reg_pred, _ = model(reg_imgs)
-                reg_loss = getLossReg(reg_pred, reg_labels, reg_imgs)
+                reg_loss = getRegLoss(reg_pred, reg_labels, reg_imgs)
 
                 _, seg_pred = model(seg_imgs)
-                seg_loss = getLossSeg(seg_pred, seg_labels, seg_imgs)
+                seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
 
                 loss = 1 * reg_loss + 1 * seg_loss
                 # print("val batch", batch_idx, "/", min(len(reg_dataloader), len(seg_dataloader)), end='       \r')
@@ -109,8 +113,8 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
     model.train()
 
     writer = SummaryWriter()
-    # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)    
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005, weight_decay=0.001)
 
     best_record = np.inf
     train_hist = []
@@ -121,6 +125,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         print("epoch  ", epoch)
         tic = time.time()
 
+        model.train()
         running_train_losses = doEpochDual(train_reg_dataloader, train_seg_dataloader, model, optimizer=optimizer,
                                            device=device)
         running_train_loss = running_train_losses['total']
@@ -128,6 +133,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         running_train_seg_loss = running_train_losses['seg']
         train_hist.append(running_train_loss)
 
+        model.eval()
         running_val_losses = doEpochDual(val_reg_dataloader, val_seg_dataloader, model, optimizer=None, device=device)
         running_val_loss = running_val_losses['total']
         running_val_reg_loss = running_val_losses['reg']
@@ -161,99 +167,6 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
 
     writer.close()
     return best_model
-
-
-def testViz(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
-    model = model.to(device)
-    model.eval()
-
-    for i in range(num_example):
-        idx = len(dataset) // (num_example + 1) * i
-
-        data = dataset[idx]
-        img_t = data['rgb'].unsqueeze(0).to(device)
-        img = data['original_rgb']
-        label_t = data['label']
-        label = data['original_label']
-
-        tic = time.time()
-        with torch.no_grad():
-            pred, _ = model(img_t)
-            pred = regPred2Img(pred)
-        toc = time.time()
-        print("inference takes", toc - tic)
-        print("unique", np.unique(pred.numpy()))
-        displayInference(data, pred, save_dir, i, backend="DIODE")
-
-
-def testVizReg(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
-    model = model.to(device)
-    model.eval()
-
-    for i in range(num_example):
-        idx = len(dataset) // (num_example + 1) * i
-
-        data = dataset[idx]
-        img_t = data['rgb'].unsqueeze(0).to(device)
-        img = data['original_rgb']
-        label_t = data['label']
-        label = data['original_label']
-
-        tic = time.time()
-        with torch.no_grad():
-            pred, _ = model(img_t)
-            pred = regPred2Img(pred)
-        toc = time.time()
-        print("inference takes", toc - tic)
-        print("unique", np.unique(pred.numpy()))
-        # displayInference(data, pred, save_dir, i, backend="DIODE")      
-        displayInference(data, pred, save_dir, i, backend="cmap")
-
-
-def testVizSeg(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
-    model = model.to(device)
-    model.eval()
-
-    for i in range(num_example):
-        idx = len(dataset) // (num_example + 1) * i
-
-        data = dataset[idx]
-        img_t = data['rgb'].unsqueeze(0).to(device)
-        img = data['original_rgb']
-        label_t = data['label']
-        label = data['original_label']
-
-        tic = time.time()
-        with torch.no_grad():
-            _, pred = model(img_t)
-            pred = clsPred2Img(pred)
-        toc = time.time()
-        print("inference takes", toc - tic)
-        print("unique", np.unique(pred))
-        displayInference(data, pred, save_dir, i, backend="seg")
-
-
-def testVizRegSeg(model, dataset, save_dir, device=torch.device("cpu"), num_example=5):
-    model = model.to(device)
-    model.eval()
-
-    for i in range(num_example):
-        idx = len(dataset) // (num_example + 1) * i
-
-        data = dataset[idx]
-        img_t = data['rgb'].unsqueeze(0).to(device)
-        img = data['original_rgb']
-        label_t = data['label']
-        label = data['original_label']
-
-        tic = time.time()
-        with torch.no_grad():
-            _, pred = model(img_t)
-            pred = clsPred2Img(pred)
-        toc = time.time()
-        print("inference takes", toc - tic)
-        print("unique", np.unique(pred))
-        displayInference(data, pred, save_dir, i, backend="seg")
 
 
 if __name__ == "__main__":

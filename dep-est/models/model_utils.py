@@ -200,6 +200,8 @@ def showModelInference(model, img_path, preprocess=transforms.Compose([transform
                                                                                       std=[0.229, 0.224, 0.225])])):
     """
     @func img_path -> 3 np arrays of results
+    label assign refer
+    https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py
     """
 
     def clearTemp():
@@ -219,13 +221,14 @@ def showModelInference(model, img_path, preprocess=transforms.Compose([transform
     img_o = np.array(img)
     img_o = cv2.resize(img_o, (reg_pred_o.shape[1], reg_pred_o.shape[0]))
 
-    reg_pred = reg_pred.max() - reg_pred
-    reg_pred7 = reg_pred.clone()
-    reg_pred7[seg_pred != 7] = 0
-    reg_pred26 = reg_pred.clone()
-    reg_pred26[seg_pred != 26] = 0
-    reg_pred = reg_pred7 + reg_pred26
-    reg_pred[reg_pred == 0] = float('nan')
+    reg_pred[torch.logical_and(9 <= seg_pred, seg_pred <= 16)] = float('nan')
+    reg_pred[torch.logical_and(0 <= seg_pred, seg_pred <= 6)] = float('nan')
+    reg_pred[torch.logical_and(21 <= seg_pred, seg_pred <= 23)] = float('nan')
+
+
+    ##
+    plt.figure()
+    plt.imshow(img)
 
     ##
     cmap = plt.cm.jet
@@ -241,7 +244,7 @@ def showModelInference(model, img_path, preprocess=transforms.Compose([transform
 
     ##
     plt.figure()
-    plt.imshow(reg_pred.numpy(), cmap=cmap)
+    plt.imshow(reg_pred_o.numpy(), cmap=cmap)
     plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
 
     reg_pred_arr = cv2.imread("temp.png")

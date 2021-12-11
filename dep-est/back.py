@@ -275,7 +275,7 @@ def doEpochReg(dataloader, model, optimizer=None, device=torch.device("cuda" if 
         if optimizer != None:
             pred, _ = model(imgs)
             # loss = 1 * (1 - ssim(pred, labels)) + 1 * l2_loss(pred, labels) 
-            loss = getLossReg(pred, labels, imgs)
+            loss = getRegLoss(pred, labels, imgs)
 
             optimizer.zero_grad()
             loss.backward()
@@ -285,7 +285,7 @@ def doEpochReg(dataloader, model, optimizer=None, device=torch.device("cuda" if 
         else:
             with torch.no_grad():
                 pred, _ = model(imgs)
-                loss = getLossReg(pred, labels, imgs)
+                loss = getRegLoss(pred, labels, imgs)
                 print("val batch", batch_idx, "/", len(dataloader), end='       \r')
 
         running_loss += loss.item() / len(dataloader)
@@ -301,7 +301,7 @@ def doEpochSeg(dataloader, model, optimizer=None, device=torch.device("cuda" if 
 
         if optimizer != None:
             _, pred = model(imgs)
-            loss = getLossSeg(pred, labels, imgs)
+            loss = getSegLoss(pred, labels, imgs)
 
             optimizer.zero_grad()
             loss.backward()
@@ -311,7 +311,7 @@ def doEpochSeg(dataloader, model, optimizer=None, device=torch.device("cuda" if 
         else:
             with torch.no_grad():
                 _, pred = model(imgs)
-                loss = getLossSeg(pred, labels, imgs)
+                loss = getSegLoss(pred, labels, imgs)
                 print("val batch", batch_idx, "/", len(dataloader), end='       \r')
 
         running_loss += loss.item() / len(dataloader)
@@ -336,10 +336,10 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
 
         if optimizer != None:
             reg_pred, _ = model(reg_imgs)
-            reg_loss = getLossReg(reg_pred, reg_labels, reg_imgs)
+            reg_loss = getRegLoss(reg_pred, reg_labels, reg_imgs)
 
             _, seg_pred = model(seg_imgs)
-            seg_loss = getLossSeg(seg_pred, seg_labels, seg_imgs)
+            seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
 
             loss = 1 * reg_loss + 1 * seg_loss
 
@@ -351,10 +351,10 @@ def doEpochDual(reg_dataloader, seg_dataloader, model, optimizer=None,
         else:
             with torch.no_grad():
                 reg_pred, _ = model(reg_imgs)
-                reg_loss = getLossReg(reg_pred, reg_labels, reg_imgs)
+                reg_loss = getRegLoss(reg_pred, reg_labels, reg_imgs)
 
                 _, seg_pred = model(seg_imgs)
-                seg_loss = getLossSeg(seg_pred, seg_labels, seg_imgs)
+                seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
 
                 loss = 1 * reg_loss + 1 * seg_loss
                 # print("val batch", batch_idx, "/", min(len(reg_dataloader), len(seg_dataloader)), end='       \r')
