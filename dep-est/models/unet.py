@@ -16,7 +16,6 @@ class HorizontalBlock(nn.Module):
         super().__init__()
         self.conv1 = nn.Conv2d(input_dim, output_dim, kernel_size=3, padding=1)
         self.conv2 = nn.Conv2d(output_dim, output_dim, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(output_dim, output_dim, kernel_size=3, padding=1)
         self.relu = nn.LeakyReLU(inplace=True)
         self.bn = nn.BatchNorm2d(output_dim)
 
@@ -25,9 +24,6 @@ class HorizontalBlock(nn.Module):
         x = self.bn(x)
         x = self.relu(x)
         x = self.conv2(x)
-        x = self.bn(x)
-        x = self.relu(x)
-        x = self.conv3(x)
         return x
 
 
@@ -51,11 +47,12 @@ class UpBlock(nn.Module):
 
 
 class ContractPath(nn.Module):
-    def __init__(self, input_dim):
+    def __init__(self, input_dim, channel_nums=[24, 64, 128]):
         super().__init__()
-        self.hb1 = HorizontalBlock(input_dim, 24)
-        self.hb2 = HorizontalBlock(24, 64)
-        self.hb3 = HorizontalBlock(64, 128)
+        self.hb1 = HorizontalBlock(input_dim, channel_nums[0])
+        self.hb2 = HorizontalBlock(channel_nums[0], channel_nums[1])
+        self.hb3 = HorizontalBlock(channel_nums[1], channel_nums[2])
+
 
         self.db = DownBlock()
 
@@ -72,11 +69,11 @@ class ContractPath(nn.Module):
 
 
 class ExpandPath(nn.Module):
-    def __init__(self, output_dim):
+    def __init__(self, output_dim, channel_nums=[128, 64, 24]):
         super().__init__()
-        self.hb1 = HorizontalBlock(128, 64)
-        self.hb2 = HorizontalBlock(128, 24)
-        self.hb3 = HorizontalBlock(48, output_dim)
+        self.hb1 = HorizontalBlock(channel_nums[0], channel_nums[1])
+        self.hb2 = HorizontalBlock(channel_nums[1]*2, channel_nums[2])
+        self.hb3 = HorizontalBlock(channel_nums[2]*2, output_dim)
 
         self.ub = UpBlock()
 
@@ -98,10 +95,10 @@ class ExpandPath(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, input_dim, num_class):
+    def __init__(self, input_dim, num_class, channel_nums=[24, 64, 128]):
         super().__init__()
-        self.cp = ContractPath(input_dim)
-        self.ep = ExpandPath(num_class)
+        self.cp = ContractPath(input_dim, channel_nums=channel_nums)
+        self.ep = ExpandPath(num_class, channel_nums=list(reversed(channel_nums)))
 
     def forward(self, x):
         feat_maps = self.cp(x)

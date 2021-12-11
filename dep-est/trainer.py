@@ -20,33 +20,35 @@ from train_mult import trainDual
 
 def initTrainKITTIDual(save_dir, train_example_image_path):
     model_device = torch.device("cuda")
-    data_device = device = torch.device("cpu")
+    data_device = torch.device("cpu")
 
     rgb_preprocess = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Resize((200, 640)),
+        transforms.Resize((200, 480)),
         transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
         transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomAdjustSharpness(sharpness_factor=2),
-        transforms.RandomSolarize(threshold=180, p=0.5),
+        transforms.RandomSolarize(threshold=180, p=0.1),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
+    label_preprocess1 = transforms.Compose([transforms.GaussianBlur(15, sigma=4.0),
+                                           transforms.Resize( (200, 480) )])
+    label_preprocess2 = transforms.Compose([transforms.Resize( (200, 480) )])
 
     reg_dataset = KITTI_DEP(KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, device=data_device,
-                            transform=rgb_preprocess)
+                            transform=rgb_preprocess, target_transform=label_preprocess1)
     SPLIT = len(reg_dataset) // 10
     # SPLIT = 10
     train_reg_dataset = Subset(reg_dataset, np.arange(SPLIT, len(reg_dataset)))
-    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
+    train_reg_dataloader = DataLoader(train_reg_dataset, batch_size=6, shuffle=True, num_workers=2, drop_last=True)
     test_reg_dataset = Subset(reg_dataset, np.arange(0, SPLIT))
     test_reg_dataloader = DataLoader(test_reg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 
     seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device,
-                            transform=rgb_preprocess)
+                            transform=rgb_preprocess, target_transform=label_preprocess2)
     SPLIT = len(seg_dataset) // 10
     # SPLIT = 10
     train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
-    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=2, shuffle=True, num_workers=2, drop_last=True)
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=6, shuffle=True, num_workers=2, drop_last=True)
     test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
     test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 

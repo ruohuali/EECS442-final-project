@@ -56,7 +56,7 @@ class Interpolate(nn.Module):
         x = F.interpolate(x, (3 * x.shape[2], 3 * x.shape[3]), mode='bilinear', align_corners=True)
         x = self.pointwise(x)
         return x
- 
+
 
 class DepthWiseSeparableConvProbe(nn.Module):
     def __init__(self, out_dim):
@@ -126,8 +126,8 @@ class DualTaskSeg(nn.Module):
         y = self.head(x)
         y_ret[:, :, :y.shape[2], :y.shape[3]] = y
 
-        y_reg_ret = y_ret[:,0,:,:].unsqueeze(1)
-        y_seg_ret = y_ret[:,1:,:,:]
+        y_reg_ret = y_ret[:, 0, :, :].unsqueeze(1)
+        y_seg_ret = y_ret[:, 1:, :, :]
 
         return y_reg_ret, y_seg_ret
 

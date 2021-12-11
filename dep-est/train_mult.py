@@ -114,7 +114,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
 
     writer = SummaryWriter()
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005, weight_decay=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005, weight_decay=0)
 
     best_record = np.inf
     train_hist = []
