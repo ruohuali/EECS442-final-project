@@ -57,14 +57,14 @@ class YoloData():
             else:
                 xtl += pad[0]
                 xbr += pad[0]
-            xratio = self.shape[0]/pad_w
-            yratio = self.shape[0]/pad_h
+            xratio = 1/pad_w
+            yratio = 1/pad_h
             midx = ((xbr+xtl)/2)*xratio
             midy = ((ybr+ytl)/2)*yratio
             
             yolo_w = abs(xbr-xtl)*xratio
             yolo_h = abs(ybr-ytl)*yratio
-            labels = np.full(shape=(MAX_LABEL, 5), fill_value=-1, dtype=np.float32)
+            labels = np.full(shape=(MAX_LABEL, 5), fill_value=0, dtype=np.float32)
             
             labels[:nrow, 0] = label[:,0]
             labels[:nrow, 1] = midx
