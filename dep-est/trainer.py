@@ -24,15 +24,17 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
 
     rgb_preprocess = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Resize((200, 480)),
+        transforms.CenterCrop(352),
+        transforms.Resize((224, 224)),
         transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomSolarize(threshold=180, p=0.1),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
     label_preprocess1 = transforms.Compose([transforms.GaussianBlur(15, sigma=4.0),
-                                           transforms.Resize( (200, 480) )])
-    label_preprocess2 = transforms.Compose([transforms.Resize( (200, 480) )])
+                                            transforms.CenterCrop(352),
+                                            transforms.Resize( (224, 224) )])
+    label_preprocess2 = transforms.Compose([transforms.CenterCrop(352), transforms.Resize( (224, 224) )])
 
     reg_dataset = KITTI_DEP(KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, device=data_device,
                             transform=rgb_preprocess, target_transform=label_preprocess1)

@@ -130,6 +130,21 @@ class DualTaskUNet(nn.Module):
         y_seg_ret = y[:, 1:, :, :]
         return y_reg_ret, y_seg_ret
 
+    def combinedInference(self, x, feat):
+        with torch.no_grad():
+            _, _, input_h, input_w = x.shape
+            xb = F.interpolate(feat, (input_h // 5, input_w // 5))
+            xo = TF.resize(x, xb.shape[2:])
+            x = torch.cat((xb, xo), axis=1)
+            y = self.unet(x)
+            y = F.interpolate(y, (input_h, input_w))
+            y_reg_ret = y[:, 0, :, :].unsqueeze(1)
+            y_seg_ret = y[:, 1:, :, :]
+        return y_reg_ret, y_seg_ret
+
 
 if __name__ == "__main__":
-    pass
+    m = torch.load("trained_model74.pth")
+    img = torch.ones(1, 3, 320, 320)
+    feat = torch.ones(1, 576, 7, 7)
+    y = m.combinedInference(img, feat)
