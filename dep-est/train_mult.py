@@ -10,21 +10,21 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from loss import SSIM, SmoothnessLoss
-from models.model_utils import showModelInference
+from models.model_utils import showRegSegModelInference
 
 
 def getModelInference(model, img_path):
     model.eval()
     model = model.cpu()
-    ret = showModelInference(model, img_path)
+    ret = showRegSegModelInference(model, img_path)
     return ret
 
 
 def manualCheckpoint(epoch, loss_hist1, loss_hist2, best_model, model_name, save_dir):
     print("=" * 30)
     print(f"epoch {epoch} loss {min(loss_hist1)} {min(loss_hist2)}")
-    model_path = os.path.join(save_dir, model_name + ".pth")
-    torch.save(best_model, model_path)
+    model_path = os.path.join(save_dir, model_name + "_dict.pth")
+    torch.save(best_model.state_dict(), model_path)
     print(f"saved model to {model_path}")
     print("=" * 30)
 

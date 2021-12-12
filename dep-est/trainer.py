@@ -14,7 +14,7 @@ from models.regseg_model import ProbedDualTaskSeg, ConvProbe, \
                                 DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
                                 DualTaskSeg
 from models.unet import DualTaskUNet
-from models.model_utils import showModelInference
+from models.model_utils import showRegSegModelInference
 from train_mult import trainDual
 
 
@@ -26,7 +26,7 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
         transforms.ToTensor(),
         transforms.CenterCrop(352),
         transforms.Resize((224, 224)),
-        transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
+        transforms.ColorJitter(0.1, 0.1, 0.1, 0.1),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomSolarize(threshold=180, p=0.1),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -78,7 +78,7 @@ def showInference(model_path, img_path):
     model = torch.load(model_path)
     model.eval()
     model = model.cpu()
-    reg_pred, seg_pred, comb_pred = showModelInference(model, img_path)
+    reg_pred, seg_pred, comb_pred = showRegSegModelInference(model, img_path)
     plt.show()
 
 

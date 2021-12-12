@@ -467,7 +467,7 @@ def trainDual(model, train_reg_dataloader, val_reg_dataloader, train_seg_dataloa
         if epoch % 25 == 24:
             manualCheckpoint(epoch, train_hist, val_hist, best_model, "trained_model" + str(epoch), "train-history")
         if epoch % 2 == 1:
-            _, _, img_arr = showModelInference(best_model, "example1.png")
+            _, _, img_arr = showRegSegModelInference(best_model, "example1.png")
             print("written image")
             writer.add_image("example", img_arr, epoch, dataformats='HWC')
 

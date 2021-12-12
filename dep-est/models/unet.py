@@ -144,7 +144,6 @@ class DualTaskUNet(nn.Module):
 
 
 if __name__ == "__main__":
-    m = torch.load("trained_model74.pth")
-    img = torch.ones(1, 3, 320, 320)
-    feat = torch.ones(1, 576, 7, 7)
-    y = m.combinedInference(img, feat)
+    unet = DualTaskUNet()
+    md = torch.load("../train-history/trained_model24_dict.pth")
+    unet.load_state_dict(md)

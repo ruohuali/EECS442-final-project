@@ -14,7 +14,7 @@ import shutil
 import os
 
 # parameters for plotting
-plt.rcParams['figure.figsize'] = (10.0, 8.0) # set default size of plots
+plt.rcParams['figure.figsize'] = (10.0, 8.0)  # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 
@@ -26,7 +26,6 @@ to_double = {'dtype': torch.double, 'device': 'cpu'}
 to_double_cuda = {'dtype': torch.double, 'device': 'cuda'}
 to_long = {'dtype': torch.long, 'device': 'cpu'}
 to_long_cuda = {'dtype': torch.long, 'device': 'cuda'}
-
 
 
 def get_pascal_voc2007_data(image_root, split='train'):
@@ -57,15 +56,15 @@ def pascal_voc2007_loader(dataset, batch_size, num_workers=0):
     return train_loader
 
 
-class_to_idx = {'aeroplane':0, 'bicycle':1, 'bird':2, 'boat':3, 'bottle':4,
-                'bus':5, 'car':6, 'cat':7, 'chair':8, 'cow':9, 'diningtable':10,
-                'dog':11, 'horse':12, 'motorbike':13, 'person':14, 'pottedplant':15,
-                'sheep':16, 'sofa':17, 'train':18, 'tvmonitor':19
+class_to_idx = {'aeroplane': 0, 'bicycle': 1, 'bird': 2, 'boat': 3, 'bottle': 4,
+                'bus': 5, 'car': 6, 'cat': 7, 'chair': 8, 'cow': 9, 'diningtable': 10,
+                'dog': 11, 'horse': 12, 'motorbike': 13, 'person': 14, 'pottedplant': 15,
+                'sheep': 16, 'sofa': 17, 'train': 18, 'tvmonitor': 19
                 }
-idx_to_class = {i:c for c, i in class_to_idx.items()}
-
+idx_to_class = {i: c for c, i in class_to_idx.items()}
 
 from torchvision import transforms
+
 
 def voc_collate_fn(batch_lst, reshape_size=224):
     preprocess = transforms.Compose([
@@ -88,12 +87,12 @@ def voc_collate_fn(batch_lst, reshape_size=224):
 
     for i in range(batch_size):
         img, ann = batch_lst[i]
-        w_list.append(img.size[0]) # image width
-        h_list.append(img.size[1]) # image height
+        w_list.append(img.size[0])  # image width
+        h_list.append(img.size[1])  # image height
         img_id_list.append(ann['annotation']['filename'])
         img_batch[i] = preprocess(img)
         all_bbox = ann['annotation']['object']
-        if type(all_bbox) == dict: # inconsistency in the annotation file
+        if type(all_bbox) == dict:  # inconsistency in the annotation file
             all_bbox = [all_bbox]
         for bbox_idx, one_bbox in enumerate(all_bbox):
             bbox = one_bbox['bndbox']
@@ -105,6 +104,7 @@ def voc_collate_fn(batch_lst, reshape_size=224):
     w_batch = torch.tensor(w_list)
 
     return img_batch, box_batch, w_batch, h_batch, img_id_list
+
 
 def coord_trans(bbox, w_pixel, h_pixel, w_amap=7, h_amap=7, mode='a2p'):
     """
@@ -129,14 +129,14 @@ def coord_trans(bbox, w_pixel, h_pixel, w_amap=7, h_amap=7, mode='a2p'):
     assert mode in ('p2a', 'a2p'), 'invalid coordinate transformation mode!'
     assert bbox.shape[-1] >= 4, 'the transformation is applied to the first 4 values of dim -1'
 
-    if bbox.shape[0] == 0: # corner cases
+    if bbox.shape[0] == 0:  # corner cases
         return bbox
 
     resized_bbox = bbox.clone()
     # could still work if the first dim of bbox is not batch size
     # in that case, w_pixel and h_pixel will be scalars
     resized_bbox = resized_bbox.view(bbox.shape[0], -1, bbox.shape[-1])
-    invalid_bbox_mask = (resized_bbox == -1) # indicating invalid bbox
+    invalid_bbox_mask = (resized_bbox == -1)  # indicating invalid bbox
 
     if mode == 'p2a':
         # pixel to activation
@@ -155,9 +155,11 @@ def coord_trans(bbox, w_pixel, h_pixel, w_amap=7, h_amap=7, mode='a2p'):
     resized_bbox.resize_as_(bbox)
     return resized_bbox
 
+
 """# Data Visualizer
 This function will help us visualize boxes on top of images.
 """
+
 
 def data_visualizer(img, idx_to_class, bbox=None, pred=None):
     """
@@ -181,47 +183,45 @@ def data_visualizer(img, idx_to_class, bbox=None, pred=None):
             one_bbox = bbox[bbox_idx][:4]
             cv2.rectangle(img_copy, (one_bbox[0], one_bbox[1]), (one_bbox[2],
                                                                  one_bbox[3]), (255, 0, 0), 2)
-            if bbox.shape[1] > 4: # if class info provided
+            if bbox.shape[1] > 4:  # if class info provided
                 obj_cls = idx_to_class[bbox[bbox_idx][4].item()]
                 cv2.putText(img_copy, '%s' % (obj_cls),
-                            (one_bbox[0], one_bbox[1]+15),
+                            (one_bbox[0], one_bbox[1] + 15),
                             cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
 
     if pred is not None:
         for bbox_idx in range(pred.shape[0]):
-            print(pred[bbox_idx], 'pred', bbox_idx)
-            print(pred.shape, 'shape')
             one_bbox = pred[bbox_idx][:4]
-            print(one_bbox, "bx")
             first_arg = (int(one_bbox[0]), int(one_bbox[1]))
             second_arg = (int(one_bbox[2]), int(one_bbox[3]))
             # cv2.rectangle(img_copy, (one_bbox[0], one_bbox[1]), (one_bbox[2], one_bbox[3]), (0, 255, 0), 2)
             cv2.rectangle(img_copy, first_arg, second_arg, (0, 255, bbox_idx * 255), 2)
 
-            if pred.shape[1] > 4: # if class and conf score info provided
+            if pred.shape[1] > 4:  # if class and conf score info provided
                 obj_cls = idx_to_class[pred[bbox_idx][4].item()]
-                print(obj_cls, "obh")
                 conf_score = pred[bbox_idx][5].item()
-                print(conf_score, 'scrore')
                 # cv2.putText(img_copy, '%s, %.2f' % (obj_cls, conf_score),
                 #             (one_bbox[0], one_bbox[1]+15),
                 #             cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
                 cv2.putText(img_copy, '%s, %.2f' % (obj_cls, conf_score),
-                            (int(one_bbox[0]), int(one_bbox[1])+15),
+                            (int(one_bbox[0]), int(one_bbox[1]) + 15),
                             cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
 
     plt.imshow(img_copy)
     plt.axis('off')
     plt.show()
 
+
 """# (a) Detector Backbone Network
 Here, we use a [MobileNet v2](https://pytorch.org/hub/pytorch_vision_mobilenet_v2/) for image feature extraction.
 """
+
 
 class FeatureExtractor(nn.Module):
     """
     Image feature extraction with MobileNet.
     """
+
     def __init__(self, reshape_size=224, pooling=False, verbose=False):
         super().__init__()
 
@@ -231,17 +231,18 @@ class FeatureExtractor(nn.Module):
         # self.mobilenet = models.mobilenet_v2(pretrained=True)
         # self.mobilenet = nn.Sequential(*list(self.mobilenet.children())[:-1]) # Remove the last classifier
 
-        self.mobilenet = models.mobilenet_v3_small(pretrained=True, process=True)   # modified
+        self.mobilenet = models.mobilenet_v3_small(pretrained=True, process=True)  # modified
         self.mobilenet = self.mobilenet.features
 
         # average pooling
         if pooling:
-            self.mobilenet.add_module('LastAvgPool', nn.AvgPool2d(math.ceil(reshape_size/32.))) # input: N x 1280 x 7 x 7
+            self.mobilenet.add_module('LastAvgPool',
+                                      nn.AvgPool2d(math.ceil(reshape_size / 32.)))  # input: N x 1280 x 7 x 7
 
         # for i in self.mobilenet.named_parameters():
         #   i[1].requires_grad = True # fine-tune all parameters
         for param in self.mobilenet.parameters():
-            param.requires_grad = False       #modified
+            param.requires_grad = False  # modified
 
         if verbose:
             summary(self.mobilenet.cuda(), (3, reshape_size, reshape_size))
@@ -260,9 +261,9 @@ class FeatureExtractor(nn.Module):
 
         feat = []
         process_batch = 500
-        for b in range(math.ceil(num_img/process_batch)):
-            feat.append(self.mobilenet(img_prepro[b*process_batch:(b+1)*process_batch]
-                                       ).squeeze(-1).squeeze(-1)) # forward and squeeze
+        for b in range(math.ceil(num_img / process_batch)):
+            feat.append(self.mobilenet(img_prepro[b * process_batch:(b + 1) * process_batch]
+                                       ).squeeze(-1).squeeze(-1))  # forward and squeeze
         feat = torch.cat(feat)
 
         if verbose:
@@ -270,9 +271,8 @@ class FeatureExtractor(nn.Module):
 
         return feat
 
+
 """Now, let's see what's inside MobileNet v2. Assume we have a 3x224x224 image input."""
-
-
 
 """# (b) Activation and Proposal
 
@@ -283,6 +283,7 @@ Centered at each position of the $7$x$7$ activation grid, we predict $A$ boundin
 
 This function will compute these center coordinates for us.
 """
+
 
 def GenerateGrid(batch_size, w_amap=7, h_amap=7, dtype=torch.float32, device='cuda'):
     """
@@ -308,6 +309,7 @@ def GenerateGrid(batch_size, w_amap=7, h_amap=7, dtype=torch.float32, device='cu
 
     return grid
 
+
 """## (b) TODO: Proposal Generator
 
 Now, consider a grid with center, width and height $(x_c^g,y_c^g)$.
@@ -329,6 +331,7 @@ We assume that $t^x$ and $t^y$ are both in the range $-0.5\leq t^x,t^y\leq 0.5$,
 During training, we compute the ground-truth transformation $(\hat{t^x}, \hat{t^y}, \hat{t^w}, \hat{t^h})$ that would, with the help of the grid center coordinates, yield the bounding box $(x_c^p,y_c^p,w^p,h^p)$ which we expect to match the ground-truth box $(x_c^{gt},y_c^{gt},w^{gt},h^{gt})$. We then apply a regression loss that penalizes differences between the predicted transform $(t^x, t^y, t^w, t^h)$ and the ground-truth transform.
 
 """
+
 
 def GenerateProposal(grids, offsets):
     """
@@ -370,16 +373,17 @@ def GenerateProposal(grids, offsets):
 
     grids = torch.unsqueeze(grids, 1)
 
-    xcp = grids[:,:,:,:,0] + offsets[:,:,:,:,0]
-    ycp = grids[:,:,:,:,1] + offsets[:,:,:,:,1]
-    wp = offsets[:,:,:,:,2]*7/2
-    hp = offsets[:,:,:,:,3]*7/2
-    proposals = torch.stack((xcp-wp, ycp-hp, xcp+wp, ycp+hp), 4)
+    xcp = grids[:, :, :, :, 0] + offsets[:, :, :, :, 0]
+    ycp = grids[:, :, :, :, 1] + offsets[:, :, :, :, 1]
+    wp = offsets[:, :, :, :, 2] * 7 / 2
+    hp = offsets[:, :, :, :, 3] * 7 / 2
+    proposals = torch.stack((xcp - wp, ycp - hp, xcp + wp, ycp + hp), 4)
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
 
     return proposals
+
 
 """# (c-e) Prediction Networks
 
@@ -387,6 +391,7 @@ def GenerateProposal(grids, offsets):
 You will implement the IoU function. Carefully read the expected inputs and outputs. This function will also be used later in the ObjectClassification module to calculate the IoU between the predicted bounding boxes/proposals and the ground truth bounding boxes. 
 **NOTE**: Keep in mind the parametrization of the input and output bounding boxes. (Whether it is (x, y, w, h) or (xtl, ytl, xbr, ybr)). The definition of IoU can be found in the [lecture slides](https://www.eecs.umich.edu/courses/eecs442-ahowens/fa21/slides/lec12-object.pdf) (slides 46-47).
 """
+
 
 def IoU(proposals, bboxes):
     """
@@ -424,38 +429,39 @@ def IoU(proposals, bboxes):
     #############################################################################
     B, A, H, W, p_ori = proposals.shape
     B, N, bb_ori = bboxes.shape
-    p = torch.unsqueeze(torch.reshape(proposals, [B, A*H*W, p_ori]), dim=2)
+    p = torch.unsqueeze(torch.reshape(proposals, [B, A * H * W, p_ori]), dim=2)
     bb = torch.unsqueeze(bboxes, dim=1)
 
-    xtl = p[:,:,:,0]
-    ytl = p[:,:,:,1]
-    xbr = p[:,:,:,2]
-    ybr = p[:,:,:,3]
-    x_tl = bb[:,:,:,0]
-    y_tl = bb[:,:,:,1]
-    x_br = bb[:,:,:,2]
-    y_br = bb[:,:,:,3]
+    xtl = p[:, :, :, 0]
+    ytl = p[:, :, :, 1]
+    xbr = p[:, :, :, 2]
+    ybr = p[:, :, :, 3]
+    x_tl = bb[:, :, :, 0]
+    y_tl = bb[:, :, :, 1]
+    x_br = bb[:, :, :, 2]
+    y_br = bb[:, :, :, 3]
 
     inter_xtl = torch.max(xtl, x_tl)
     inter_ytl = torch.max(ytl, y_tl)
-    inter_xbr = torch.min(xbr,x_br)
+    inter_xbr = torch.min(xbr, x_br)
     inter_ybr = torch.min(ybr, y_br)
     zero = torch.zeros(inter_xtl.shape, **to_float_cuda)
-    intersection = torch.max(zero, inter_xbr-inter_xtl) * torch.max(zero, inter_ybr-inter_ytl)
-    union = abs((x_br-x_tl)*(y_tl-y_br))+abs((xbr-xtl)*(ytl-ybr))-intersection
+    intersection = torch.max(zero, inter_xbr - inter_xtl) * torch.max(zero, inter_ybr - inter_ytl)
+    union = abs((x_br - x_tl) * (y_tl - y_br)) + abs((xbr - xtl) * (ytl - ybr)) - intersection
 
-    iou_mat = intersection/union
+    iou_mat = intersection / union
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
 
     return iou_mat
 
+
 class PredictionNetwork(nn.Module):
     def __init__(self, in_dim, hidden_dim=128, num_bboxes=2, num_classes=20, drop_ratio=0.3):
         super().__init__()
 
-        assert(num_classes != 0 and num_bboxes != 0)
+        assert (num_classes != 0 and num_bboxes != 0)
         self.num_classes = num_classes
         self.num_bboxes = num_bboxes
 
@@ -471,15 +477,14 @@ class PredictionNetwork(nn.Module):
         self.in_dim = in_dim
         self.hidden_dim = hidden_dim
         self.drop_ratio = drop_ratio
-        out_dim = 5*self.num_bboxes + self.num_classes
+        out_dim = 5 * self.num_bboxes + self.num_classes
 
         layers = [
             torch.nn.Conv2d(self.in_dim, self.hidden_dim, kernel_size=1),
             torch.nn.Dropout(p=self.drop_ratio),
             torch.nn.LeakyReLU(negative_slope=0.2),
 
-
-            torch.nn.Conv2d(self.hidden_dim, self.hidden_dim, kernel_size=3, padding=1),    #modified
+            torch.nn.Conv2d(self.hidden_dim, self.hidden_dim, kernel_size=3, padding=1),  # modified
             torch.nn.LeakyReLU(negative_slope=0.2),
             torch.nn.BatchNorm2d(self.hidden_dim),
 
@@ -491,8 +496,7 @@ class PredictionNetwork(nn.Module):
             torch.nn.LeakyReLU(negative_slope=0.2),
             torch.nn.BatchNorm2d(self.hidden_dim),
 
-
-            torch.nn.Conv2d(self.hidden_dim,out_dim,kernel_size=1),
+            torch.nn.Conv2d(self.hidden_dim, out_dim, kernel_size=1),
         ]
         self.net = nn.Sequential(*layers)
 
@@ -535,18 +539,17 @@ class PredictionNetwork(nn.Module):
         C = self.num_classes
         A = self.num_bboxes
 
-        bbox_xywh_index = torch.tensor([i for i in range(0, 5*A) if i%5!=4], **to_long_cuda)
-        bbox_xywh = torch.reshape(torch.index_select(outputs, 1, bbox_xywh_index),(B, A, 4, H, W))
+        bbox_xywh_index = torch.tensor([i for i in range(0, 5 * A) if i % 5 != 4], **to_long_cuda)
+        bbox_xywh = torch.reshape(torch.index_select(outputs, 1, bbox_xywh_index), (B, A, 4, H, W))
         sub = torch.zeros(bbox_xywh.shape, **to_float_cuda)
-        sub[:,:,:2] += 0.5
+        sub[:, :, :2] += 0.5
         bbox_xywh = torch.sigmoid(bbox_xywh).clone() - sub
-        conf_score_index = torch.arange(4, 5*A, 5, **to_long_cuda)
+        conf_score_index = torch.arange(4, 5 * A, 5, **to_long_cuda)
         conf_scores = torch.sigmoid(torch.index_select(outputs, 1, conf_score_index))
-        cls_scores = outputs[:,-C:,:,:]
+        cls_scores = outputs[:, -C:, :, :]
         ###########################################################################
         #                              END OF YOUR CODE                           #
         ###########################################################################
-
 
         # You can uncomment these lines when training for a few iterations to
         # check if your offets are within the expected bounds.
@@ -558,6 +561,7 @@ class PredictionNetwork(nn.Module):
 
         return bbox_xywh, conf_scores, cls_scores
 
+
 """You can uncomment the assert statements above the return in the previous function when training for a few iterations to see if the offsets you predict are within the required bounds. Once you are sure of that, comment them again and continue training.
 
 ## Activated (positive) and negative bounding boxes
@@ -565,6 +569,7 @@ During training, after we calculate the bbox_xywh (offset) values for all boundi
 
 Read and digest the input/output definition carefully. You are highly recommended to skim through the code as well, the ground targets are core to training an accurate model.
 """
+
 
 def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7, neg_thresh=0.3):
     """
@@ -607,30 +612,29 @@ def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7,
     - negative_anc_coord: Coordinates on negative bboxes (mainly for visualization purposes)
     """
 
-
     B, A, h_amap, w_amap, _ = bboxes.shape
     N = gt_bboxes.shape[1]
 
     # activated/positive bboxes
     max_iou_per_anc, max_iou_per_anc_ind = iou_mat.max(dim=-1)
 
-    bbox_mask = (gt_bboxes[:, :, 0] != -1) # BxN, indicate invalid boxes
-    bbox_centers = (gt_bboxes[:, :, 2:4] - gt_bboxes[:, :, :2]) / 2. + gt_bboxes[:, :, :2] # BxNx2
+    bbox_mask = (gt_bboxes[:, :, 0] != -1)  # BxN, indicate invalid boxes
+    bbox_centers = (gt_bboxes[:, :, 2:4] - gt_bboxes[:, :, :2]) / 2. + gt_bboxes[:, :, :2]  # BxNx2
 
-    mah_dist = torch.abs(grid.view(B, -1, 2).unsqueeze(2) - bbox_centers.unsqueeze(1)).sum(dim=-1) # Bx(H'xW')xN
-    min_mah_dist = mah_dist.min(dim=1, keepdim=True)[0] # Bx1xN
-    grid_mask = (mah_dist == min_mah_dist).unsqueeze(1) # Bx1x(H'xW')xN
+    mah_dist = torch.abs(grid.view(B, -1, 2).unsqueeze(2) - bbox_centers.unsqueeze(1)).sum(dim=-1)  # Bx(H'xW')xN
+    min_mah_dist = mah_dist.min(dim=1, keepdim=True)[0]  # Bx1xN
+    grid_mask = (mah_dist == min_mah_dist).unsqueeze(1)  # Bx1x(H'xW')xN
 
     reshaped_iou_mat = iou_mat.view(B, A, -1, N)
-    anc_with_largest_iou = reshaped_iou_mat.max(dim=1, keepdim=True)[0] # Bx1x(H’xW’)xN
-    anc_mask = (anc_with_largest_iou == reshaped_iou_mat) # BxAx(H’xW’)xN
+    anc_with_largest_iou = reshaped_iou_mat.max(dim=1, keepdim=True)[0]  # Bx1x(H’xW’)xN
+    anc_mask = (anc_with_largest_iou == reshaped_iou_mat)  # BxAx(H’xW’)xN
     activated_anc_mask = (grid_mask & anc_mask).view(B, -1, N)
     activated_anc_mask &= bbox_mask.unsqueeze(1)
 
     # one bbox could match multiple GT boxes
     activated_anc_ind = torch.nonzero(activated_anc_mask.view(-1)).squeeze(-1)
     GT_conf_scores = iou_mat.view(-1)[activated_anc_ind]
-    gt_bboxes = gt_bboxes.view(B, 1, N, 5).repeat(1, A*h_amap*w_amap, 1, 1).view(-1, 5)[activated_anc_ind]
+    gt_bboxes = gt_bboxes.view(B, 1, N, 5).repeat(1, A * h_amap * w_amap, 1, 1).view(-1, 5)[activated_anc_ind]
     GT_class = gt_bboxes[:, 4].long()
     gt_bboxes = gt_bboxes[:, :4]
     activated_anc_ind = (activated_anc_ind.float() / activated_anc_mask.shape[-1]).long()
@@ -639,8 +643,7 @@ def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7,
 
     activated_anc_coord = bboxes.reshape(-1, 4)[activated_anc_ind]
 
-    activated_grid_coord = grid.repeat(1,A,1,1,1).reshape(-1, 2)[activated_anc_ind]
-
+    activated_grid_coord = grid.repeat(1, A, 1, 1, 1).reshape(-1, 2)[activated_anc_ind]
 
     # GT offsets
 
@@ -650,10 +653,11 @@ def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7,
     # Grid: (B, H, W, 2) -> This will be used to calculate center offsets
     # w, h offsets are not offsets but normalized w,h themselves.
 
-    wh_offsets = torch.sqrt((gt_bboxes[:, 2:4] - gt_bboxes[:, :2])/7.)
-    assert torch.max((gt_bboxes[:, 2:4] - gt_bboxes[:, :2])/7.) <= 1, "w and h targets not normalised, should be between 0 and 1"
+    wh_offsets = torch.sqrt((gt_bboxes[:, 2:4] - gt_bboxes[:, :2]) / 7.)
+    assert torch.max(
+        (gt_bboxes[:, 2:4] - gt_bboxes[:, :2]) / 7.) <= 1, "w and h targets not normalised, should be between 0 and 1"
 
-    xy_offsets = (gt_bboxes[:, :2] + gt_bboxes[:, 2:4])/(2.) - activated_grid_coord
+    xy_offsets = (gt_bboxes[:, :2] + gt_bboxes[:, 2:4]) / (2.) - activated_grid_coord
 
     assert torch.max(torch.abs(xy_offsets)) <= 0.5, \
         "x and y offsets should be between -0.5 and 0.5! Got {}".format( \
@@ -662,7 +666,7 @@ def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7,
     GT_offsets = torch.cat((xy_offsets, wh_offsets), dim=-1)
 
     # negative bboxes
-    negative_anc_mask = (max_iou_per_anc < neg_thresh) # Bx(AxH’xW’)
+    negative_anc_mask = (max_iou_per_anc < neg_thresh)  # Bx(AxH’xW’)
     negative_anc_ind = torch.nonzero(negative_anc_mask.view(-1)).squeeze(-1)
     negative_anc_ind = negative_anc_ind[torch.randint(0, negative_anc_ind.shape[0], (activated_anc_ind.shape[0],))]
     negative_anc_coord = bboxes.reshape(-1, 4)[negative_anc_ind.view(-1)]
@@ -671,11 +675,13 @@ def ReferenceOnActivatedBboxes(bboxes, gt_bboxes, grid, iou_mat, pos_thresh=0.7,
     return activated_anc_ind, negative_anc_ind, GT_conf_scores, GT_offsets, GT_class, \
            activated_anc_coord, negative_anc_coord
 
+
 """## (e) Loss Function
 The confidence score regression loss is for both activated/negative bounding boxes / proposals while the bounding box regression loss and the object classification loss are for activated bounding boxes only. These are implemented for you. Please go through and understand their inputs and outputs carefully as they are key to the implementation of the forward pass of the object detection module.
 
 ### Confidence score regression
 """
+
 
 def ConfScoreRegression(conf_scores, GT_conf_scores):
     """
@@ -692,10 +698,12 @@ def ConfScoreRegression(conf_scores, GT_conf_scores):
     GT_conf_scores = torch.cat((torch.ones_like(GT_conf_scores), \
                                 torch.zeros_like(GT_conf_scores)), dim=0).view(-1, 1)
 
-    conf_score_loss = torch.sum((conf_scores - GT_conf_scores)**2) * 1. / GT_conf_scores.shape[0]
+    conf_score_loss = torch.sum((conf_scores - GT_conf_scores) ** 2) * 1. / GT_conf_scores.shape[0]
     return conf_score_loss
 
+
 """### Bounding box regression"""
+
 
 def BboxRegression(offsets, GT_offsets):
     """"
@@ -714,10 +722,12 @@ def BboxRegression(offsets, GT_offsets):
     - bbox_reg_loss
     """
 
-    bbox_reg_loss = torch.sum((offsets - GT_offsets)**2) * 1. / GT_offsets.shape[0]
+    bbox_reg_loss = torch.sum((offsets - GT_offsets) ** 2) * 1. / GT_offsets.shape[0]
     return bbox_reg_loss
 
+
 """### Object classification"""
+
 
 def ObjectClassification(class_prob, GT_class, batch_size, anc_per_img, activated_anc_ind):
     """"
@@ -736,15 +746,16 @@ def ObjectClassification(class_prob, GT_class, batch_size, anc_per_img, activate
     # average within sample and then average across batch
     # such that the class pred would not bias towards dense popular objects like `person`
 
-    all_loss = F.cross_entropy(class_prob, GT_class, reduction='none') # , reduction='sum') * 1. / batch_size
+    all_loss = F.cross_entropy(class_prob, GT_class, reduction='none')  # , reduction='sum') * 1. / batch_size
     object_cls_loss = 0
     for idx in range(batch_size):
-        anc_ind_in_img = (activated_anc_ind >= idx * anc_per_img) & (activated_anc_ind < (idx+1) * anc_per_img)
+        anc_ind_in_img = (activated_anc_ind >= idx * anc_per_img) & (activated_anc_ind < (idx + 1) * anc_per_img)
         object_cls_loss += all_loss[anc_ind_in_img].sum() * 1. / torch.sum(anc_ind_in_img)
     object_cls_loss /= batch_size
     # object_cls_loss = F.cross_entropy(class_prob, GT_class, reduction='sum') * 1. / batch_size
 
     return object_cls_loss
+
 
 """# (f) Object Detector Code
 
@@ -784,6 +795,7 @@ viii) Compute the total_loss which is formulated as:
 ```
 """
 
+
 class SingleStageDetector(nn.Module):
     def __init__(self):
         super().__init__()
@@ -795,8 +807,7 @@ class SingleStageDetector(nn.Module):
         #                                       num_classes=self.num_classes)
 
         self.pred_network = PredictionNetwork(576, num_bboxes=2, \
-                                              num_classes=self.num_classes)   #modified
-
+                                              num_classes=self.num_classes)  # modified
 
     def forward(self, images, bboxes):
         """
@@ -810,9 +821,9 @@ class SingleStageDetector(nn.Module):
         - total_loss: Torch scalar giving the total loss for the batch.
         """
         # weights to multiple to each loss term
-        w_conf = 1 # for conf_scores
-        w_reg = 1 # for offsets
-        w_cls = 1 # for class_prob
+        w_conf = 1  # for conf_scores
+        w_reg = 1  # for offsets
+        w_cls = 1  # for class_prob
 
         total_loss = None
 
@@ -827,7 +838,7 @@ class SingleStageDetector(nn.Module):
         # (B, A, 4, H, W), (B, A, H, W), (B, C, H, W)
 
         B, A, _, H, W = bbox_xywh.shape
-        bbox_xywh = bbox_xywh.permute(0, 1, 3, 4, 2) # (B, A, H, W, 4)
+        bbox_xywh = bbox_xywh.permute(0, 1, 3, 4, 2)  # (B, A, H, W, 4)
 
         assert bbox_xywh.max() <= 1 and bbox_xywh.min() >= -0.5, 'invalid offsets values'
 
@@ -844,7 +855,7 @@ class SingleStageDetector(nn.Module):
         conf_scores = conf_scores.view(B, A, 1, H, W)
         pos = self._extract_bbox_data(conf_scores, activated_anc_ind)
         neg = self._extract_bbox_data(conf_scores, negative_anc_ind)
-        conf_scores = torch.cat([pos, neg], dim = 0)
+        conf_scores = torch.cat([pos, neg], dim=0)
 
         # 6. The loss function
         bbox_xywh[:, :, :, :, 2:4] = torch.sqrt(bbox_xywh[:, :, :, :, 2:4])
@@ -854,7 +865,7 @@ class SingleStageDetector(nn.Module):
 
         offsets = self._extract_bbox_data(bbox_xywh.permute(0, 1, 4, 2, 3), activated_anc_ind)
         cls_scores = self._extract_class_scores(cls_scores, activated_anc_ind)
-        anc_per_img = torch.prod(torch.tensor(bbox_xywh.shape[1:-1])) # use as argument in ObjectClassification
+        anc_per_img = torch.prod(torch.tensor(bbox_xywh.shape[1:-1]))  # use as argument in ObjectClassification
         ###########################################################################
         # TODO: Compute conf_loss, reg_loss, cls_loss, total_loss using the       #
         # functions defined in part (e).                                           #
@@ -877,7 +888,7 @@ class SingleStageDetector(nn.Module):
         raise NotImplementedError
 
     def combinedInference(self):
-        raise  NotImplementedError
+        raise NotImplementedError
 
     def _extract_bbox_data(self, bbox_data, bbox_idx):
         """
@@ -915,9 +926,11 @@ class SingleStageDetector(nn.Module):
         extracted_scores = all_scores[bbox_idx]
         return extracted_scores
 
+
 """## Object detection solver
 The `DetectionSolver` object runs the training loop to train an single stage detector.
 """
+
 
 def DetectionSolver(detector, train_loader, learning_rate=3e-3,
                     lr_decay=1, num_epochs=20, **kwargs):
@@ -933,7 +946,7 @@ def DetectionSolver(detector, train_loader, learning_rate=3e-3,
     # optimizer = optim.Adam(
     optimizer = optim.SGD(
         filter(lambda p: p.requires_grad, detector.parameters()),
-        learning_rate) # leave betas and eps by default
+        learning_rate)  # leave betas and eps by default
     lr_scheduler = optim.lr_scheduler.LambdaLR(optimizer,
                                                lambda epoch: lr_decay ** epoch)
 
@@ -959,7 +972,7 @@ def DetectionSolver(detector, train_loader, learning_rate=3e-3,
 
         end_t = time.time()
         print('(Epoch {} / {}) loss: {:.4f} time per epoch: {:.1f}s'.format(
-            i, num_epochs, loss.item(), end_t-start_t))
+            i, num_epochs, loss.item(), end_t - start_t))
         print('\n\n\n')
 
         lr_scheduler.step()
@@ -973,12 +986,14 @@ def DetectionSolver(detector, train_loader, learning_rate=3e-3,
 
     return loss_history
 
+
 """# (g) Train the Object Detector
 
 
 ## (h) TODO: Non-Maximum Suppression (NMS)
 The definition of NMS and instructions on how to compute NMS can be found in the [lecture slides](https://www.eecs.umich.edu/courses/eecs442-ahowens/fa20/lec/lec12-object.pdf) (p47-48)
 """
+
 
 def nms(boxes, scores, iou_threshold=0.5, topk=None):
     """
@@ -1001,51 +1016,45 @@ def nms(boxes, scores, iou_threshold=0.5, topk=None):
         return torch.zeros(0, dtype=torch.long)
 
     keep = None
-    #############################################################################
-    # TODO: Implement non-maximum suppression which iterates the following:     #
-    #       1. Select the highest-scoring box among the remaining ones,         #
-    #          which has not been chosen in this step before                    #
-    #       2. Eliminate boxes with IoU > threshold                             #
-    #       3. If any boxes remain, GOTO 1                                      #
-    #       Your implementation should not depend on a specific device type;    #
-    #       you can use the device of the input if necessary.                   #
-    #############################################################################
+
     def cal_iou(prev, new):
-        xtl = prev[:,0]
-        ytl = prev[:,1]
-        xbr = prev[:,2]
-        ybr = prev[:,3]
-        x_tl = new[:,0]
-        y_tl = new[:,1]
-        x_br = new[:,2]
-        y_br = new[:,3]
+        xtl = prev[:, 0]
+        ytl = prev[:, 1]
+        xbr = prev[:, 2]
+        ybr = prev[:, 3]
+        x_tl = new[:, 0]
+        y_tl = new[:, 1]
+        x_br = new[:, 2]
+        y_br = new[:, 3]
         inter_xtl = torch.max(xtl, x_tl)
         inter_ytl = torch.max(ytl, y_tl)
-        inter_xbr = torch.min(xbr,x_br)
+        inter_xbr = torch.min(xbr, x_br)
         inter_ybr = torch.min(ybr, y_br)
         zero = torch.zeros(inter_xtl.shape)
-        intersection = torch.max(zero, inter_xbr-inter_xtl) * torch.max(zero, inter_ybr-inter_ytl)
-        union = abs((x_br-x_tl)*(y_tl-y_br))+abs((xbr-xtl)*(ytl-ybr))-intersection
-        return intersection/union
+        intersection = torch.max(zero, inter_xbr - inter_xtl) * torch.max(zero, inter_ybr - inter_ytl)
+        union = abs((x_br - x_tl) * (y_tl - y_br)) + abs((xbr - xtl) * (ytl - ybr)) - intersection
+        return intersection / union
 
     sort = torch.argsort(scores, descending=True)
     for i in sort:
         i = torch.unsqueeze(i, 0)
-        if keep==None: keep=torch.Tensor([i[0].item()]).long()
+        if keep == None: keep = torch.Tensor([i[0].item()]).long()
         prev = torch.index_select(boxes, 0, keep)
         iou = cal_iou(prev, torch.index_select(boxes, 0, i))
         if torch.sum(iou > iou_threshold) > 0: continue
         keep = torch.cat((keep, i))
-        if topk!=None and keep.size(0) >= topk: break
+        if topk != None and keep.size(0) >= topk: break
     #############################################################################
     #                               END OF YOUR CODE                            #
     #############################################################################
     return keep
 
+
 """## (i) Inference
 
 Now, implement the inference part of module `SingleStageDetector`.
 """
+
 
 def detector_inference(self, images, thresh=0.5, nms_thresh=0.7):
     """"
@@ -1079,29 +1088,35 @@ def detector_inference(self, images, thresh=0.5, nms_thresh=0.7):
     with torch.no_grad():
         # Feature extraction
         features = self.feat_extractor(images)
+        features1 = feat_ext(images)
+        x = torch.ones(1, 3, 224, 224, device=torch.device("cuda"))
+        y1 = self.feat_extractor(x)
+        y2 = feat_ext(x)
+        print("check same", (y1 - y2).sum())
+        print("feat same", (features1 - features).sum())
 
         # Grid  Generator
         grid_list = GenerateGrid(images.shape[0])
 
         # Prediction Network
         offsets, conf_scores, class_scores = self.pred_network(features)
-        B, A, _, w_amap, h_amap = offsets.shape # B, A, 4, H, W
+        B, A, _, w_amap, h_amap = offsets.shape  # B, A, 4, H, W
         C = self.num_classes
-        conf_scores = conf_scores.view(B, -1) # B, A*H*W
-        offsets = offsets.permute(0, 1, 3, 4, 2) # B, A, H, W, 4
-        class_scores = class_scores.permute(0, 2, 3, 1).reshape(B, -1, C) # B, H*W, C
+        conf_scores = conf_scores.view(B, -1)  # B, A*H*W
+        offsets = offsets.permute(0, 1, 3, 4, 2)  # B, A, H, W, 4
+        class_scores = class_scores.permute(0, 2, 3, 1).reshape(B, -1, C)  # B, H*W, C
 
         most_conf_class_score, most_conf_class_idx = class_scores.max(dim=-1)
 
         # Proposal generator
-        proposals = GenerateProposal(grid_list, offsets).view(B, -1, 4) # Bx(AxH'xW')x4
+        proposals = GenerateProposal(grid_list, offsets).view(B, -1, 4)  # Bx(AxH'xW')x4
 
         # Thresholding and NMS
         for i in range(B):
-            score_mask = torch.nonzero((conf_scores[i] > thresh)).squeeze(1) # (AxH'xW')
+            score_mask = torch.nonzero((conf_scores[i] > thresh)).squeeze(1)  # (AxH'xW')
             prop_before_nms = proposals[i, score_mask]
             scores_before_nms = conf_scores[i, score_mask]
-            class_idx_before_nms = most_conf_class_idx[i, score_mask%(h_amap*w_amap)]
+            class_idx_before_nms = most_conf_class_idx[i, score_mask % (h_amap * w_amap)]
             # class_prob_before_nms = most_conf_class_prob[i, score_mask/A]
 
             prop_keep = torchvision.ops.nms(prop_before_nms, scores_before_nms, nms_thresh).to(images.device)
@@ -1110,11 +1125,12 @@ def detector_inference(self, images, thresh=0.5, nms_thresh=0.7):
             final_class.append(class_idx_before_nms[prop_keep].unsqueeze(-1))
 
     return final_proposals, final_conf_scores, final_class
+
+
 SingleStageDetector.inference = detector_inference
 
 
-
-def combined_detector_inference(self, images, feat, thresh=0.5, nms_thresh=0.7):
+def combined_detector_inference(self, images, feat, thresh=0.8, nms_thresh=0.05):
     """"
     Inference-time forward pass for the single stage detector.
 
@@ -1153,23 +1169,23 @@ def combined_detector_inference(self, images, feat, thresh=0.5, nms_thresh=0.7):
 
         # Prediction Network
         offsets, conf_scores, class_scores = self.pred_network(features)
-        B, A, _, w_amap, h_amap = offsets.shape # B, A, 4, H, W
+        B, A, _, w_amap, h_amap = offsets.shape  # B, A, 4, H, W
         C = self.num_classes
-        conf_scores = conf_scores.view(B, -1) # B, A*H*W
-        offsets = offsets.permute(0, 1, 3, 4, 2) # B, A, H, W, 4
-        class_scores = class_scores.permute(0, 2, 3, 1).reshape(B, -1, C) # B, H*W, C
+        conf_scores = conf_scores.view(B, -1)  # B, A*H*W
+        offsets = offsets.permute(0, 1, 3, 4, 2)  # B, A, H, W, 4
+        class_scores = class_scores.permute(0, 2, 3, 1).reshape(B, -1, C)  # B, H*W, C
 
         most_conf_class_score, most_conf_class_idx = class_scores.max(dim=-1)
 
         # Proposal generator
-        proposals = GenerateProposal(grid_list, offsets).view(B, -1, 4) # Bx(AxH'xW')x4
+        proposals = GenerateProposal(grid_list, offsets).view(B, -1, 4)  # Bx(AxH'xW')x4
 
         # Thresholding and NMS
         for i in range(B):
-            score_mask = torch.nonzero((conf_scores[i] > thresh)).squeeze(1) # (AxH'xW')
+            score_mask = torch.nonzero((conf_scores[i] > thresh)).squeeze(1)  # (AxH'xW')
             prop_before_nms = proposals[i, score_mask]
             scores_before_nms = conf_scores[i, score_mask]
-            class_idx_before_nms = most_conf_class_idx[i, score_mask%(h_amap*w_amap)]
+            class_idx_before_nms = most_conf_class_idx[i, score_mask % (h_amap * w_amap)]
             # class_prob_before_nms = most_conf_class_prob[i, score_mask/A]
 
             prop_keep = torchvision.ops.nms(prop_before_nms, scores_before_nms, nms_thresh).to(images.device)
@@ -1178,11 +1194,12 @@ def combined_detector_inference(self, images, feat, thresh=0.5, nms_thresh=0.7):
             final_class.append(class_idx_before_nms[prop_keep].unsqueeze(-1))
 
     return final_proposals, final_conf_scores, final_class
+
+
 SingleStageDetector.combinedInference = combined_detector_inference
 
 
 def DetectionInference(detector, data_loader, dataset, idx_to_class, thresh=0.8, nms_thresh=0.3, output_dir=None):
-
     # ship model to GPU
     detector.to(**to_float_cuda)
 
@@ -1203,7 +1220,8 @@ def DetectionInference(detector, data_loader, dataset, idx_to_class, thresh=0.8,
         images, boxes, w_batch, h_batch, img_ids = data_batch
         images = images.to(**to_float_cuda)
 
-        final_proposals, final_conf_scores, final_class = detector.inference(images, thresh=thresh, nms_thresh=nms_thresh)
+        final_proposals, final_conf_scores, final_class = detector.inference(images, thresh=thresh,
+                                                                             nms_thresh=nms_thresh)
 
         # clamp on the proposal coordinates
         batch_size = len(images)
@@ -1214,7 +1232,7 @@ def DetectionInference(detector, data_loader, dataset, idx_to_class, thresh=0.8,
             # visualization
             # get the original image
             # hack to get the original image so we don't have to load from local again...
-            i = batch_size*iter_num + idx
+            i = batch_size * iter_num + idx
             img, _ = dataset.__getitem__(i)
 
             valid_box = sum([1 if j != -1 else 0 for j in boxes[idx][:, 0]])
@@ -1222,38 +1240,42 @@ def DetectionInference(detector, data_loader, dataset, idx_to_class, thresh=0.8,
                                    final_class[idx].float(), final_conf_scores[idx]), dim=-1).cpu()
             resized_proposals = coord_trans(final_all, w_batch[idx], h_batch[idx])
 
-
             # drive.mount('/content/drive')
             # write results to file for evaluation (use mAP API https://github.com/Cartucho/mAP for now...)
             if output_dir is not None:
                 file_name = img_ids[idx].replace('.jpg', '.txt')
                 with open(os.path.join(det_dir, file_name), 'w') as f_det, \
                         open(os.path.join(gt_dir, file_name), 'w') as f_gt:
-                    print('{}: {} GT bboxes and {} proposals'.format(img_ids[idx], valid_box, resized_proposals.shape[0]))
+                    print(
+                        '{}: {} GT bboxes and {} proposals'.format(img_ids[idx], valid_box, resized_proposals.shape[0]))
                     for b in boxes[idx][:valid_box]:
-                        f_gt.write('{} {:.2f} {:.2f} {:.2f} {:.2f}\n'.format(idx_to_class[b[4].item()], b[0], b[1], b[2], b[3]))
+                        f_gt.write(
+                            '{} {:.2f} {:.2f} {:.2f} {:.2f}\n'.format(idx_to_class[b[4].item()], b[0], b[1], b[2],
+                                                                      b[3]))
                     for b in resized_proposals:
-                        f_det.write('{} {:.6f} {:.2f} {:.2f} {:.2f} {:.2f}\n'.format(idx_to_class[b[4].item()], b[5], b[0], b[1], b[2], b[3]))
+                        f_det.write(
+                            '{} {:.6f} {:.2f} {:.2f} {:.2f} {:.2f}\n'.format(idx_to_class[b[4].item()], b[5], b[0],
+                                                                             b[1], b[2], b[3]))
             else:
                 data_visualizer(img, idx_to_class, boxes[idx][:valid_box], resized_proposals)
 
     end_t = time.time()
-    print('Total inference time: {:.1f}s'.format(end_t-start_t))
+    print('Total inference time: {:.1f}s'.format(end_t - start_t))
 
-def SingleDetectionInference(detector, img, img_size, img2draw=None, feat=None, idx_to_class=idx_to_class, thresh=0.8, nms_thresh=0.05):
 
+def SingleDetectionInference(detector, img, img2draw=None, feat=None, idx_to_class=idx_to_class, thresh=0.8,
+                             nms_thresh=0.05):
     # ship model to GPU
     detector.to(**to_float_cuda)
 
     detector.eval()
     start_t = time.time()
 
-    img_h, img_w = img_size
-    print(img_h, img_w, "??????????")
+    img_h, img_w, _ = img.shape
 
     preprocess = transforms.Compose([
-        transforms.Resize((224, 224)),
         transforms.ToTensor(),
+        transforms.Resize((224, 224)),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
     print(type(img))
@@ -1262,42 +1284,78 @@ def SingleDetectionInference(detector, img, img_size, img2draw=None, feat=None, 
     images = images.to(**to_float_cuda)
 
     if feat is None:
-        final_proposals, final_conf_scores, final_class = detector.inference(images, thresh=thresh, nms_thresh=nms_thresh)
+        final_proposals, final_conf_scores, final_class = detector.inference(images, thresh=thresh,
+                                                                             nms_thresh=nms_thresh)
     else:
-        final_proposals, final_conf_scores, final_class = detector.combinedInference(images, feat, thresh=thresh, nms_thresh=nms_thresh)
+        final_proposals, final_conf_scores, final_class = detector.combinedInference(images, feat, thresh=thresh,
+                                                                                     nms_thresh=nms_thresh)
 
     # clamp on the proposal coordinates
-    batch_size = len(images)
-    for idx in range(batch_size):
-        torch.clamp_(final_proposals[idx][:, 0::2], min=0, max=img_w)
-        torch.clamp_(final_proposals[idx][:, 1::2], min=0, max=img_h)
+    torch.clamp_(final_proposals[0][:, 0::2], min=0, max=img_w)
+    torch.clamp_(final_proposals[0][:, 1::2], min=0, max=img_h)
 
-        # valid_box = sum([1 if j != -1 else 0 for j in boxes[:, 0]])
-        final_all = torch.cat((final_proposals[idx], \
-                               final_class[idx].float(), final_conf_scores[idx]), dim=-1).cpu()
-        resized_proposals = coord_trans(final_all, torch.tensor([img_w]), torch.tensor([img_h]))
+    # valid_box = sum([1 if j != -1 else 0 for j in boxes[:, 0]])
+    final_all = torch.cat((final_proposals[0], \
+                           final_class[0].float(), final_conf_scores[0]), dim=-1).cpu()
+    resized_proposals = coord_trans(final_all, torch.tensor([img_w]), torch.tensor([img_h]))
 
-        if img2draw is None:
-            img = np.array(img)
-        else:
-            img = img2draw
-        img = cv2.resize(img, (img_w, img_h))
-        print(img.shape, idx_to_class, resized_proposals.shape)
-        data_visualizer(img, idx_to_class, None, resized_proposals)
+    if img2draw is None:
+        img = np.array(img)
+    else:
+        img = img2draw
+    img = cv2.resize(img, (img_w, img_h))
+    print(img.shape, idx_to_class, resized_proposals.shape)
+    data_visualizer(img, idx_to_class, None, resized_proposals)
 
     end_t = time.time()
-    print('Total inference time: {:.1f}s'.format(end_t-start_t))
+    print('Total inference time: {:.1f}s'.format(end_t - start_t))
 
-# subset = torch.utils.data.Subset(small_dataset, np.arange(4))
-# subloader = pascal_voc2007_loader(subset, 1)
-# img, _ = subset[0]
-# SingleDetectionInference(detector, img, idx_to_class)
+
+def yoloOutput2ImgWrapper(detector, img, idx_to_class=idx_to_class, thresh=0.8, nms_thresh=0.05):
+    # ship model to GPU
+    detector.to(**to_float_cuda)
+
+    detector.eval()
+    start_t = time.time()
+
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize((224, 224)),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    images = preprocess(img).unsqueeze(0)
+
+    images = images.to(**to_float_cuda)
+
+    yolo_output = detector.inference(images, thresh=thresh, nms_thresh=nms_thresh)
+    yoloOutput2Img(yolo_output, img)
+
+
 print("finished")
 
 
+def yoloOutput2Img(yolo_output, img, idx_to_class=idx_to_class):
+    final_proposals, final_conf_scores, final_class = yolo_output
+    img_h, img_w, _ = img.shape
+    # clamp on the proposal coordinates
+    torch.clamp_(final_proposals[0][:, 0::2], min=0, max=img_w)
+    torch.clamp_(final_proposals[0][:, 1::2], min=0, max=img_h)
+
+    # valid_box = sum([1 if j != -1 else 0 for j in boxes[:, 0]])
+    final_all = torch.cat((final_proposals[0], \
+                           final_class[0].float(), final_conf_scores[0]), dim=-1).cpu()
+    resized_proposals = coord_trans(final_all, torch.tensor([img_w]), torch.tensor([img_h]))
+
+    img = cv2.resize(img, (img_w, img_h))
+    data_visualizer(img, idx_to_class, None, resized_proposals)
+
 
 if __name__ == "__main__":
-    detector = torch.load("yd75.pt")
+    detector_dict = torch.load("../train-history/yolo_detector.pt")
+    detector = SingleStageDetector()
+    detector.load_state_dict(detector_dict)
     from PIL import Image
-    img = Image.open("../example1.png").convert('RGB')
-    SingleDetectionInference(detector, img, (352, 1216))
+
+    img = Image.open("../example2.png").convert('RGB')
+    img = np.array(img)
+    yoloOutput2ImgWrapper(detector, img)
