@@ -45,7 +45,6 @@ def regPred2Img(pred):
     return pred
 
 
-
 def clearTemp():
     if platform.system() != "Windows":
         os.system("rm temp.png")
@@ -54,11 +53,8 @@ def clearTemp():
 
 
 def showRegSegModelInference(model, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
-                                                                             transforms.CenterCrop((600, 352)),
-                                                                             transforms.Resize((224, 224)),
-                                                                             transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                                                            std=[0.229, 0.224,
-                                                                                                 0.225])]), display=True):
+                                                                             transforms.Resize((240, 360)),
+                                                                             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]), display=True):
     """
     @func img_path -> 3 np arrays of results
     label assign refer

@@ -1088,12 +1088,8 @@ def detector_inference(self, images, thresh=0.5, nms_thresh=0.7):
     with torch.no_grad():
         # Feature extraction
         features = self.feat_extractor(images)
-        features1 = feat_ext(images)
         x = torch.ones(1, 3, 224, 224, device=torch.device("cuda"))
         y1 = self.feat_extractor(x)
-        y2 = feat_ext(x)
-        print("check same", (y1 - y2).sum())
-        print("feat same", (features1 - features).sum())
 
         # Grid  Generator
         grid_list = GenerateGrid(images.shape[0])
@@ -1351,11 +1347,11 @@ def yoloOutput2Img(yolo_output, img, idx_to_class=idx_to_class):
 
 
 if __name__ == "__main__":
-    detector_dict = torch.load("../train-history/yolo_detector.pt")
+    detector_dict = torch.load("../train-history/yolo_detector2.pt")
     detector = SingleStageDetector()
     detector.load_state_dict(detector_dict)
     from PIL import Image
 
-    img = Image.open("../example2.png").convert('RGB')
+    img = Image.open("../example1.png").convert('RGB')
     img = np.array(img)
     yoloOutput2ImgWrapper(detector, img)

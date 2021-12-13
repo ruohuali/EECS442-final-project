@@ -24,7 +24,7 @@ class TriTaskModel(nn.Module):
             img = self.preprocess(np_img).unsqueeze(0)
             img = img.cuda()
             feat = self.feature_extractor(img)
-            yolo_output = self.det_head.combinedInference(img, feat, thresh=0.3, nms_thresh=0.05)
+            yolo_output = self.det_head.combinedInference(img, feat, thresh=0.6, nms_thresh=0.005)
             regseg_output = self.regseg_head.combinedInference(img, feat)
             img_arr = regSegOutput2Img(regseg_output, np_img)
             yoloOutput2Img(yolo_output, img_arr)
@@ -61,7 +61,7 @@ def compare_models(model_1, model_2):
 
 
 if __name__ == "__main__":
-    model = getTriTaskModel("../train-history/yolo_detector.pt", "../train-history/trained_model24_dict.pth")
-    img = Image.open("../crowd.png").convert('RGB')
+    model = getTriTaskModel("../trained-models/yolo_detector4.pt", "../trained-models/unet99.pth")
+    img = Image.open("../example1.png").convert('RGB')
     img = np.array(img)
     model(img)
