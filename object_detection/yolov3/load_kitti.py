@@ -16,12 +16,13 @@ import torch
 
 MAX_LABEL = 22
 
-# Image.open(image_dir+files[i].replace('txt','png')).size
-
 class YoloData():
     def __init__(self, img_path, label_path, size=416):
         self.images =  [img_path+i for i in os.listdir(img_path)]
-        self.labels = [label_path+i.replace('png','txt') for i in os.listdir(img_path)]
+        if label_path == None:
+            self.labels = None
+        else:
+            self.labels = [label_path+i.replace('png','txt') for i in os.listdir(img_path)]
         self.shape = (size, size)
         self.max_label = MAX_LABEL
 
@@ -45,6 +46,11 @@ class YoloData():
         img = resize(img, self.shape)
         img = np.moveaxis(img, -1, 0)
         train_img = torch.from_numpy(img)  
+        
+        
+        if self.labels == None :
+            return ori_shape, self.images[index], train_img
+        
         
         # adjust labels for the resized image
         with open(self.labels[index], 'rt') as f:
@@ -77,4 +83,3 @@ class YoloData():
     
     def __len__(self):
         return len(self.images)
-    

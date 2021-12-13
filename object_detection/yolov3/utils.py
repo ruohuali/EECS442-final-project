@@ -6,22 +6,15 @@ Created on Mon Dec  6 22:17:53 2021
 @author: jessica
 """
 
-import os
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from PIL import Image
-from skimage.transform import resize
 import numpy as np
 
 import torch
-from torchvision import datasets, transforms
-from torchvision import datasets
-from torch.utils.data import DataLoader
 
 from convert_kitti_to_yolo import idx2class
 
-# def cal_loss(pred, label):
+
     
 
 def tlbr_to_xywh(tlbr_cord):
@@ -138,7 +131,6 @@ def nms(boxes, scores, tlbr=True, iou_threshold=0.5, topk=None):
     if keep==None: keep=torch.Tensor([i[0].item()]).long()
     prev = torch.index_select(boxes, 0, keep)
     iou = bbox_iou(prev, torch.index_select(boxes, 0, i), tlbr)
-    print(iou)
     if torch.sum(iou > iou_threshold) > 0: continue
     keep = torch.cat((keep, i))
     if topk!=None and keep.size(0) >= topk: break
@@ -146,7 +138,7 @@ def nms(boxes, scores, tlbr=True, iou_threshold=0.5, topk=None):
   return keep
 
 
-def predict(x, anchors, num_classes, img_dim):
+def predict(x, anchors, num_classes, img_dim, isPredict=True):
     A = len(anchors)
     B = x.size(0)
     G = x.size(2)
@@ -156,15 +148,17 @@ def predict(x, anchors, num_classes, img_dim):
 
     prediction = x.view(B, A, 5 + num_classes, G, G).permute(0, 1, 3, 4, 2).contiguous()
     
-    prediction[...,0] = torch.sigmoid(prediction[..., 0])
-    prediction[...,1] = torch.sigmoid(prediction[..., 1])
+    x = torch.sigmoid(prediction[..., 0])
+    y = torch.sigmoid(prediction[..., 1])
+    w = torch.sigmoid(prediction[..., 2])
+    h = torch.sigmoid(prediction[..., 3])
     prediction[..., 4] = torch.sigmoid(prediction[..., 4])
     prediction[..., 5:] = torch.sigmoid(prediction[..., 5:])
 
     # Calculate offsets for each grid
-    x = np.arange(G)
-    y = np.arange(G)
-    grid_x, grid_y = np.meshgrid(x, y)
+    a = np.arange(G)
+    b = np.arange(G)
+    grid_x, grid_y = np.meshgrid(a, b)
     grid_x = torch.FloatTensor(grid_x).view(1,1,G,G)
     grid_y = torch.FloatTensor(grid_y).view(1,1,G,G)
     
@@ -173,15 +167,26 @@ def predict(x, anchors, num_classes, img_dim):
     anchors_h = anchors[...,1].view(1,A,1,1)
     
     # Add offset and scale with anchors
-    prediction[..., 0] = prediction[..., 0] + grid_x
-    prediction[..., 1] = prediction[..., 1] + grid_y
-    prediction[..., 2] = torch.exp(prediction[..., 2]) * anchors_w
-    prediction[..., 3] = torch.exp(prediction[..., 3]) * anchors_h
+    prediction[..., 0] = x + grid_x
+    prediction[..., 1] = y + grid_y
+    prediction[..., 2] = torch.exp(w) * anchors_w
+    prediction[..., 3] = torch.exp(h) * anchors_h
     prediction[..., :4] = prediction[..., :4] * stride
-    prediction = prediction.view(B, A*G*G, -1)
     
-    return prediction
+    if not isPredict:
+        return (prediction, x, y, w, h, anchors)
+    return prediction.view(B, A*G*G, -1)
 
+
+def interpret_result(predictions):
+    '''
+    format model prediled_labels[range(len(labels))[:self.max_objects]] = labels[:self.max_objects]
+        filled_labels = torch.from_numpy(filction output to (B, Num_preds, 5) with 5 = (label,x,y,w,h)
+    '''
+    predictions[...,4] = torch.argmax(predictions[:,:,5:], axis=2)
+    predictions = predictions[...,[4,0,1,2,3]]
+    return predictions
+    
 
 def visualzie_detection(img, labels, num_labels):
     '''

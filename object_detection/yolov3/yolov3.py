@@ -14,8 +14,8 @@ from __future__ import division
 import torch
 import torch.nn as nn
 import numpy as np
-from collections import defaultdict
 from utils import predict
+from loss import criteria
 
 
 def parse_model_config(path):
@@ -146,12 +146,10 @@ class Darknet(nn.Module):
         self.img_size = img_size
         self.seen = 0
         self.header_info = np.array([0, 0, 0, self.seen, 0])
-        self.loss_names = ["x", "y", "w", "h", "conf", "cls"]
 
 
-    def forward(self, x):
+    def forward(self, x, targets = None):
         output = None
-        self.losses = defaultdict(float)
         layer_outputs = []
         for i, (module_def, module) in enumerate(zip(self.module_defs, self.module_list)):
             if module_def["type"] in ["convolutional", "upsample", "maxpool"]:
@@ -166,14 +164,22 @@ class Darknet(nn.Module):
                 anchors = module[0].anchors
                 num_classes = module[0].num_classes
                 img_dim = module[0].img_dim
-                out = predict(x.data, anchors, num_classes, img_dim)
-                if output == None:
-                    output = out
-                else:
-                    output = torch.cat((output, out), 1)     
+                if targets==None: # prediction mode
+                    out = predict(x.data, anchors, num_classes, img_dim)
+                    if output == None:
+                        output = out
+                    else:
+                        output = torch.cat((output, out), 1) 
+                else: # traning mode
+                    preds, pred_x, pred_y, pred_w, pred_h, achrs = predict(x.data, anchors, num_classes, img_dim, False)
+                    loss = criteria(preds, pred_x, pred_y, pred_w, pred_h, anchors, targets, num_classes, img_dim, ignore_thres=0.5)
+                    if output == None:
+                        output = 0
+                    else:
+                        output += loss 
+                x = layer_outputs[-1]
             layer_outputs.append(x)
             
-        #return sum(output) if is_training else torch.cat(output, 1)
         return output
 
     def load_weights(self, weights_path, cutoff = -1):

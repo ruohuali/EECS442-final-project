@@ -6,25 +6,18 @@ Created on Sat Dec  4 22:53:39 2021
 @author: jessica
 """
 
-import os
-
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from PIL import Image
-from skimage.transform import resize
+import torch
 import numpy as np
 
-import torch
-from torchvision import datasets, transforms
-from torchvision import datasets
-from torch.utils.data import DataLoader
+from PIL import Image
 
 from load_kitti import YoloData
 from yolov3 import Darknet
-from utils import convert_to_ori_cord, visualzie_detection, nms
+from utils import convert_to_ori_cord, visualzie_detection, nms, interpret_result
 
 CFG_FILE = 'yolov3.cfg'
 WEIGHTS_FILE = 'yolov3.weights'
+SAVE_WEIGHTS_PATH = 'save_weights'
 
 DATA_PATH = '../data/kitti/'
 TRAIN_DATA = DATA_PATH + 'data_object_image_2/training/image_2/'
@@ -65,64 +58,75 @@ if __name__ == '__main__':
     
     test_batch=int(args['test_batch'])
     test_subdivisions=int(args['test_subdivisions'])
-
-    
-    model.eval()
     
     # Get dataloader
     dataloader = torch.utils.data.DataLoader(
         YoloData(TRAIN_DATA, YOLO_LABEL, height), batch_size=train_batch, shuffle=True)
     
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()))
-    '''
-    losses_x = losses_y = losses_w = losses_h = losses_conf = losses_cls = losses_recall = losses_precision = batch_loss= 0.0
-    accumulated_batches = 4
-    best_mAP = 0.0
-    '''
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()))    
     
     
-    print("start training")
-    '''
-    loss_data_file = open('loss data.txt','w+')
-    test_data_file = open('test_data.txt','w+')
-    '''
+
     # use for test, get AP on valid test
-    test_dataloader = torch.utils.data.DataLoader(YoloData(TEST_DATA, YOLO_LABEL, height), batch_size=test_batch, shuffle=False) 
+    test_dataloader = torch.utils.data.DataLoader(YoloData(TEST_DATA, None, height), batch_size=test_batch, shuffle=False) 
+
+    
+    # training state
+    print("start training")
+    for i in range(num_epochs):
+        model.train()
+        print('start epoch ', i)
+        for batch_i, (nrow, ori_shape, ori_img_files, imgs, targets) in enumerate(dataloader):
+            #visualzie_detection(torch.moveaxis(imgs[0], 0, -1), targets[0], nrow[0])
+            #con_cord = convert_to_ori_cord(ori_shape, targets, height)
+            #visualzie_detection(np.array(Image.open(ori_img_files[0])), con_cord[0], nrow[0])
+            optimizer.zero_grad()
+            loss = model(imgs.float(), targets)
+            print('loss: ', loss)
+            loss.backward()
+            optimizer.step()
+            #keep = nms(output[0,:,:4], output[0,:,4], tlbr=False, topk=3)
+            #print(output)
+            #print(output.shape)
+            #print(targets.shape)
+            #print(convert_to_ori_cord(ori_shape, prediction, yolo_size))
+        model.save_weights("%s/%d.weights" % (SAVE_WEIGHTS_PATH, i))
     
     '''
-    for epoch in range(num_epochs):
-        # losses_x = losses_y = losses_w = losses_h = losses_conf = losses_cls = losses_recall = losses_precision = batch_loss= 0.0
-        
-        # Freeze darknet53.conv.74 layers for first some epochs
-        if freeze_backbone:
-            if epoch < 20:
-                for i, (name, p) in enumerate(model.named_parameters()):
-                    if int(name.split('.')[1]) < 75:  # if layer < 75
-                        p.requires_grad = False
-            elif epoch >= 20:
-                for i, (name, p) in enumerate(model.named_parameters()):
-                    if int(name.split('.')[1]) < 75:  # if layer < 75
-                        p.requires_grad = True
-                        
-        optimizer.zero_grad()   
-                       
-        for batch_i, (_, imgs, targets) in enumerate(dataloader):
-            imgs = Variable(imgs.type(Tensor))
-            targets = Variable(targets.type(Tensor), requires_grad=False)
-           
-            loss = model(imgs, targets)
-    
-            loss.backward()
-            '''   
-    for batch_i, (nrow, ori_shape, ori_img_files, imgs, targets) in enumerate(dataloader):
-        #visualzie_detection(torch.moveaxis(imgs[0], 0, -1), targets[0], nrow[0])
-        #con_cord = convert_to_ori_cord(ori_shape, targets, yolo_size)
-        #visualzie_detection(np.array(Image.open(ori_img_files[0])), con_cord[0], nrow[0])
-        output = model(imgs.float())
-        keep = nms(output[0,:,:4], output[0,:,4], tlbr=False, topk=10)
-        print(keep)
-        #print(output.shape)
-        #print(targets.shape)
-        #print(convert_to_ori_cord(ori_shape, prediction, yolo_size))
-        
+    # testing
+    model.eval()
+    for batch_i, (ori_shape, ori_img_files, imgs) in enumerate(test_dataloader):
+        predictions = model(imgs.float())
+        # visualize for each img in batch
+        for b in range(predictions.shape[0]):
+            keep = nms(predictions[b,:,:4], predictions[b,:,4], tlbr=False, topk=3)
+            output_boxes = predictions[:,keep,:]
+            output_boxes = interpret_result(output_boxes)
+            print(output_boxes)
+            visualzie_detection(np.array(Image.open(ori_img_files[0])),output_boxes[b], len(keep))
         break
+    '''
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
