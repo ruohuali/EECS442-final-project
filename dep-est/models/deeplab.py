@@ -3,6 +3,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms.functional as TF
 import torch.nn.functional as F
+from yolov1 import FeatureExtractor
 
 
 class AtrousConv(nn.Module):
@@ -61,6 +62,41 @@ class ASPP(nn.Module):
         outputs = torch.cat(outputs, 1)
         outputs = self.project(outputs)
         return outputs
+
+
+class DualTaskASPP(nn.Module):
+    def __init__(self, input_dim=3, cls_num=35):
+        super().__init__()
+        cls_net = torchvision.models.mobilenet_v3_small(pretrained=True, progress=True)
+        backbone = cls_net.features
+        backbone_out_dim = backbone[-1].out_channels
+        self.cls_num = cls_num
+        self.aspp = ASPP(backbone_out_dim + 3, cls_num + 1)
+
+    def forward(self, x):
+        _, _, input_h, input_w = x.shape
+        backbone = FeatureExtractor()
+        xb = backbone(x)
+        xb = F.interpolate(xb, (input_h // 5, input_w // 5), mode="bilinear")
+        xo = TF.resize(x, xb.shape[2:])
+        x = torch.cat((xb, xo), axis=1)
+        y = self.aspp(x)
+        y = F.interpolate(y, (input_h, input_w), mode="bilinear")
+        y_reg_ret = y[:, 0, :, :].unsqueeze(1)
+        y_seg_ret = y[:, 1:, :, :]
+        return y_reg_ret, y_seg_ret
+
+    def combinedInference(self, x, feat):
+        with torch.no_grad():
+            _, _, input_h, input_w = x.shape
+            xb = F.interpolate(feat, (input_h // 5, input_w // 5))
+            xo = TF.resize(x, xb.shape[2:])
+            x = torch.cat((xb, xo), axis=1)
+            y = self.unet(x)
+            y = F.interpolate(y, (input_h, input_w))
+            y_reg_ret = y[:, 0, :, :].unsqueeze(1)
+            y_seg_ret = y[:, 1:, :, :]
+        return y_reg_ret, y_seg_ret
 
 
 if __name__ == "__main__":

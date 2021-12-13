@@ -14,6 +14,7 @@ from models.regseg_model import ProbedDualTaskSeg, ConvProbe, \
                                 DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
                                 DualTaskSeg
 from models.unet import DualTaskUNet
+from models.deeplab import DualTaskASPP
 from models.model_utils import showRegSegModelInference
 from train_mult import trainDual
 
@@ -53,7 +54,7 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
     test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 
     # m = DualTaskSeg(depthwise=True).to(model_device)
-    m = DualTaskUNet().to(model_device)
+    m = DualTaskASPP().to(model_device)
     # set_trace()
     m.train()
     print("train dataloader lengths", len(train_reg_dataloader), len(train_seg_dataloader))
@@ -73,7 +74,9 @@ def modelSummary():
 
 
 def showInference(model_path, img_path):
-    model = torch.load(model_path)
+    model_dict = torch.load(model_path)
+    model = DualTaskASPP()
+    model.load_state_dict(model_dict)
     model.eval()
     model = model.cpu()
     reg_pred, seg_pred, comb_pred = showRegSegModelInference(model, img_path, display=True)
