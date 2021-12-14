@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import os
 import platform
 from PIL import Image
+from torchviz import make_dot
 
 
 def read2Tensor(img_path, device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), transform=None):

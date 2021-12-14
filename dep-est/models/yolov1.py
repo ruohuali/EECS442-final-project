@@ -20,12 +20,20 @@ plt.rcParams['image.cmap'] = 'gray'
 
 # data type and device for torch.tensor
 # unpack as argument to torch functions, like so: **to_float
+# to_float = {'dtype': torch.float, 'device': 'cpu'}
+# to_float_cuda = {'dtype': torch.float, 'device': 'cuda'}
+# to_double = {'dtype': torch.double, 'device': 'cpu'}
+# to_double_cuda = {'dtype': torch.double, 'device': 'cuda'}
+# to_long = {'dtype': torch.long, 'device': 'cpu'}
+# to_long_cuda = {'dtype': torch.long, 'device': 'cuda'}
+
+
 to_float = {'dtype': torch.float, 'device': 'cpu'}
-to_float_cuda = {'dtype': torch.float, 'device': 'cuda'}
+to_float_cuda = {'dtype': torch.float, 'device': 'cpu'}
 to_double = {'dtype': torch.double, 'device': 'cpu'}
-to_double_cuda = {'dtype': torch.double, 'device': 'cuda'}
+to_double_cuda = {'dtype': torch.double, 'device': 'cpu'}
 to_long = {'dtype': torch.long, 'device': 'cpu'}
-to_long_cuda = {'dtype': torch.long, 'device': 'cuda'}
+to_long_cuda = {'dtype': torch.long, 'device': 'cpu'}
 
 
 def get_pascal_voc2007_data(image_root, split='train'):
@@ -203,9 +211,9 @@ def data_visualizer(img, idx_to_class, bbox=None, pred=None):
                 # cv2.putText(img_copy, '%s, %.2f' % (obj_cls, conf_score),
                 #             (one_bbox[0], one_bbox[1]+15),
                 #             cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
-                cv2.putText(img_copy, '%s, %.2f' % (obj_cls, conf_score),
-                            (int(one_bbox[0]), int(one_bbox[1]) + 15),
-                            cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
+                # cv2.putText(img_copy, '%s, %.2f' % (obj_cls, conf_score),
+                #             (int(one_bbox[0]), int(one_bbox[1]) + 15),
+                #             cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 255), thickness=1)
 
     plt.imshow(img_copy)
     plt.axis('off')
@@ -368,6 +376,8 @@ def GenerateProposal(grids, offsets):
 
     # 2. Convert the proposals into (xtl, ytl, xbr, ybr) coordinate format as
     # mentioned in the header and in the cell above that.
+    grids = grids.to(offsets.device)
+
     B, H, W, _ = grids.shape
     _, A, _, _, _ = offsets.shape
 

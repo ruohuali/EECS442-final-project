@@ -3,12 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms.functional as TF
 import torchvision
+from torch.utils.tensorboard import SummaryWriter
 
-
-def small_resize(x, h, w):
-    ret = torch.zeros(x.shape[0], x.shape[1], h, w, device=x.device)
-    ret[:, :, :min(x.shape[2], h), :min(x.shape[3], w)] = x
-    return ret
+from .yolov1 import FeatureExtractor
 
 
 class HorizontalBlock(nn.Module):
@@ -30,7 +27,7 @@ class HorizontalBlock(nn.Module):
 class DownBlock(nn.Module):
     def __init__(self):
         super().__init__()
-        self.pool = nn.MaxPool2d(2)
+        self.pool = nn.AdaptiveAvgPool2d(2)
 
     def forward(self, x):
         x = self.pool(x)
@@ -52,7 +49,6 @@ class ContractPath(nn.Module):
         self.hb1 = HorizontalBlock(input_dim, channel_nums[0])
         self.hb2 = HorizontalBlock(channel_nums[0], channel_nums[1])
         self.hb3 = HorizontalBlock(channel_nums[1], channel_nums[2])
-
 
         self.db = DownBlock()
 
@@ -82,12 +78,12 @@ class ExpandPath(nn.Module):
         x = self.hb1(x)  # 64, 256
         x = self.ub(x)  # 64, 512
 
-        x = small_resize(x, *cp[1].shape[2:])
+        x = TF.resize(x, cp[1].shape[2:])
         x = torch.cat((x, cp[1]), 1)  # 128, 512
         x = self.hb2(x)  # 24, 512
         x = self.ub(x)  # 24, 1024
 
-        x = small_resize(x, *cp[2].shape[2:])
+        x = TF.resize(x, cp[2].shape[2:])
         x = torch.cat((x, cp[2]), 1)  # 48, 1024
         x = self.hb3(x)
 
@@ -103,7 +99,7 @@ class UNet(nn.Module):
     def forward(self, x):
         feat_maps = self.cp(x)
         y = self.ep(feat_maps)
-        y = small_resize(y, *x.shape[2:])
+        y = TF.resize(y, x.shape[2:])
         return y
 
 
@@ -111,21 +107,20 @@ class DualTaskUNet(nn.Module):
     def __init__(self, input_dim=3, cls_num=35):
         super().__init__()
         cls_net = torchvision.models.mobilenet_v3_small(pretrained=True, progress=True)
-        self.backbone = cls_net.features
-        backbone_out_dim = self.backbone[-1].out_channels
+        backbone = cls_net.features
+        backbone_out_dim = backbone[-1].out_channels
         self.cls_num = cls_num
-        self.unet = UNet(backbone_out_dim + 3, cls_num + 1)
-        for param in self.backbone.parameters():
-            param.requires_grad = False
+        self.unet = UNet(backbone_out_dim + input_dim, cls_num + 1)
 
     def forward(self, x):
         _, _, input_h, input_w = x.shape
-        xb = self.backbone(x)
-        xb = F.interpolate(xb, (input_h // 5, input_w // 5))
+        feature_extractor = FeatureExtractor().to(x.device)
+        xb = feature_extractor(x)
+        xb = F.interpolate(xb, (input_h // 5, input_w // 5), mode='bilinear')
         xo = TF.resize(x, xb.shape[2:])
         x = torch.cat((xb, xo), axis=1)
         y = self.unet(x)
-        y = F.interpolate(y, (input_h, input_w))
+        y = F.interpolate(y, (input_h, input_w), mode='bilinear')
         y_reg_ret = y[:, 0, :, :].unsqueeze(1)
         y_seg_ret = y[:, 1:, :, :]
         return y_reg_ret, y_seg_ret
@@ -133,17 +128,24 @@ class DualTaskUNet(nn.Module):
     def combinedInference(self, x, feat):
         with torch.no_grad():
             _, _, input_h, input_w = x.shape
-            xb = F.interpolate(feat, (input_h // 5, input_w // 5))
+            xb = F.interpolate(feat, (input_h // 5, input_w // 5), mode='bilinear')
             xo = TF.resize(x, xb.shape[2:])
             x = torch.cat((xb, xo), axis=1)
             y = self.unet(x)
-            y = F.interpolate(y, (input_h, input_w))
+            y = F.interpolate(y, (input_h, input_w), mode='bilinear')
             y_reg_ret = y[:, 0, :, :].unsqueeze(1)
             y_seg_ret = y[:, 1:, :, :]
         return y_reg_ret, y_seg_ret
 
 
 if __name__ == "__main__":
-    unet = DualTaskUNet()
-    md = torch.load("../train-history/trained_model24_dict.pth")
-    unet.load_state_dict(md)
+    unet = UNet(3, 32)
+    x = torch.ones(10, 3, 320, 320)
+    y = unet(x)
+    print(y.shape)
+
+    writer = SummaryWriter()
+    writer.add_graph(unet, x)
+
+    while True:
+        pass

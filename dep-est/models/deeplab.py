@@ -3,7 +3,9 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms.functional as TF
 import torch.nn.functional as F
-from yolov1 import FeatureExtractor
+from torchviz import make_dot
+
+from .yolov1 import FeatureExtractor
 
 
 class AtrousConv(nn.Module):
@@ -71,13 +73,13 @@ class DualTaskASPP(nn.Module):
         backbone = cls_net.features
         backbone_out_dim = backbone[-1].out_channels
         self.cls_num = cls_num
-        self.aspp = ASPP(backbone_out_dim + 3, cls_num + 1)
+        self.aspp = ASPP(backbone_out_dim + input_dim, cls_num + 1)
 
     def forward(self, x):
         _, _, input_h, input_w = x.shape
-        backbone = FeatureExtractor()
+        backbone = FeatureExtractor().to(x.device)
         xb = backbone(x)
-        xb = F.interpolate(xb, (input_h // 5, input_w // 5), mode="bilinear")
+        xb = F.interpolate(xb, (input_h // 10, input_w // 10), mode="bilinear")
         xo = TF.resize(x, xb.shape[2:])
         x = torch.cat((xb, xo), axis=1)
         y = self.aspp(x)
@@ -104,6 +106,7 @@ if __name__ == "__main__":
     x = torch.ones(10, 3, 320, 320)
     y = aspp(x)
     print(y.shape)
+    make_dot(y, params=dict(list(aspp.named_parameters()))).render("torchviz", format="png")
 
 
 

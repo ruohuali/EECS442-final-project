@@ -1,3 +1,5 @@
+import time
+
 from PIL import Image
 
 from yolov1 import *
@@ -22,7 +24,7 @@ class TriTaskModel(nn.Module):
         self.regseg_head.eval()
         with torch.no_grad():
             img = self.preprocess(np_img).unsqueeze(0)
-            img = img.cuda()
+            img = img.cpu()
             feat = self.feature_extractor(img)
             yolo_output = self.det_head.combinedInference(img, feat, thresh=0.6, nms_thresh=0.005)
             regseg_output = self.regseg_head.combinedInference(img, feat)
@@ -34,14 +36,14 @@ def getTriTaskModel(det_path, regseg_path):
     det_model = SingleStageDetector()
     det_dict = torch.load(det_path)
     det_model.load_state_dict(det_dict)
-    det_model = det_model.cuda()
+    det_model = det_model.cpu()
 
     regseg_model = DualTaskUNet()
     regseg_model_dict = torch.load(regseg_path)
     regseg_model.load_state_dict(regseg_model_dict)
     regseg_model = regseg_model.cuda()
 
-    model = TriTaskModel(det_model, regseg_model).cuda()
+    model = TriTaskModel(det_model, regseg_model).cpu()
     return model
 
 
@@ -61,7 +63,11 @@ def compare_models(model_1, model_2):
 
 
 if __name__ == "__main__":
-    model = getTriTaskModel("../trained-models/yolo_detector4.pt", "../trained-models/unet99.pth")
+    model = getTriTaskModel("../trained-models/yolo_detector3.pt", "../trained-models/unet99.pth")
     img = Image.open("../example1.png").convert('RGB')
     img = np.array(img)
+    tic = time.time()
     model(img)
+    toc = time.time()
+    print("once takes ", toc - tic)
+    print(1 / (toc - tic),  "fps")
