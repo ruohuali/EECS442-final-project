@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import os
 import platform
 from PIL import Image
-from torchviz import make_dot
 
 
 def read2Tensor(img_path, device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), transform=None):
@@ -53,9 +52,57 @@ def clearTemp():
         raise NotImplementedError("write win cmd for removing temp file")
 
 
+def showSegModelInference(model, img_path, preprocess=transforms.Compose([transforms.Resize((120, 480)),
+                                                                          transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                                                                               std=[0.229, 0.224, 0.225])]), display=True):
+    """
+    @func img_path -> 3 np arrays of results
+    label assign refer
+    https://github.com/mcordts/cityscapesScripts/blob/master/cityscapesscripts/helpers/labels.py
+    """
+
+    img = Image.open(img_path)
+    img_p = np.array(img)
+    img_p = cv2.resize(img_p, (480, 120))
+    img_t = read_image(img_path).to(torch.float32)
+    img_t = preprocess(img_t)
+    img_t = img_t.unsqueeze(0)
+    with torch.no_grad():
+        seg_pred = model(img_t)
+    seg_pred = clsPred2Img(seg_pred)
+
+    ##
+    plt.figure()
+    plt.imshow(img_p)
+    plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+    if not display:
+        plt.close()
+
+    origin_img_arr = cv2.imread("temp.png")
+    clearTemp()
+
+    ##
+    cmap = plt.cm.jet
+    cmap.set_bad(color="black")
+
+    plt.figure()
+    plt.imshow(seg_pred.numpy(), cmap=cmap)
+    plt.savefig("temp.png", bbox_inches='tight', pad_inches=0)
+    if not display:
+        plt.close()
+
+    seg_pred_arr = cv2.imread("temp.png")
+    clearTemp()
+
+    return seg_pred_arr, origin_img_arr
+
+
 def showRegSegModelInference(model, img_path, preprocess=transforms.Compose([transforms.ToTensor(),
                                                                              transforms.Resize((240, 360)),
-                                                                             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]), display=True):
+                                                                             transforms.Normalize(
+                                                                                 mean=[0.485, 0.456, 0.406],
+                                                                                 std=[0.229, 0.224, 0.225])]),
+                             display=True):
     """
     @func img_path -> 3 np arrays of results
     label assign refer

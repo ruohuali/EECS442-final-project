@@ -63,8 +63,10 @@ def compare_models(model_1, model_2):
 
 
 if __name__ == "__main__":
-    model = getTriTaskModel("../trained-models/yolo_detector3.pt", "../trained-models/unet99.pth")
-    img = Image.open("../example1.png").convert('RGB')
+    import os
+
+    model = getTriTaskModel("trained-models/yolo_detector3.pt", "trained-models/report.pth")
+    img = Image.open("images/example1.png").convert('RGB')
     img = np.array(img)
     tic = time.time()
     model(img)

@@ -195,27 +195,12 @@ def displayInference(data, pred, save_dir, i, backend="cmap"):
 
         plt.figure()
         plt.imshow(pred)
-        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))            
+        plt.savefig(os.path.join(save_dir, "pred"+str(i)+".png"))
+
+
+    def getClsColor(cls):
+        pass
     
 
 if __name__ == "__main__":
-    print(torch.cuda.is_available())
-    if torch.cuda.is_available():
-        print(torch.cuda.device_count())
-        print(torch.cuda.get_device_name(torch.cuda.device_count()-1))
-
-    gpu_device = torch.device("cuda")
-    cpu_device = torch.device("cpu")
-    dataset = KITTI_DEP(TRAIN_RGB_PATHS, TRAIN_DEP_PATHS, device=cpu_device, qmark=True, original=False)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
-
-    # dataset.example(519)
-    print('len', len(dataset))
-    tic = time.time()
-    for i, data in enumerate(dataloader):
-        print("data rgb", data['rgb'].shape)
-        rgb = data['rgb'].to(gpu_device)
-        label = data['label'].to(gpu_device)
-        if i > 10:
-            break
-    print("time", time.time() - tic)    
+    pass

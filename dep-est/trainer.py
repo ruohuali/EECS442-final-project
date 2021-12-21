@@ -8,15 +8,45 @@ from torchvision import transforms
 
 from dataset.data_path import KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, \
     KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS
-from dataset.diode import DIODE
 from dataset.kitti import KITTI_DEP, KITTI_SEM
 from models.regseg_model import ProbedDualTaskSeg, ConvProbe, \
-                                DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
-                                DualTaskSeg
-from models.unet import DualTaskUNet
+    DepthWiseSeparableConv2d, DepthWiseSeparableConvProbe, \
+    DualTaskSeg
+from models.unet import UNet, DualTaskUNet
 from models.deeplab import DualTaskASPP
-from models.model_utils import showRegSegModelInference
-from train_mult import trainDual
+from models.model_utils import showRegSegModelInference, showSegModelInference
+from train_mult import trainDual, trainSeg
+
+
+def initTrainKITTISeg(save_dir, train_example_image_path):
+    model_device = torch.device("cuda")
+    data_device = torch.device("cpu")
+
+    rgb_preprocess = transforms.Compose([
+        # transforms.ToTensor(),
+        transforms.Resize((120, 480)),
+        transforms.ColorJitter(brightness=0.2, hue=0.2),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    label_preprocess2 = transforms.Compose([transforms.Resize((120, 480))])
+
+    seg_dataset = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, device=data_device,
+                            transform=rgb_preprocess, target_transform=label_preprocess2)
+    SPLIT = len(seg_dataset) // 10
+    # SPLIT = 10
+    train_seg_dataset = Subset(seg_dataset, np.arange(SPLIT, len(seg_dataset)))
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=7, shuffle=True, num_workers=2, drop_last=True)
+    test_seg_dataset = Subset(seg_dataset, np.arange(0, SPLIT))
+    test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
+
+    m = UNet(3, 35).to(model_device)
+    m.train()
+    print("train dataloader lengths", len(train_seg_dataloader))
+    model = trainSeg(m, train_seg_dataloader, test_seg_dataloader,
+                     num_epoch=250, device=model_device, save_dir=save_dir, example_img_path=train_example_image_path)
+
+    return model
 
 
 def initTrainKITTIDual(save_dir, train_example_image_path):
@@ -32,8 +62,8 @@ def initTrainKITTIDual(save_dir, train_example_image_path):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
     label_preprocess1 = transforms.Compose([transforms.GaussianBlur(15, sigma=4.0),
-                                            transforms.Resize( (240, 360) )])
-    label_preprocess2 = transforms.Compose([transforms.Resize( (240, 360) )])
+                                            transforms.Resize((240, 360))])
+    label_preprocess2 = transforms.Compose([transforms.Resize((240, 360))])
 
     reg_dataset = KITTI_DEP(KITTI_DEP_TRAIN_RGB_PATHS, KITTI_DEP_TRAIN_LABEL_PATHS, device=data_device,
                             transform=rgb_preprocess, target_transform=label_preprocess1)
@@ -71,9 +101,19 @@ def modelSummary():
     summary(m2, input_size=(8, 3, 320, 320), device="cpu")
 
 
+def showSegInference(model_path, img_path):
+    model_dict = torch.load(model_path)
+    model = UNet(3, 35)
+    model.load_state_dict(model_dict)
+    model.eval()
+    model = model.cpu()
+    showSegModelInference(model, img_path, display=True)
+    plt.show()
+
+
 def showInference(model_path, img_path):
     model_dict = torch.load(model_path)
-    model = DualTaskASPP()
+    model = DualTaskUNet()
     model.load_state_dict(model_dict)
     model.eval()
     model = model.cpu()
@@ -84,7 +124,7 @@ def showInference(model_path, img_path):
 def main():
     """
         python3 trainer.py --job train --train_save_dir train-history --train_example_image_path images/example1.png
-        python3 trainer.py --job infer --infer_image_path images/example1.png --infer_model_path train-history/trained_model49.pth
+        python3 trainer.py --job infer --infer_image_path images/example1.png --infer_model_path train-history/trained_model99_dict.pth
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--job', type=str, default='train')
@@ -95,8 +135,12 @@ def main():
     args = parser.parse_args()
     if args.job == "train":
         initTrainKITTIDual(args.train_save_dir, args.train_example_image_path)
+    elif args.job == "trainseg":
+        initTrainKITTISeg(args.train_save_dir, args.train_example_image_path)
     elif args.job == "infer":
         showInference(args.infer_model_path, args.infer_image_path)
+    elif args.job == "inferseg":
+        showSegInference(args.infer_model_path, args.infer_image_path)
     elif args.job == "model_summary":
         modelSummary()
 
