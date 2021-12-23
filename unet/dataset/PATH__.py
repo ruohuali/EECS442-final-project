@@ -29,6 +29,5 @@ KITTI_DEP_TRAIN_LABEL_PATHS__ = ["data_depth_selection/depth_selection/val_selec
                                 #  "data_depth_annotated/train/2011_09_26_drive_0018_sync\proj_depth\groundtruth\image_02", ]
 
 KITTI_SEM_DATA_PATH__ = "../data/data_semantics"
-print(os.getcwd())
 KITTI_SEM_TRAIN_RGB_PATHS__ = ["training/image_2", "testing/image_2"]
-KITTI_SEM_TRAIN_LABEL_PATHS__ = ["training/semantic", "testing/image_2"]
+KITTI_SEM_TRAIN_LABEL_PATHS__ = ["training/semantic", "testing/semantic"]

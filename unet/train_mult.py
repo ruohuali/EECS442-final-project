@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from loss import SSIM, SmoothnessLoss
-from models.model_utils import showRegSegModelInference, showSegModelInference
+from models.model_utils import showSegModelInference
 
 
 def getSegModelInference(model, img_path):
@@ -36,25 +36,23 @@ def getRegLoss(pred, labels, imgs):
     return loss
 
 
-def getSegLoss(pred, labels, imgs):
+def getSegLoss(pred, labels):
     ce = nn.CrossEntropyLoss()
     loss = ce(pred, labels)
     return loss
 
 
-# ####################################################################################################################3
 def doEpochSeg(seg_dataloader, model, optimizer=None,
                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
     running_loss = 0
     for batch_idx, seg_data in enumerate(
             tqdm(seg_dataloader, total=len(seg_dataloader), desc="progress")):
-        # for batch_idx, data in enumerate(zip(reg_dataloader, seg_dataloader)):
         seg_imgs = seg_data['rgb'].to(device)
         seg_labels = seg_data['label'].to(device)
 
         if optimizer is not None:
             seg_pred = model(seg_imgs)
-            seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
+            seg_loss = getSegLoss(seg_pred, seg_labels)
 
             loss = seg_loss
 
@@ -66,7 +64,7 @@ def doEpochSeg(seg_dataloader, model, optimizer=None,
         else:
             with torch.no_grad():
                 seg_pred = model(seg_imgs)
-                seg_loss = getSegLoss(seg_pred, seg_labels, seg_imgs)
+                seg_loss = getSegLoss(seg_pred, seg_labels)
 
                 loss = seg_loss
                 # print("val batch", batch_idx, "/", min(len(reg_dataloader), len(seg_dataloader)), end='       \r')
@@ -85,7 +83,8 @@ def trainSeg(model, train_seg_dataloader, val_seg_dataloader, num_epoch=400,
 
     writer = SummaryWriter()
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
+    optimizer = torch.optim.RMSprop(model.parameters(), lr=0.001, weight_decay=1e-8, momentum=0.9)
 
     best_record = np.inf
     train_hist = []
@@ -114,7 +113,7 @@ def trainSeg(model, train_seg_dataloader, val_seg_dataloader, num_epoch=400,
             print("running train loss", running_train_loss)
             print("running val loss", running_val_loss)
             if best_record > running_train_loss:
-                print("best record", best_record)
+                print("best record", best_record, "-->", running_train_loss)
                 best_record = running_train_loss
                 best_model = deepcopy(model)
             print("-" * 50)
@@ -130,9 +129,6 @@ def trainSeg(model, train_seg_dataloader, val_seg_dataloader, num_epoch=400,
 
     writer.close()
     return best_model
-
-# ####################################################################################################################3
-
 
 
 if __name__ == "__main__":

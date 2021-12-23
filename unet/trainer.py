@@ -21,14 +21,14 @@ def initTrainKITTISeg(save_dir, train_example_image_path):
                              original=True)
     SPLIT = len(seg_dataset1) // 10
     train_seg_dataset = Subset(seg_dataset1, np.arange(SPLIT, len(seg_dataset1)))
-    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=7, shuffle=True, num_workers=2, drop_last=True)
+    train_seg_dataloader = DataLoader(train_seg_dataset, batch_size=16, shuffle=True, num_workers=2, drop_last=True)
 
     seg_dataset2 = KITTI_SEM(KITTI_SEM_TRAIN_RGB_PATHS, KITTI_SEM_TRAIN_LABEL_PATHS, is_val=True, device=data_device,
                              original=True)
     test_seg_dataset = Subset(seg_dataset2, np.arange(0, SPLIT))
     test_seg_dataloader = DataLoader(test_seg_dataset, batch_size=1, shuffle=False, num_workers=2, drop_last=True)
 
-    m = UNet(3, 35).to(model_device)
+    m = UNet(3, 35, [24, 64, 128]).to(model_device)
     m.train()
     print("train dataloader lengths", len(train_seg_dataloader))
     model = trainSeg(m, train_seg_dataloader, test_seg_dataloader,
@@ -67,7 +67,7 @@ def readArgs():
 def main():
     """
         python3 trainer.py --job train --train_save_dir train-history --train_example_image_path images/example1.png
-        python3 trainer.py --job infer --infer_image_path images/example1.png --infer_model_path train-history/trained_model99_dict.pth
+        python3 trainer.py --job inferseg --infer_image_path images/red_car.png --infer_model_path train-history/trained_model199_dict.pth
     """
     args = readArgs()
     if args.job == "trainseg":

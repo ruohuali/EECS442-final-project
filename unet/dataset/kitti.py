@@ -115,7 +115,7 @@ def readKITTIData2Tensor(img_path, label_path, val=False):
     if not val:
         preprocess = transforms.Compose([
             HorizontalFlip(0.5),
-            RandomColorChange((0.5, 0.2, 0.2, 0.5), 0.2, 0.2, 0.2),
+            RandomColorChange((0.2, 0.2, 0.2, 0.2), 0.2, 0., 0.2),
             Resize(120, 360),
             PIL2NormalizedTensor(),
             Standardize()

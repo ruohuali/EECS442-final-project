@@ -63,7 +63,7 @@ def showSegModelInference(model, img_path, display=True):
 
     img = Image.open(img_path)
     img_p = np.array(img)
-    img_p = cv2.resize(img_p, (480, 120))
+    img_p = cv2.resize(img_p, (360, 120))
     img_t = readSingleImage2Tensor(img_path)
     with torch.no_grad():
         seg_pred = model(img_t)
