@@ -10,7 +10,7 @@ import torchvision
 from PIL import Image
 from torchvision import transforms
 
-from .model_utils import regPred2Img, clsPred2Img
+from .model_utils import regPred2Img, segPred2Img
 
 
 class ConvProbe(nn.Module):
